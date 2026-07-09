@@ -1,16 +1,19 @@
-import type { ReactNode } from "react";
+import type { ReactNode, MouseEventHandler } from "react";
 
 type CardProps = {
   children: ReactNode;
   className?: string;
+  onClick?: MouseEventHandler<HTMLDivElement>;
 };
 
 function Card({
   children,
   className = "",
+  onClick,
 }: CardProps) {
   return (
     <div
+      onClick={onClick}
       className={`
         rounded-2xl
         border
@@ -21,6 +24,7 @@ function Card({
         transition-all
         duration-300
         hover:shadow-lg
+        ${onClick ? "cursor-pointer" : ""}
         ${className}
       `}
     >

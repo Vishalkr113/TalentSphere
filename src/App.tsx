@@ -16,6 +16,12 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ProfessionalDashboard from "./components/ProfessionalDashboard";
 import InstituteDashboard from "./components/InstituteDashboard";
 
+import ResumeHome from "./components/ResumeHome";
+import ResumeBuilder from "./components/ResumeBuilder";
+
+import SkillAssessment from "./components/SkillAssessment";
+
+
 function App() {
   return (
     <Routes>
@@ -53,7 +59,33 @@ function App() {
     </ProtectedRoute>
   }
 />
+  
+  <Route
+  path="/student/resume"
+  element={
+    <ProtectedRoute>
+      <ResumeHome />
+    </ProtectedRoute>
+  }
+/>
 
+<Route
+  path="/student/resume-builder"
+  element={
+    <ProtectedRoute>
+      <ResumeBuilder />
+    </ProtectedRoute>
+  }
+/>
+
+ <Route
+  path="/student/skill-assessment"
+  element={
+    <ProtectedRoute>
+      <SkillAssessment />
+    </ProtectedRoute>
+  }
+/>
 
       {/* Institute */}
 
