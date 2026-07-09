@@ -65,7 +65,7 @@ function HowItWorks() {
 
         <div className="mt-20 grid gap-8 md:grid-cols-2 xl:grid-cols-5">
 
-          {steps.map((step, index) => {
+          {steps.map((step) => {
             const Icon = step.icon;
 
             return (
@@ -74,17 +74,10 @@ function HowItWorks() {
                 className="relative rounded-2xl bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
               >
 
-                <div className="absolute -top-4 left-6 flex h-10 w-10 items-center justify-center rounded-full bg-cyan-600 text-sm font-bold text-white">
-
-                  {index + 1}
-
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-600">
+                    <Icon size={28} />
                 </div>
 
-                <div className="mt-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-600">
-
-                  <Icon size={28} />
-
-                </div>
 
                 <h3 className="mt-6 text-xl font-bold text-slate-900">
                   {step.title}

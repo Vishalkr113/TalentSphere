@@ -1,3 +1,6 @@
+import { useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import {
   GraduationCap,
   Building2,
@@ -5,105 +8,123 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-import { Link } from "react-router-dom";
-
 import Card from "./ui/Card";
+import Button from "./ui/Button";
+
+type Portal =
+  | "student"
+  | "institute"
+  | "professional";
 
 const portals = [
   {
+    role: "student" as Portal,
     title: "Student",
-    description:
-      "Build your resume, improve your skills, prepare for interviews and get AI career guidance.",
     icon: GraduationCap,
-    color: "bg-cyan-600",
-    route: "/student/login",
+    description:
+      "Resume Builder, Mock Interview, Skill Assessment and Career Guidance.",
   },
   {
+    role: "institute" as Portal,
     title: "Institute",
-    description:
-      "Manage students, departments, placements and academic performance efficiently.",
     icon: Building2,
-    color: "bg-violet-600",
-    route: "/institute/login",
+    description:
+      "Student Management, Placements and Performance Analytics.",
   },
   {
+    role: "professional" as Portal,
     title: "Professional",
-    description:
-      "Track career growth, manage your profile and explore new opportunities.",
     icon: Briefcase,
-    color: "bg-emerald-600",
-    route: "/professional/login",
+    description:
+      "Portfolio, Career Growth and Job Opportunities.",
   },
 ];
 
-function PortalSection() {
-  return (
-    <section className="bg-white py-24">
+function PortalSelection() {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-      <div className="mx-auto max-w-7xl px-6">
+  const mode = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get("mode") === "register"
+      ? "register"
+      : "login";
+  }, [location.search]);
+
+  const handleContinue = (role: Portal) => {
+    navigate(`/${role}/${mode}`);
+  };
+
+  return (
+    <section className="min-h-screen bg-slate-100 py-20">
+
+      <div className="mx-auto max-w-6xl px-6">
 
         <div className="text-center">
 
-          <span className="rounded-full bg-cyan-100 px-4 py-2 text-sm font-semibold text-cyan-700">
+          <h1 className="text-4xl font-bold text-slate-900">
+
             Choose Your Portal
-          </span>
 
-          <h2 className="mt-6 text-4xl font-bold text-slate-900">
+          </h1>
 
-            One Platform
+          <p className="mt-4 text-base text-slate-600">
 
-            <span className="text-cyan-600">
-              {" "}Three Experiences
-            </span>
-
-          </h2>
-
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600">
-
-            TalentSphere provides dedicated portals
-            for Students, Institutes and Professionals.
+            Select the portal that best matches your profile.
 
           </p>
 
         </div>
 
-        <div className="mt-16 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-16 grid gap-8 md:grid-cols-3">
 
           {portals.map((portal) => {
+
             const Icon = portal.icon;
 
             return (
-              <Card
-                key={portal.title}
-                className="group hover:-translate-y-2"
-              >
 
-                <div
-                  className={`flex h-16 w-16 items-center justify-center rounded-2xl ${portal.color} text-white`}
-                >
-                  <Icon size={34} />
+              <Card key={portal.role}>
+
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-600">
+
+                  <Icon size={30} />
+
                 </div>
 
-                <h3 className="mt-6 text-2xl font-bold text-slate-900">
+                <h2 className="mt-6 text-xl font-bold text-slate-900">
+
                   {portal.title}
-                </h3>
+
+                </h2>
 
                 <p className="mt-4 leading-7 text-slate-600">
+
                   {portal.description}
+
                 </p>
 
-                <Link
-                  to={portal.route}
-                  className="mt-8 inline-flex items-center gap-2 font-semibold text-cyan-600 transition hover:gap-3"
-                >
-                  Continue
+                <div className="mt-8">
 
-                  <ArrowRight size={18} />
+                  <Button
+                    className="w-full"
+                    onClick={() =>
+                      handleContinue(portal.role)
+                    }
+                  >
 
-                </Link>
+                    Continue
+
+                    <ArrowRight size={18} />
+
+                  </Button>
+
+                </div>
 
               </Card>
+
             );
+
           })}
 
         </div>
@@ -114,4 +135,4 @@ function PortalSection() {
   );
 }
 
-export default PortalSection;
+export default PortalSelection;

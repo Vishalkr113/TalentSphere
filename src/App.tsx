@@ -1,51 +1,82 @@
-import { Routes, Route } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
 
 import Overview from "./components/Overview";
+import PortalSelection from "./components/PortalSelection";
+
 import Login from "./components/Login";
 import Register from "./components/Register";
 import ForgotPassword from "./components/ForgotPassword";
 
-import StudentDashboard from "./components/StudentDashboard";
-import InstituteDashboard from "./components/InstituteDashboard";
-import ProfessionalDashboard from "./components/ProfessionalDashboard";
-
 function App() {
   return (
     <Routes>
+
+      {/* Landing Page */}
 
       <Route
         path="/"
         element={<Overview />}
       />
 
+      {/* Portal Selection */}
+
       <Route
-        path="/login"
+        path="/portal"
+        element={<PortalSelection />}
+      />
+
+      {/* Student */}
+
+      <Route
+        path="/student/login"
         element={<Login />}
       />
 
       <Route
-        path="/register"
+        path="/student/register"
         element={<Register />}
       />
+
+      {/* Institute */}
+
+      <Route
+        path="/institute/login"
+        element={<Login />}
+      />
+
+      <Route
+        path="/institute/register"
+        element={<Register />}
+      />
+
+      {/* Professional */}
+
+      <Route
+        path="/professional/login"
+        element={<Login />}
+      />
+
+      <Route
+        path="/professional/register"
+        element={<Register />}
+      />
+
+      {/* Forgot Password */}
 
       <Route
         path="/forgot-password"
         element={<ForgotPassword />}
       />
 
-      <Route
-        path="/student/dashboard"
-        element={<StudentDashboard />}
-      />
+      {/* Invalid Route */}
 
       <Route
-        path="/institute/dashboard"
-        element={<InstituteDashboard />}
-      />
-
-      <Route
-        path="/professional/dashboard"
-        element={<ProfessionalDashboard />}
+        path="*"
+        element={<Navigate to="/" replace />}
       />
 
     </Routes>

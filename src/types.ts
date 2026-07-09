@@ -58,3 +58,41 @@ export interface AuthResponse {
   message: string;
   user?: User;
 }
+
+/* ================= Landing Page ================= */
+
+export interface Portal {
+  title: string;
+  description: string;
+  color: string;
+  route: string;
+}
+
+export interface Feature {
+  title: string;
+  description: string;
+  color: string;
+}
+
+export interface AIModule {
+  title: string;
+  description: string;
+}
+
+export interface HowItWorksStep {
+  title: string;
+  description: string;
+}
+
+export interface Testimonial {
+  id: number;
+  name: string;
+  role: string;
+  message: string;
+}
+
+export interface FAQItem {
+  id: number;
+  question: string;
+  answer: string;
+}

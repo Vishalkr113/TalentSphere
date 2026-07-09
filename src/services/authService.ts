@@ -1,140 +1,167 @@
-import type {
-  User,
-  LoginData,
-  RegisterData,
-  AuthResponse,
-  SessionUser,
-} from "../types";
+export type UserRole =
+  | "student"
+  | "professional"
+  | "institute";
 
-import {
-  addUser,
-  findUserByEmail,
-  saveSession,
-  clearSession,
-  getSession,
-} from "./storage";
-
-class AuthService {
-  register(
-    data: RegisterData
-  ): AuthResponse {
-    const existingUser =
-      findUserByEmail(data.email);
-
-    if (existingUser) {
-      return {
-        success: false,
-        message: "Email already registered.",
-      };
-    }
-
-    const user: User = {
-      id: crypto.randomUUID(),
-
-      fullName: data.fullName,
-
-      email: data.email
-        .trim()
-        .toLowerCase(),
-
-      phone: data.phone,
-
-      password: data.password,
-
-      role: data.role,
-
-      college: data.college,
-
-      course: data.course,
-
-      semester: data.semester,
-
-      instituteName:
-        data.instituteName,
-
-      companyName:
-        data.companyName,
-
-      designation:
-        data.designation,
-
-      createdAt:
-        new Date().toISOString(),
-    };
-
-    addUser(user);
-
-    return {
-      success: true,
-      message:
-        "Registration Successful",
-      user,
-    };
-  }
-
-  login(
-    data: LoginData
-  ): AuthResponse {
-    const user =
-      findUserByEmail(data.email);
-
-    if (!user) {
-      return {
-        success: false,
-        message:
-          "Account not found.",
-      };
-    }
-
-    if (
-      user.password !==
-      data.password
-    ) {
-      return {
-        success: false,
-        message:
-          "Invalid password.",
-      };
-    }
-
-    if (
-      user.role !== data.role
-    ) {
-      return {
-        success: false,
-        message: `This account belongs to ${user.role} portal.`,
-      };
-    }
-
-    const session: SessionUser = {
-      id: user.id,
-      fullName: user.fullName,
-      email: user.email,
-      role: user.role,
-    };
-
-    saveSession(session);
-
-    return {
-      success: true,
-      message:
-        "Login Successful",
-      user,
-    };
-  }
-
-  logout() {
-    clearSession();
-  }
-
-  currentUser() {
-    return getSession();
-  }
-
-  isAuthenticated() {
-    return getSession() !== null;
-  }
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  createdAt: string;
 }
 
-export const authService =
-  new AuthService();
+const STORAGE_KEY = "talentsphere-users";
+
+/* =========================
+   Get All Users
+========================= */
+
+export function getUsers(): User[] {
+  const data = localStorage.getItem(STORAGE_KEY);
+
+  return data ? JSON.parse(data) : [];
+}
+
+/* =========================
+   Save Users
+========================= */
+
+export function saveUsers(users: User[]) {
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(users)
+  );
+}
+
+/* =========================
+   Email Validation
+========================= */
+
+export function isValidEmail(
+  email: string
+) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+    email
+  );
+}
+
+/* =========================
+   Password Validation
+========================= */
+
+export function isValidPassword(
+  password: string
+) {
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(
+    password
+  );
+}
+
+/* =========================
+   Register User
+========================= */
+
+export function registerUser(
+  user: Omit<User, "id" | "createdAt">
+) {
+  const users = getUsers();
+
+  /* Same Role Duplicate */
+
+  const duplicate = users.find(
+    (u) =>
+      u.email.toLowerCase() ===
+        user.email.toLowerCase() &&
+      u.role === user.role
+  );
+
+  if (duplicate) {
+    return {
+      success: false,
+      message:
+        `${user.role} account already exists.`,
+    };
+  }
+
+  /* Institute Rule */
+
+  if (user.role === "institute") {
+    const personal = users.find(
+      (u) =>
+        u.email.toLowerCase() ===
+          user.email.toLowerCase() &&
+        (u.role === "student" ||
+          u.role ===
+            "professional")
+    );
+
+    if (personal) {
+      return {
+        success: false,
+        message:
+          "Please use an official institute email.",
+      };
+    }
+  }
+
+  const newUser: User = {
+    ...user,
+
+    id: crypto.randomUUID(),
+
+    createdAt:
+      new Date().toISOString(),
+  };
+
+  users.push(newUser);
+
+  saveUsers(users);
+
+  return {
+    success: true,
+    message:
+      "Account created successfully.",
+  };
+}
+
+/* =========================
+   Login
+========================= */
+
+export function loginUser(
+  email: string,
+  password: string,
+  role: UserRole
+) {
+  const users = getUsers();
+
+  const user = users.find(
+    (u) =>
+      u.email.toLowerCase() ===
+        email.toLowerCase() &&
+      u.role === role
+  );
+
+  if (!user) {
+    return {
+      success: false,
+      message:
+        "No account found.",
+    };
+  }
+
+  if (user.password !== password) {
+    return {
+      success: false,
+      message:
+        "Incorrect password.",
+    };
+  }
+
+  return {
+    success: true,
+    user,
+  };
+}
