@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 import Logo from "./ui/Logo";
 import Card from "./ui/Card";
@@ -11,20 +15,21 @@ import {
   registerUser,
   isValidEmail,
   isValidPassword,
+  type UserRole,
 } from "../services/authService";
 
 function Register() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const role = location.pathname.split("/")[1] as
-    | "student"
-    | "professional"
-    | "institute";
+  const role = location.pathname.split("/")[1] as UserRole;
 
   const title =
-    role.charAt(0).toUpperCase() +
-    role.slice(1);
+    role === "high-school-student"
+      ? "High School Student"
+      : role === "college-student"
+      ? "College Student"
+      : "Working Professional";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -66,21 +71,19 @@ function Register() {
 
     if (!isValidEmail(email)) {
       setError(
-        "Please enter a valid email."
+        "Please enter a valid email address."
       );
       return;
     }
 
     if (!isValidPassword(password)) {
       setError(
-        "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character."
+        "Password must contain at least 8 characters, one uppercase letter and one number."
       );
       return;
     }
 
-    if (
-      password !== confirmPassword
-    ) {
+    if (password !== confirmPassword) {
       setError(
         "Passwords do not match."
       );
@@ -100,23 +103,34 @@ function Register() {
 
     if (!result.success) {
       setLoading(false);
-      setError(result.message);
+
+      setError(
+        result.message ??
+          "Registration failed."
+      );
+
       return;
     }
 
-    setSuccess(result.message);
+    setSuccess(
+      result.message ??
+        "Account created successfully."
+    );
 
     setName("");
     setEmail("");
     setPassword("");
     setConfirmPassword("");
 
+    setLoading(false);
+
     setTimeout(() => {
       navigate(`/${role}/login`);
     }, 1500);
   };
 
-  return (     <main className="flex min-h-screen items-center justify-center bg-slate-100 px-6 py-12">
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-slate-100 px-6 py-12">
 
       <Card className="w-full max-w-md p-8">
 

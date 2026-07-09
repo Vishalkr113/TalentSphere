@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   GraduationCap,
-  Building2,
+  School,
   Briefcase,
   ArrowRight,
 } from "lucide-react";
@@ -12,31 +12,31 @@ import Card from "./ui/Card";
 import Button from "./ui/Button";
 
 type Portal =
-  | "student"
-  | "institute"
-  | "professional";
+  | "high-school-student"
+  | "college-student"
+  | "working-professional";
 
 const portals = [
   {
-    role: "student" as Portal,
-    title: "Student",
+    role: "high-school-student" as Portal,
+    title: "High School Student",
+    icon: School,
+    description:
+      "Career guidance, stream recommendation, scholarships and future planning.",
+  },
+  {
+    role: "college-student" as Portal,
+    title: "College Student",
     icon: GraduationCap,
     description:
-      "Resume Builder, Mock Interview, Skill Assessment and Career Guidance.",
+      "Resume Builder, Skill Assessment, Coding Practice and Placement Preparation.",
   },
   {
-    role: "institute" as Portal,
-    title: "Institute",
-    icon: Building2,
-    description:
-      "Student Management, Placements and Performance Analytics.",
-  },
-  {
-    role: "professional" as Portal,
-    title: "Professional",
+    role: "working-professional" as Portal,
+    title: "Working Professional",
     icon: Briefcase,
     description:
-      "Portfolio, Career Growth and Job Opportunities.",
+      "Career Growth, Resume Upgrade, AI Mentor and Promotion Readiness.",
   },
 ];
 
@@ -62,16 +62,12 @@ function PortalSelection() {
 
         <div className="text-center">
 
-          <h1 className="text-4xl font-bold text-slate-900">
-
-            Choose Your Portal
-
+          <h1 className="text-[38px] font-bold text-slate-900">
+            Choose Your Learning Portal
           </h1>
 
-          <p className="mt-4 text-base text-slate-600">
-
-            Select the portal that best matches your profile.
-
+          <p className="mt-4 text-lg text-slate-600">
+            Select the portal that best matches your current learning journey.
           </p>
 
         </div>
@@ -84,42 +80,43 @@ function PortalSelection() {
 
             return (
 
-              <Card key={portal.role}>
+              <Card
+                key={portal.role}
+                className="flex flex-col justify-between p-8"
+              >
 
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-600">
+                <div>
 
-                  <Icon size={30} />
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-600">
 
-                </div>
+                    <Icon size={30} />
 
-                <h2 className="mt-6 text-xl font-bold text-slate-900">
+                  </div>
 
-                  {portal.title}
+                  <h2 className="mt-6 text-2xl font-bold text-slate-900">
 
-                </h2>
+                    {portal.title}
 
-                <p className="mt-4 leading-7 text-slate-600">
+                  </h2>
 
-                  {portal.description}
+                  <p className="mt-4 leading-7 text-slate-600">
 
-                </p>
+                    {portal.description}
 
-                <div className="mt-8">
-
-                  <Button
-                    className="w-full"
-                    onClick={() =>
-                      handleContinue(portal.role)
-                    }
-                  >
-
-                    Continue
-
-                    <ArrowRight size={18} />
-
-                  </Button>
+                  </p>
 
                 </div>
+
+                <Button
+                  className="mt-8 w-full"
+                  onClick={() => handleContinue(portal.role)}
+                >
+
+                  Explore
+
+                  <ArrowRight size={18} />
+
+                </Button>
 
               </Card>
 

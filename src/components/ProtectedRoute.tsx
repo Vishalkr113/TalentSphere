@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
-
-import { Navigate } from "react-router-dom";
+import {
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 
 import { useAuth } from "../contexts/AuthContext";
 
@@ -16,14 +18,29 @@ function ProtectedRoute({
     isAuthenticated,
   } = useAuth();
 
+  const location =
+    useLocation();
+
   if (!isAuthenticated) {
 
-    return (
-      <Navigate
-        to="/portal?mode=login"
-        replace
-      />
-    );
+   const role = location.pathname.split("/")[1];
+
+const validRoles = [
+  "high-school-student",
+  "college-student",
+  "working-professional",
+];
+
+const loginRoute = validRoles.includes(role)
+  ? `/${role}/login`
+  : "/college-student/login";
+
+return (
+  <Navigate
+    to={loginRoute}
+    replace
+  />
+);
 
   }
 

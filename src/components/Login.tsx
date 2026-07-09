@@ -14,6 +14,7 @@ import Button from "./ui/Button";
 import {
   loginUser,
   isValidEmail,
+  type UserRole,
 } from "../services/authService";
 
 import { useAuth } from "../contexts/AuthContext";
@@ -24,14 +25,14 @@ function Login() {
 
   const { login } = useAuth();
 
-  const role = location.pathname.split("/")[1] as
-    | "student"
-    | "professional"
-    | "institute";
+  const role = location.pathname.split("/")[1] as UserRole;
 
   const title =
-    role.charAt(0).toUpperCase() +
-    role.slice(1);
+    role === "high-school-student"
+      ? "High School Student"
+      : role === "college-student"
+      ? "College Student"
+      : "Working Professional";
 
   const [email, setEmail] =
     useState("");
@@ -48,7 +49,6 @@ function Login() {
   const handleLogin = (
     e: React.FormEvent
   ) => {
-
     e.preventDefault();
 
     setError("");
@@ -57,23 +57,17 @@ function Login() {
       !email.trim() ||
       !password.trim()
     ) {
-
       setError(
         "Please fill in all required fields."
       );
-
       return;
-
     }
 
     if (!isValidEmail(email)) {
-
       setError(
         "Please enter a valid email address."
       );
-
       return;
-
     }
 
     setLoading(true);
@@ -85,28 +79,40 @@ function Login() {
     );
 
     if (!result.success) {
-
       setLoading(false);
 
-     setError(result.message ?? "Login failed.");
+      setError(
+        result.message ??
+          "Login failed."
+      );
 
       return;
-
     }
 
     if (!result.user) {
-  setLoading(false);
-  setError("User data not found.");
-  return;
-}
+      setLoading(false);
 
-login(result.user);
+      setError(
+        "User not found."
+      );
 
-    navigate(`/${role}/dashboard`);
+      return;
+    }
 
+    login(result.user);
+
+    setLoading(false);
+
+    navigate(
+      `/${role}/dashboard`,
+      {
+        replace: true,
+      }
+    );
   };
 
-  return (      <main className="flex min-h-screen items-center justify-center bg-slate-100 px-6 py-12">
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-slate-100 px-6 py-12">
 
       <Card className="w-full max-w-md p-8">
 
@@ -172,13 +178,9 @@ login(result.user);
           </div>
 
           {error && (
-
             <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
-
               {error}
-
             </div>
-
           )}
 
           <Button
@@ -186,11 +188,9 @@ login(result.user);
             className="w-full"
             disabled={loading}
           >
-
             {loading
               ? "Signing In..."
               : "Login"}
-
           </Button>
 
         </form>

@@ -3,13 +3,12 @@ import {
   useContext,
   useEffect,
   useState,
-  type ReactNode,
 } from "react";
 
 type User = {
   name: string;
   email: string;
-  role: "student" | "institute" | "professional";
+  role: string;
 };
 
 type AuthContextType = {
@@ -19,34 +18,37 @@ type AuthContextType = {
   isAuthenticated: boolean;
 };
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType>(
+  {} as AuthContextType
+);
 
-type Props = {
-  children: ReactNode;
-};
-
-export function AuthProvider({ children }: Props) {
+export function AuthProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("talentsphere-user");
+   const savedUser =
+  localStorage.getItem("currentUser");
 
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
   }, []);
 
-  const login = (userData: User) => {
+  const login = (user: User) => {
     localStorage.setItem(
-      "talentsphere-user",
-      JSON.stringify(userData)
-    );
+    "currentUser",
+    JSON.stringify(user)
+  );
 
-    setUser(userData);
+    setUser(user);
   };
 
   const logout = () => {
-    localStorage.removeItem("talentsphere-user");
+    localStorage.removeItem("currentUser");
     setUser(null);
   };
 
@@ -65,13 +67,5 @@ export function AuthProvider({ children }: Props) {
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
-
-  if (!context) {
-    throw new Error(
-      "useAuth must be used inside AuthProvider"
-    );
-  }
-
-  return context;
+  return useContext(AuthContext);
 }

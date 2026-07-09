@@ -1,56 +1,63 @@
 import {
+  Brain,
   FileText,
-  ScanSearch,
-  ClipboardCheck,
-  MessagesSquare,
   Briefcase,
-  Bot,
+  GraduationCap,
+  School,
+  Code2,
 } from "lucide-react";
 
 import Card from "./ui/Card";
+import Button from "./ui/Button";
 
 const features = [
   {
+    title: "Career Explorer",
+    description:
+      "Explore the right career paths based on your interests.",
+    icon: Briefcase,
+  },
+  {
+    title: "Subject Guidance",
+    description:
+      "Get smart guidance to choose the right subjects and streams.",
+    icon: School,
+  },
+  {
+    title: "AI Learning Support",
+    description:
+      "Receive AI-powered learning assistance and study recommendations.",
+    icon: Brain,
+  },
+  {
     title: "Resume Builder",
     description:
-      "Create a professional ATS-friendly resume within minutes.",
+      "Build professional ATS-friendly resumes in minutes.",
     icon: FileText,
-    color: "text-cyan-600",
   },
   {
-    title: "Resume Analyzer",
+    title: "Coding Assessment",
     description:
-      "Analyze your resume and improve it with AI suggestions.",
-    icon: ScanSearch,
-    color: "text-violet-600",
-  },
-  {
-    title: "Skill Assessment",
-    description:
-      "Evaluate your technical and aptitude skills with smart tests.",
-    icon: ClipboardCheck,
-    color: "text-emerald-600",
+      "Practice coding challenges and improve technical skills.",
+    icon: Code2,
   },
   {
     title: "Mock Interview",
     description:
-      "Practice interviews with AI-driven questions and feedback.",
-    icon: MessagesSquare,
-    color: "text-orange-500",
+      "Prepare with AI-powered interview practice and feedback.",
+    icon: GraduationCap,
   },
   {
-    title: "Career Recommendation",
+    title: "Career Growth",
     description:
-      "Receive personalized career suggestions based on your profile.",
+      "Track your progress and achieve your career goals.",
     icon: Briefcase,
-    color: "text-pink-600",
   },
   {
-    title: "AI Assistant",
+    title: "AI Career Advisor",
     description:
-      "Get instant guidance for learning, placement and career planning.",
-    icon: Bot,
-    color: "text-indigo-600",
+      "Receive personalized AI-powered career guidance.",
+    icon: Brain,
   },
 ];
 
@@ -62,52 +69,72 @@ function Features() {
     >
       <div className="mx-auto max-w-7xl px-6">
 
+        {/* Heading */}
+
         <div className="text-center">
 
           <span className="rounded-full bg-cyan-100 px-4 py-2 text-sm font-semibold text-cyan-700">
-            Features
+            Core Features
           </span>
 
-          <h2 className="mt-6 text-4xl font-bold text-slate-900">
+          <h2 className="mt-6 text-4xl font-bold text-slate-900 md:text-5xl">
             Everything You Need
+            <span className="text-cyan-600">
+              {" "}To Succeed
+            </span>
           </h2>
 
-          <p className="mx-auto mt-5 max-w-3xl text-lg text-slate-600">
-            TalentSphere provides all the essential
-            tools required for career development,
-            placement preparation and professional
-            growth.
+          <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-600">
+            Discover AI-powered tools designed to help you
+            learn, grow and achieve your academic and
+            professional goals.
           </p>
 
         </div>
 
-        <div className="mt-16 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+        {/* Cards */}
+
+        <div className="mt-20 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
 
           {features.map((feature) => {
+
             const Icon = feature.icon;
 
             return (
+
               <Card
                 key={feature.title}
-                className="group"
+                className="flex flex-col transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
               >
 
-                <div
-                  className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 ${feature.color}`}
-                >
-                  <Icon size={28} />
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-600">
+
+                  <Icon size={30} />
+
                 </div>
 
-                <h3 className="mt-6 text-2xl font-bold text-slate-900">
+                <h3 className="mt-6 min-h-[56px] text-xl font-bold text-slate-900">
+
                   {feature.title}
+
                 </h3>
 
-                <p className="mt-4 leading-7 text-slate-600">
+                <p className="min-h-[72px] leading-7 text-slate-600">
+
                   {feature.description}
+
                 </p>
 
+                <Button
+                  className="mt-6 w-full"
+                >
+                  Explore
+                </Button>
+
               </Card>
+
             );
+
           })}
 
         </div>

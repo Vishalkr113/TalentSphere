@@ -1,7 +1,7 @@
 export type UserRole =
-  | "student"
-  | "professional"
-  | "institute";
+  | "high-school-student"
+  | "college-student"
+  | "working-professional";
 
 export interface User {
   id: string;
@@ -9,110 +9,74 @@ export interface User {
   email: string;
   password: string;
   role: UserRole;
-  createdAt: string;
 }
 
-const STORAGE_KEY = "talentsphere-users";
+const STORAGE_KEY = "talentsphere_users";
 
-/* =========================
-   Get All Users
-========================= */
+const getUsers = (): User[] => {
+  const users = localStorage.getItem(STORAGE_KEY);
 
-export function getUsers(): User[] {
-  const data = localStorage.getItem(STORAGE_KEY);
+  if (!users) return [];
 
-  return data ? JSON.parse(data) : [];
-}
+  return JSON.parse(users);
+};
 
-/* =========================
-   Save Users
-========================= */
-
-export function saveUsers(users: User[]) {
+const saveUsers = (users: User[]) => {
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(users)
   );
-}
+};
 
-/* =========================
-   Email Validation
-========================= */
-
-export function isValidEmail(
+export const isValidEmail = (
   email: string
-) {
+) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
     email
   );
-}
+};
 
-/* =========================
-   Password Validation
-========================= */
-
-export function isValidPassword(
+export const isValidPassword = (
   password: string
-) {
-  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(
+) => {
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(
     password
   );
-}
+};
 
-/* =========================
-   Register User
-========================= */
-
-export function registerUser(
-  user: Omit<User, "id" | "createdAt">
-) {
+export const registerUser = ({
+  name,
+  email,
+  password,
+  role,
+}: {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+}) => {
   const users = getUsers();
 
-  /* Same Role Duplicate */
+  const exists = users.find(
+  (user) =>
+    user.email.toLowerCase() === email.toLowerCase() &&
+    user.role === role
+);
 
-  const duplicate = users.find(
-    (u) =>
-      u.email.toLowerCase() ===
-        user.email.toLowerCase() &&
-      u.role === user.role
-  );
-
-  if (duplicate) {
+  if (exists) {
     return {
       success: false,
       message:
-        `${user.role} account already exists.`,
+        "Account already exists.",
     };
   }
 
-  /* Institute Rule */
-
-  if (user.role === "institute") {
-    const personal = users.find(
-      (u) =>
-        u.email.toLowerCase() ===
-          user.email.toLowerCase() &&
-        (u.role === "student" ||
-          u.role ===
-            "professional")
-    );
-
-    if (personal) {
-      return {
-        success: false,
-        message:
-          "Please use an official institute email.",
-      };
-    }
-  }
-
   const newUser: User = {
-    ...user,
-
     id: crypto.randomUUID(),
-
-    createdAt:
-      new Date().toISOString(),
+    name,
+    email,
+    password,
+    role,
   };
 
   users.push(newUser);
@@ -123,45 +87,55 @@ export function registerUser(
     success: true,
     message:
       "Account created successfully.",
+    user: newUser,
   };
-}
+};
 
-/* =========================
-   Login
-========================= */
-
-export function loginUser(
+export const loginUser = (
   email: string,
   password: string,
   role: UserRole
-) {
+) => {
   const users = getUsers();
 
   const user = users.find(
-    (u) =>
-      u.email.toLowerCase() ===
-        email.toLowerCase() &&
-      u.role === role
+    (item) =>
+      item.email.toLowerCase() === email.toLowerCase()
+     &&
+      item.password === password &&
+      item.role === role
   );
 
   if (!user) {
     return {
       success: false,
       message:
-        "No account found.",
+        "Invalid email or password.",
     };
   }
 
-  if (user.password !== password) {
-    return {
-      success: false,
-      message:
-        "Incorrect password.",
-    };
-  }
+  localStorage.setItem(
+    "currentUser",
+    JSON.stringify(user)
+  );
 
   return {
     success: true,
     user,
   };
-}
+};
+
+export const logoutUser = () => {
+  localStorage.removeItem(
+    "currentUser"
+  );
+};
+
+export const getCurrentUser = () => {
+  const user =
+    localStorage.getItem("currentUser");
+
+  if (!user) return null;
+
+  return JSON.parse(user);
+};

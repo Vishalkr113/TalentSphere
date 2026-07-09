@@ -8,30 +8,61 @@ import Button from "./ui/Button";
 function StudentProfile() {
 
   const [formData, setFormData] = useState({
+    
+    profilePhoto: "",
 
     fullName: "",
-
     email: "",
-
     phone: "",
 
+    dateOfBirth: "",
+    gender: "",
+
+    address: "",
+    city: "",
+    state: "",
+    country: "",
+    pincode: "",
+    
+
     college: "",
-
     branch: "",
-
     semester: "",
-
     cgpa: "",
 
     skills: "",
-
     careerGoal: "",
 
   });
 
+
+  
   const [error, setError] = useState("");
 
   const [success, setSuccess] = useState("");
+
+  const handlePhotoUpload = (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+
+  const file = e.target.files?.[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onloadend = () => {
+
+    setFormData((prev) => ({
+      ...prev,
+      profilePhoto: reader.result as string,
+    }));
+
+  };
+
+  reader.readAsDataURL(file);
+
+};
 
   useEffect(() => {
 
@@ -134,6 +165,82 @@ function StudentProfile() {
 
       </div>
 
+       <Card className="mb-8">
+
+  <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+
+    {/* Left Side */}
+
+    <div className="flex items-center gap-6">
+
+      <img
+        src={
+          formData.profilePhoto ||
+          "https://placehold.co/120x120"}
+              alt="Profile"
+              className="h-28 w-28 rounded-full border-4 border-cyan-500 object-cover"
+      />
+
+      <div>
+
+        <h3 className="text-2xl font-bold text-slate-900">
+          {formData.fullName || "Student Name"}
+        </h3>
+
+        <p className="mt-1 text-slate-500">
+          Student ID : TS-2026-001
+        </p>
+
+      </div>
+
+    </div>
+
+    {/* Right Side */}
+
+    <div className="w-full md:w-72">
+
+      <div className="mb-2 flex justify-between">
+
+        <span className="text-sm font-medium">
+          Profile Completion
+        </span>
+
+        <span className="text-sm font-semibold text-cyan-600">
+          20%
+        </span>
+
+      </div>
+
+      <div className="h-3 rounded-full bg-slate-200">
+
+        <div
+          className="h-3 rounded-full bg-cyan-600"
+          style={{ width: "20%" }}
+        />
+
+      </div>
+
+      <Button
+        type="button"
+        className="mt-5 w-full"
+      >
+
+            Edit Profile
+      </Button>
+
+       <input
+          type="file"
+          accept="image/*"
+          onChange={handlePhotoUpload}
+          className="mt-3 w-full text-sm"
+      />
+
+    </div>
+
+  </div>
+
+</Card>
+
       <Card className="p-8">
 
         <form
@@ -175,6 +282,63 @@ function StudentProfile() {
                 onChange={handleChange}
                 placeholder="Enter your phone number"
               />
+
+              <Input
+  label="Date of Birth"
+  type="date"
+  name="dateOfBirth"
+  value={formData.dateOfBirth}
+  onChange={handleChange}
+/>
+
+<Input
+  label="Gender"
+  name="gender"
+  value={formData.gender}
+  onChange={handleChange}
+  placeholder="Male / Female / Other"
+/>
+
+<Input
+  label="Address"
+  name="address"
+  value={formData.address}
+  onChange={handleChange}
+  placeholder="Enter your address"
+/>
+
+<Input
+  label="City"
+  name="city"
+  value={formData.city}
+  onChange={handleChange}
+  placeholder="Enter city"
+/>
+
+<Input
+  label="State"
+  name="state"
+  value={formData.state}
+  onChange={handleChange}
+  placeholder="Enter state"
+/>
+
+<Input
+  label="Country"
+  name="country"
+  value={formData.country}
+  onChange={handleChange}
+  placeholder="India"
+/>
+
+<Input
+  label="Pincode"
+  name="pincode"
+  value={formData.pincode}
+  onChange={handleChange}
+  placeholder="462001"
+/>
+
 
             </div>
 
