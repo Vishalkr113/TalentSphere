@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import DashboardLayout from "./DashboardLayout";
 import Card from "./ui/Card";
@@ -41,7 +41,47 @@ function SkillAssessment() {
 
   const [isFinished, setIsFinished] = useState(false);
 
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(60);
+
+    useEffect(() => {
+
+  if (!selected || isFinished) return;
+
+  if (timeLeft === 0) {
+
+    if (currentQuestion < questions.length - 1) {
+
+      setCurrentQuestion((prev) => prev + 1);
+
+      setSelectedAnswer("");
+
+      setTimeLeft(60);
+
+    } else {
+
+      setIsFinished(true);
+
+    }
+
+    return;
+
+  }
+
+  const timer = setTimeout(() => {
+
+    setTimeLeft((prev) => prev - 1);
+
+  }, 1000);
+
+  return () => clearTimeout(timer);
+
+}, [
+  timeLeft,
+  currentQuestion,
+  selected,
+  isFinished,
+  questions.length,
+]);
 
   return (
 
@@ -80,6 +120,7 @@ function SkillAssessment() {
   setSelectedAnswer("");
   setScore(0);
   setIsFinished(false);
+  setTimeLeft(60); 
 }}
   >
 
@@ -93,38 +134,6 @@ function SkillAssessment() {
 
       </div>
 
-    <div className="mb-6">
-
-  <div className="flex items-center justify-between">
-
-    <p className="text-sm font-medium text-slate-600">
-
-      Question {currentQuestion + 1} of {questions.length}
-
-    </p>
-
-    <p className="text-sm font-medium text-cyan-600">
-
-      {Math.round(
-        ((currentQuestion + 1) / questions.length) * 100
-      )}%
-
-    </p>
-
-  </div>
-
-  <div className="mt-2 h-2 w-full rounded-full bg-slate-200">
-
-    <div
-      className="h-2 rounded-full bg-cyan-600 transition-all duration-500"
-      style={{
-        width: `${((currentQuestion + 1) / questions.length) * 100}%`,
-      }}
-    />
-
-  </div>
-
-</div>
        
     {selected && !isFinished && (
 
@@ -162,6 +171,9 @@ function SkillAssessment() {
   </div>
 
 </div>
+     <p className="mt-4 text-center text-lg font-semibold text-red-500">
+  ⏱ Time Left : {timeLeft}s
+    </p>
 
     <h3 className="text-2xl font-semibold mb-6">
       {questions[currentQuestion].question}
@@ -209,6 +221,8 @@ function SkillAssessment() {
 
       setSelectedAnswer("");
 
+      setTimeLeft(60);
+
     } else {
 
       setIsFinished(true);
@@ -224,7 +238,9 @@ function SkillAssessment() {
 
   </Card>
 )}
- 
+   
+   {/*  Results */}
+
  {isFinished && (
 
   <Card className="mt-8 p-8">
@@ -267,6 +283,19 @@ function SkillAssessment() {
 
     </p>
 
+    <p className="mt-6 text-lg">
+
+        Category :
+
+    <strong>
+
+    {" "}
+    {selected.toUpperCase()}
+
+    </strong>
+
+    </p>
+
     <p className="mt-6 text-slate-600">
 
       Keep practicing to improve your skills.
@@ -277,11 +306,13 @@ function SkillAssessment() {
 
     <Button
       className="mt-6"
-      onClick={() => {
-        setCurrentQuestion(0);
-        setSelectedAnswer("");
-        setScore(0);
-        setIsFinished(false);
+        onClick={() => {
+          setSelected("");
+          setCurrentQuestion(0);
+          setSelectedAnswer("");
+          setScore(0);
+          setIsFinished(false);
+          setTimeLeft(60);
    }}
     >
         Retake Test

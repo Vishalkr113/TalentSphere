@@ -20,7 +20,7 @@ import ResumeHome from "./components/ResumeHome";
 import ResumeBuilder from "./components/ResumeBuilder";
 
 import SkillAssessment from "./components/SkillAssessment";
-
+import CodingAssessment from "./components/CodingAssessment";
 
 function App() {
   return (
@@ -86,7 +86,14 @@ function App() {
     </ProtectedRoute>
   }
 />
-
+ <Route
+  path="/student/coding-assessment"
+  element={
+    <ProtectedRoute>
+      <CodingAssessment />
+    </ProtectedRoute>
+  }
+/>
       {/* Institute */}
 
       <Route
