@@ -11,6 +11,11 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import ForgotPassword from "./components/ForgotPassword";
 
+import StudentDashboard from "./components/StudentDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import ProfessionalDashboard from "./components/ProfessionalDashboard";
+import InstituteDashboard from "./components/InstituteDashboard";
+
 function App() {
   return (
     <Routes>
@@ -28,18 +33,27 @@ function App() {
         path="/portal"
         element={<PortalSelection />}
       />
-
       {/* Student */}
 
-      <Route
-        path="/student/login"
-        element={<Login />}
-      />
+<Route
+  path="/student/login"
+  element={<Login />}
+/>
 
-      <Route
-        path="/student/register"
-        element={<Register />}
-      />
+<Route
+  path="/student/register"
+  element={<Register />}
+/>
+
+<Route
+  path="/student/dashboard"
+  element={
+    <ProtectedRoute>
+      <StudentDashboard />
+    </ProtectedRoute>
+  }
+/>
+
 
       {/* Institute */}
 
@@ -51,6 +65,14 @@ function App() {
       <Route
         path="/institute/register"
         element={<Register />}
+      />
+      <Route
+        path="/institute/dashboard"
+        element={
+          <ProtectedRoute>
+            <InstituteDashboard />
+          </ProtectedRoute>
+        }
       />
 
       {/* Professional */}
@@ -64,6 +86,14 @@ function App() {
         path="/professional/register"
         element={<Register />}
       />
+       <Route
+        path="/professional/dashboard"
+        element={
+          <ProtectedRoute>
+            <ProfessionalDashboard />
+          </ProtectedRoute>
+     }
+        />
 
       {/* Forgot Password */}
 
