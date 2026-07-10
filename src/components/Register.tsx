@@ -28,8 +28,8 @@ function Register() {
     role === "high-school-student"
       ? "High School Student"
       : role === "college-student"
-      ? "College Student"
-      : "Working Professional";
+        ? "College Student"
+        : "Working Professional";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -106,7 +106,7 @@ function Register() {
 
       setError(
         result.message ??
-          "Registration failed."
+        "Registration failed."
       );
 
       return;
@@ -114,7 +114,7 @@ function Register() {
 
     setSuccess(
       result.message ??
-        "Account created successfully."
+      "Account created successfully."
     );
 
     setName("");

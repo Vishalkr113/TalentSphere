@@ -32,16 +32,15 @@ function PortalTabs({
           onClick={() =>
             setRole(
               tab.id as
-                | "student"
-                | "professional"
-                | "institute"
+              | "student"
+              | "professional"
+              | "institute"
             )
           }
-          className={`flex-1 rounded-lg py-3 text-sm font-semibold transition ${
-            role === tab.id
-              ? "bg-cyan-600 text-white shadow"
-              : "text-slate-600 hover:bg-white"
-          }`}
+          className={`flex-1 rounded-lg py-3 text-sm font-semibold transition ${role === tab.id
+            ? "bg-cyan-600 text-white shadow"
+            : "text-slate-600 hover:bg-white"
+            }`}
         >
           {tab.label}
         </button>

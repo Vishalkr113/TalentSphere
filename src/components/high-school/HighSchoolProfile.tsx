@@ -1,167 +1,432 @@
-import { useState } from "react";
-import { Save } from "lucide-react";
+import { useEffect, useState } from "react";
+
 import { useAuth } from "../../contexts/AuthContext";
-import Input from "../ui/Input";
+
+import ProfileView from "../common/Profile/ProfileView";
+import HighSchoolProfileForm from "./HighSchoolProfileForm";
+
+import type { HighSchoolProfile as HighSchoolProfileType } from "../../types/profile";
 
 function HighSchoolProfile() {
+
   const { user } = useAuth();
 
-  const [formData, setFormData] = useState({
-    fullName: user?.name || "",
-    email: user?.email || "",
-    school: "",
-    class: "",
-    board: "",
-    dob: "",
-    gender: "",
-    parentName: "",
-    parentMobile: "",
-    city: "",
-    state: "",
-    careerGoal: "",
-  });
+  const [isEditing, setIsEditing] =
+    useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement
-    >
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+  const [profile, setProfile] =
+    useState<HighSchoolProfileType>({
+      profileImage: null,
+
+      fullName: user?.name || "",
+
+      email: user?.email || "",
+
+      mobile: "",
+
+      dob: "",
+
+      gender: null,
+
+      bloodGroup: null,
+
+      school: "",
+
+      class: null,
+
+      board: null,
+
+      medium: "",
+
+      rollNumber: "",
+
+      admissionYear: "",
+
+      percentage: "",
+
+      parent: {
+
+        parentName: "",
+
+        parentMobile: "",
+
+        parentEmail: "",
+
+        occupation: "",
+
+      },
+
+      address: {
+
+        country: "IN",
+
+        state: "",
+
+        district: "",
+
+        city: "",
+
+        pinCode: "",
+
+      },
+
+      careerGoal: null,
+
+      stream: null,
+
+      favoriteSubject: null,
+
+      weakSubject: null,
+
+      skills: [],
+
+      hobbies: [],
+
+      languages: [],
+
+      lastUpdated: "",
+
     });
-  };
 
-  const handleSave = () => {
+  useEffect(() => {
+
+    const savedProfile =
+      localStorage.getItem(
+        "highSchoolProfile"
+      );
+
+    if (savedProfile) {
+
+      setProfile(
+        JSON.parse(savedProfile)
+      );
+
+    }
+
+  }, []);
+
+  const handleSave = (
+    data: HighSchoolProfileType
+  ) => {
+
+    const updatedProfile = {
+
+      ...data,
+
+      lastUpdated:
+        new Date().toLocaleString(),
+
+    };
+
+    setProfile(updatedProfile);
+
     localStorage.setItem(
+
       "highSchoolProfile",
-      JSON.stringify(formData)
+
+      JSON.stringify(updatedProfile)
+
     );
 
-    alert("Profile Saved Successfully");
+    setIsEditing(false);
+
   };
 
+  const handleCancel = () => {
+
+    setIsEditing(false);
+
+  };
+
+  if (isEditing) {
+
+    return (
+
+      <HighSchoolProfileForm
+
+        initialData={profile}
+
+        onSave={handleSave}
+
+        onCancel={handleCancel}
+
+      />
+
+    );
+
+  }
+
   return (
-    <div className="rounded-3xl bg-white p-8 shadow-sm">
 
-      <h1 className="text-3xl font-bold text-slate-900">
-        My Profile
-      </h1>
+    <ProfileView
 
-      <p className="mt-2 text-slate-500">
-        Complete your profile information.
-      </p>
+      profileImage={
+        profile.profileImage
+      }
 
-      <div className="mt-10 grid gap-6 md:grid-cols-2">
+      name={profile.fullName}
 
-        <Input
-          label="Full Name"
-          name="fullName"
-          value={formData.fullName}
-          onChange={handleChange}
-        />
+      email={profile.email}
 
-        <Input
-          label="Email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-        />
+      phone={profile.mobile}
 
-        <Input
-          label="School Name"
-          name="school"
-          value={formData.school}
-          onChange={handleChange}
-        />
+      role="High School Student"
 
-        <select
-          name="class"
-          value={formData.class}
-          onChange={handleChange}
-          className="rounded-xl border border-slate-300 p-3"
-        >
-          <option value="">Select Class</option>
-          <option>9</option>
-          <option>10</option>
-          <option>11</option>
-          <option>12</option>
-        </select>
+      completion={85}
 
-        <select
-          name="board"
-          value={formData.board}
-          onChange={handleChange}
-          className="rounded-xl border border-slate-300 p-3"
-        >
-          <option value="">Select Board</option>
-          <option>CBSE</option>
-          <option>ICSE</option>
-          <option>BSEB</option>
-          <option>UP Board</option>
-          <option>MP Board</option>
-          <option>RBSE</option>
-          <option>JAC</option>
-          <option>HBSE</option>
-          <option>PSEB</option>
-          <option>Maharashtra Board</option>
-        </select>
+      lastUpdated={
+        profile.lastUpdated
+      }
 
-        <Input
-          label="Date of Birth"
-          type="date"
-          name="dob"
-          value={formData.dob}
-          onChange={handleChange}
-        />
+      dob={profile.dob}
 
-        <Input
-          label="Parent Name"
-          name="parentName"
-          value={formData.parentName}
-          onChange={handleChange}
-        />
+      address={`${profile.address.city}, ${profile.address.state}, ${profile.address.country}`}
 
-        <Input
-          label="Parent Mobile"
-          name="parentMobile"
-          value={formData.parentMobile}
-          onChange={handleChange}
-        />
+      organization={
+        profile.school
+      }
 
-        <Input
-          label="City"
-          name="city"
-          value={formData.city}
-          onChange={handleChange}
-        />
+      designation={`Class ${profile.class}`}
 
-        <Input
-          label="State"
-          name="state"
-          value={formData.state}
-          onChange={handleChange}
-        />
+      onEdit={() =>
+        setIsEditing(true)
+      }
 
-        <Input
-          label="Career Goal"
-          name="careerGoal"
-          value={formData.careerGoal}
-          onChange={handleChange}
-        />
+    >
+
+      <div className="grid gap-8 md:grid-cols-2">
+
+        <div>
+
+          <h3 className="mb-4 text-xl font-bold">
+
+            Academic Information
+
+          </h3>
+
+          <div className="space-y-3">
+
+            <p>
+
+              <strong>
+
+                School :
+
+              </strong>{" "}
+
+              {profile.school ||
+                "-"}
+
+            </p>
+
+            <p>
+
+              <strong>
+
+                Board :
+
+              </strong>{" "}
+
+              {profile.board?.label || "-"}
+            </p>
+
+            <p>
+
+              <strong>
+
+                Medium :
+
+              </strong>{" "}
+
+              {profile.medium ||
+                "-"}
+
+            </p>
+
+            <p>
+
+              <strong>
+
+                Percentage :
+
+              </strong>{" "}
+
+              {profile.percentage ||
+                "-"}
+
+            </p>
+
+          </div>
+
+        </div>
+
+        <div>
+
+          <h3 className="mb-4 text-xl font-bold">
+
+            Career Details
+
+          </h3>
+
+          <div className="space-y-3">
+
+            <p>
+
+              <strong>
+
+                Dream Career :
+
+              </strong>{" "}
+
+              {profile.careerGoal?.label || "-"}
+            </p>
+
+            <p>
+
+              <strong>
+
+                Stream :
+
+              </strong>{" "}
+
+              {profile.stream?.label || "-"}
+
+            </p>
+
+            <p>
+
+              <strong>
+
+                Favorite Subject :
+
+              </strong>{" "}
+
+              {profile.favoriteSubject?.label || "-"}
+
+            </p>
+
+            <p>
+
+              <strong>
+
+                Weak Subject :
+
+              </strong>{" "}
+
+              {profile.weakSubject?.label || "-"}
+
+            </p>
+
+          </div>
+
+        </div>
+
+        <div>
+
+          <h3 className="mb-4 text-xl font-bold">
+
+            Parent Details
+
+          </h3>
+
+          <div className="space-y-3">
+
+            <p>
+
+              <strong>
+
+                Parent Name :
+
+              </strong>{" "}
+
+              {profile.parent
+                .parentName ||
+                "-"}
+
+            </p>
+
+            <p>
+
+              <strong>
+
+                Mobile :
+
+              </strong>{" "}
+
+              {profile.parent
+                .parentMobile ||
+                "-"}
+
+            </p>
+
+            <p>
+
+              <strong>
+
+                Occupation :
+
+              </strong>{" "}
+
+              {profile.parent
+                .occupation ||
+                "-"}
+
+            </p>
+
+          </div>
+
+        </div>
+
+        <div>
+
+          <h3 className="mb-4 text-xl font-bold">
+
+            Skills
+
+          </h3>
+
+          <div className="flex flex-wrap gap-3">
+
+            {profile.skills.length >
+
+            0 ? (
+
+              profile.skills.map(
+
+                (skill) => (
+
+                  <span
+                    key={skill.value}
+                    className="rounded-full bg-cyan-100 px-4 py-2 text-sm font-medium text-cyan-700"
+                  >
+
+                    {skill.label}
+                  </span>
+
+                )
+
+              )
+
+            ) : (
+
+              <p>
+
+                No Skills Added
+
+              </p>
+
+            )}
+
+          </div>
+
+        </div>
 
       </div>
 
-      <button
-        onClick={handleSave}
-        className="mt-10 flex items-center gap-2 rounded-xl bg-cyan-600 px-6 py-3 font-semibold text-white hover:bg-cyan-700"
-      >
-        <Save size={18} />
-        Save Profile
-      </button>
+    </ProfileView>
 
-    </div>
   );
+
 }
 
 export default HighSchoolProfile;

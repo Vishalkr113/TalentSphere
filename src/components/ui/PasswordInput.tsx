@@ -34,18 +34,17 @@ const PasswordInput = forwardRef<
         <label className="block text-sm font-medium text-slate-700">
           {label}
         </label>
+  < div className="relative" >
 
-        <div className="relative">
-
-          <input
-            ref={ref}
-            {...props}
-            type={
-              showPassword
-                ? "text"
-                : "password"
-            }
-            className={`
+    <input
+      ref={ref}
+      {...props}
+      type={
+        showPassword
+          ? "text"
+          : "password"
+      }
+      className={`
               w-full
               rounded-xl
               border
@@ -62,42 +61,43 @@ const PasswordInput = forwardRef<
               focus:border-cyan-500
               focus:ring-4
               focus:ring-cyan-100
-              ${
-                error
-                  ? "border-red-500 focus:border-red-500 focus:ring-red-100"
-                  : ""
-              }
+              ${error
+          ? "border-red-500 focus:border-red-500 focus:ring-red-100"
+          : ""
+        }
               ${className}
             `}
-          />
+    />
 
-          <button
-            type="button"
-            onClick={() =>
-              setShowPassword(
-                !showPassword
-              )
-            }
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-cyan-600"
-          >
-            {showPassword ? (
-              <EyeOff size={20} />
-            ) : (
-              <Eye size={20} />
-            )}
-          </button>
+    <button
+      type="button"
+      onClick={() =>
+        setShowPassword(
+          !showPassword
+        )
+      }
+      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-cyan-600"
+    >
+      {showPassword ? (
+        <EyeOff size={20} />
+      ) : (
+        <Eye size={20} />
+      )}
+    </button>
 
-        </div>
+  </div >
 
-        {error && (
-          <p className="text-sm text-red-500">
-            {error}
-          </p>
-        )}
+{
+  error && (
+    <p className="text-sm text-red-500">
+      {error}
+    </p>
+  )
+}
 
-      </div>
+      </div >
     );
-  }
+}
 );
 
 PasswordInput.displayName =

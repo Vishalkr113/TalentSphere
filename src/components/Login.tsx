@@ -31,8 +31,8 @@ function Login() {
     role === "high-school-student"
       ? "High School Student"
       : role === "college-student"
-      ? "College Student"
-      : "Working Professional";
+        ? "College Student"
+        : "Working Professional";
 
   const [email, setEmail] =
     useState("");
@@ -83,7 +83,7 @@ function Login() {
 
       setError(
         result.message ??
-          "Login failed."
+        "Login failed."
       );
 
       return;
@@ -208,9 +208,9 @@ function Login() {
 
         </p>
 
-      </Card>
+      </Card >
 
-    </main>
+    </main >
   );
 }
 

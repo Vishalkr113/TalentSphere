@@ -86,17 +86,17 @@ function ResumeHome() {
           </p>
 
           <label htmlFor="resume-upload" className="hidden">
-             Upload Resume
+            Upload Resume
           </label>
 
-        <input
-          id="resume-upload"
-          ref={fileInputRef}
-          type="file"
-          accept=".pdf,.doc,.docx"
-          className="hidden"
-          onChange={handleFileChange}
-        />
+          <input
+            id="resume-upload"
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.doc,.docx"
+            className="hidden"
+            onChange={handleFileChange}
+          />
 
           <Button
             className="mt-8 w-full"
@@ -107,7 +107,7 @@ function ResumeHome() {
 
         </Card>
 
-      </div>
+      </div >
 
       <Card className="mt-8 p-8">
 
@@ -133,7 +133,7 @@ function ResumeHome() {
 
       </Card>
 
-    </DashboardLayout>
+    </DashboardLayout >
   );
 }
 

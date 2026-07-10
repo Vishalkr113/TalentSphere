@@ -1,7 +1,7 @@
 import { ChevronDown } from "lucide-react";
 
 import Card from "./ui/Card";
-import { faqs } from "../data/faq";
+import { faqs } from "../data/home/faq";
 
 function FAQ() {
   return (

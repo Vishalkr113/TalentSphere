@@ -8,7 +8,7 @@ import Button from "./ui/Button";
 function StudentProfile() {
 
   const [formData, setFormData] = useState({
-    
+
     profilePhoto: "",
 
     fullName: "",
@@ -23,7 +23,7 @@ function StudentProfile() {
     state: "",
     country: "",
     pincode: "",
-    
+
 
     college: "",
     branch: "",
@@ -36,33 +36,33 @@ function StudentProfile() {
   });
 
 
-  
+
   const [error, setError] = useState("");
 
   const [success, setSuccess] = useState("");
 
   const handlePhotoUpload = (
-  e: React.ChangeEvent<HTMLInputElement>
-) => {
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
 
-  const file = e.target.files?.[0];
+    const file = e.target.files?.[0];
 
-  if (!file) return;
+    if (!file) return;
 
-  const reader = new FileReader();
+    const reader = new FileReader();
 
-  reader.onloadend = () => {
+    reader.onloadend = () => {
 
-    setFormData((prev) => ({
-      ...prev,
-      profilePhoto: reader.result as string,
-    }));
+      setFormData((prev) => ({
+        ...prev,
+        profilePhoto: reader.result as string,
+      }));
+
+    };
+
+    reader.readAsDataURL(file);
 
   };
-
-  reader.readAsDataURL(file);
-
-};
 
   useEffect(() => {
 
@@ -165,90 +165,90 @@ function StudentProfile() {
 
       </div>
 
-       <Card className="mb-8">
+      <Card className="mb-8">
 
-  <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
 
-    {/* Left Side */}
+          {/* Left Side */}
 
-    <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6">
 
-      <img
-        src={
-          formData.profilePhoto ||
-          "https://placehold.co/120x120"}
+            <img
+              src={
+                formData.profilePhoto ||
+                "https://placehold.co/120x120"}
               alt="Profile"
               className="h-28 w-28 rounded-full border-4 border-cyan-500 object-cover"
-      />
+            />
 
-      <div>
+            <div>
 
-        <h3 className="text-2xl font-bold text-slate-900">
-          {formData.fullName || "Student Name"}
-        </h3>
+              <h3 className="text-2xl font-bold text-slate-900">
+                {formData.fullName || "Student Name"}
+              </h3>
 
-        <p className="mt-1 text-slate-500">
-          Student ID : TS-2026-001
-        </p>
+              <p className="mt-1 text-slate-500">
+                Student ID : TS-2026-001
+              </p>
 
-      </div>
+            </div>
 
-    </div>
+          </div>
 
-    {/* Right Side */}
+          {/* Right Side */}
 
-    <div className="w-full md:w-72">
+          <div className="w-full md:w-72">
 
-      <div className="mb-2 flex justify-between">
+            <div className="mb-2 flex justify-between">
 
-        <span className="text-sm font-medium">
-          Profile Completion
-        </span>
+              <span className="text-sm font-medium">
+                Profile Completion
+              </span>
 
-        <span className="text-sm font-semibold text-cyan-600">
-          20%
-        </span>
+              <span className="text-sm font-semibold text-cyan-600">
+                20%
+              </span>
 
-      </div>
+            </div>
 
-      <div className="h-3 rounded-full bg-slate-200">
+            <div className="h-3 rounded-full bg-slate-200">
 
-        <div
-          className="h-3 rounded-full bg-cyan-600"
-          style={{ width: "20%" }}
-        />
+              <div
+                className="h-3 rounded-full bg-cyan-600"
+                style={{ width: "20%" }}
+              />
 
-      </div>
+            </div>
 
-      <Button
-        type="button"
-        className="mt-5 w-full"
-      >
+            <Button
+              type="button"
+              className="mt-5 w-full"
+            >
 
-            Edit Profile
-      </Button>
+              Edit Profile
+            </Button>
 
-       <input
-          type="file"
-          accept="image/*"
-          onChange={handlePhotoUpload}
-          className="mt-3 w-full text-sm"
-      />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoUpload}
+              className="mt-3 w-full text-sm"
+            />
 
-    </div>
+          </div>
 
-  </div>
+        </div>
 
-</Card>
+      </Card>
 
       <Card className="p-8">
 
         <form
-            onSubmit={handleSubmit}
-            className="space-y-8"
+          onSubmit={handleSubmit}
+          className="space-y-8"
         >
-            
-                  {/* Personal Information */}
+
+          {/* Personal Information */}
 
           <div>
 
@@ -283,7 +283,7 @@ function StudentProfile() {
                 placeholder="Enter your phone number"
               />
 
-              
+
 
 
             </div>
