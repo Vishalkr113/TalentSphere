@@ -94,15 +94,24 @@ function HighSchoolProfile() {
       localStorage.getItem(
         "highSchoolProfile"
       );
+      if (savedProfile) {
+  const data = JSON.parse(savedProfile);
 
-    if (savedProfile) {
+  setProfile({
+    ...profile,
+    ...data,
+    address: {
+      country: "IN",
+      state: "",
+      district: "",
+      city: "",
+      pinCode: "",
+      ...(data.address || {}),
+    },
+  });
+}
 
-      setProfile(
-        JSON.parse(savedProfile)
-      );
-
-    }
-
+   
   }, []);
 
   const handleSave = (
@@ -180,13 +189,13 @@ function HighSchoolProfile() {
 
       dob={profile.dob}
 
-      address={`${profile.address.city}, ${profile.address.state}, ${profile.address.country}`}
+      address={`${profile.address?.city ?? ""}, ${profile.address?.state ?? ""}, ${profile.address?.country ?? ""}`}
 
       organization={
         profile.school
       }
 
-      designation={`Class ${profile.class}`}
+      designation={`Class ${profile.class?.value ?? "-"}`}
 
       onEdit={() =>
         setIsEditing(true)
