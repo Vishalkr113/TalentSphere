@@ -1,14 +1,10 @@
 import {
-  Brain,
-  FileText,
   Briefcase,
   GraduationCap,
   School,
-  Code2,
 } from "lucide-react";
 
 import Card from "./ui/Card";
-import Button from "./ui/Button";
 
 import { Link } from "react-router-dom";
 
@@ -36,45 +32,6 @@ const userTypes = [
     icon: Briefcase,
     login: "/working-professional/login",
     register: "/working-professional/register",
-  },
-];
-
-const features = [
-  {
-    title: "Career Explorer",
-    description:
-      "Discover career opportunities based on your interests and goals.",
-    icon: Briefcase,
-  },
-  {
-    title: "AI Resume Builder",
-    description:
-      "Create professional ATS-friendly resumes in just a few minutes.",
-    icon: FileText,
-  },
-  {
-    title: "Coding Assessment",
-    description:
-      "Practice coding challenges and improve your problem-solving skills.",
-    icon: Code2,
-  },
-  {
-    title: "Mock Interview",
-    description:
-      "Take AI-powered mock interviews with instant feedback.",
-    icon: GraduationCap,
-  },
-  {
-    title: "Learning Roadmap",
-    description:
-      "Follow a personalized roadmap to achieve your career goals.",
-    icon: School,
-  },
-  {
-    title: "AI Career Advisor",
-    description:
-      "Receive personalized AI recommendations for your career journey.",
-    icon: Brain,
   },
 ];
 
@@ -138,46 +95,46 @@ function About() {
           <div className="mt-12 grid gap-8 md:grid-cols-3">
 
             {userTypes.map((item) => {
-          
-            const Icon = item.icon;
 
-             return (
-              <Card
-                   key={item.title}
-                   className="text-center transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
-              >
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-600">
-            <Icon size={30} />
-           </div>
+              const Icon = item.icon;
 
-              <h4 className="mt-6 text-xl font-bold text-slate-900">
-              {item.title}
-               </h4>
+              return (
+                <Card
+                  key={item.title}
+                  className="text-center transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
+                >
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-600">
+                    <Icon size={30} />
+                  </div>
 
-                 <p className="mt-4 min-h-[90px] leading-7 text-slate-600">
-                 {item.description}
-             </p>
+                  <h4 className="mt-6 text-xl font-bold text-slate-900">
+                    {item.title}
+                  </h4>
 
-               <div className="mt-8 flex gap-3">
+                  <p className="mt-4 min-h-[90px] leading-7 text-slate-600">
+                    {item.description}
+                  </p>
 
-              <Link
-                   to={item.login}
-                   className="flex-1 rounded-xl bg-cyan-600 px-4 py-3 text-center font-semibold text-white transition hover:bg-cyan-700"
-                   >
-                        Login
-                      </Link>
+                  <div className="mt-8 flex gap-3">
 
                     <Link
-                   to={item.register}
-                  className="flex-1 rounded-xl border border-cyan-600 px-4 py-3 text-center font-semibold text-cyan-600 transition hover:bg-cyan-50"
-                     >
-                    Register
-                 </Link>
+                      to={item.login}
+                      className="flex-1 rounded-xl bg-cyan-600 px-4 py-3 text-center font-semibold text-white transition hover:bg-cyan-700"
+                    >
+                      Login
+                    </Link>
 
-            </div>
-          </Card>
-         );
-          })}
+                    <Link
+                      to={item.register}
+                      className="flex-1 rounded-xl border border-cyan-600 px-4 py-3 text-center font-semibold text-cyan-600 transition hover:bg-cyan-50"
+                    >
+                      Register
+                    </Link>
+
+                  </div>
+                </Card>
+              );
+            })}
 
           </div>
 

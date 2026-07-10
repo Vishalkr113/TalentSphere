@@ -283,61 +283,7 @@ function StudentProfile() {
                 placeholder="Enter your phone number"
               />
 
-              <Input
-  label="Date of Birth"
-  type="date"
-  name="dateOfBirth"
-  value={formData.dateOfBirth}
-  onChange={handleChange}
-/>
-
-<Input
-  label="Gender"
-  name="gender"
-  value={formData.gender}
-  onChange={handleChange}
-  placeholder="Male / Female / Other"
-/>
-
-<Input
-  label="Address"
-  name="address"
-  value={formData.address}
-  onChange={handleChange}
-  placeholder="Enter your address"
-/>
-
-<Input
-  label="City"
-  name="city"
-  value={formData.city}
-  onChange={handleChange}
-  placeholder="Enter city"
-/>
-
-<Input
-  label="State"
-  name="state"
-  value={formData.state}
-  onChange={handleChange}
-  placeholder="Enter state"
-/>
-
-<Input
-  label="Country"
-  name="country"
-  value={formData.country}
-  onChange={handleChange}
-  placeholder="India"
-/>
-
-<Input
-  label="Pincode"
-  name="pincode"
-  value={formData.pincode}
-  onChange={handleChange}
-  placeholder="462001"
-/>
+              
 
 
             </div>

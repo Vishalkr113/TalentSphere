@@ -1,17 +1,17 @@
 import { Outlet } from "react-router-dom";
 
-import CollegeSidebar from "./CollegeSidebar";
-import CollegeTopbar from "./CollegeTopbar";
+import ProfessionalSidebar from "./ProfessionalSidebar";
+import ProfessionalTopbar from "./ProfessionalTopbar";
 
-function CollegeLayout() {
+function ProfessionalLayout() {
   return (
     <div className="flex min-h-screen bg-slate-100">
 
-      <CollegeSidebar />
+      <ProfessionalSidebar />
 
       <div className="ml-72 flex-1">
 
-        <CollegeTopbar />
+        <ProfessionalTopbar />
 
         <main className="p-8">
 
@@ -25,4 +25,4 @@ function CollegeLayout() {
   );
 }
 
-export default CollegeLayout;
+export default ProfessionalLayout;
