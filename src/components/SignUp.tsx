@@ -18,7 +18,7 @@ import {
   type UserRole,
 } from "../services/authService";
 
-function Register() {
+function SignUp() {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,25 +33,14 @@ function Register() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] =
-    useState("");
-  const [
-    confirmPassword,
-    setConfirmPassword,
-  ] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const [error, setError] =
-    useState("");
-
-  const [success, setSuccess] =
-    useState("");
-
-  const handleRegister = (
-    e: React.FormEvent
-  ) => {
+  const handleSignUp = (e: React.FormEvent) => {
     e.preventDefault();
 
     setError("");
@@ -63,16 +52,12 @@ function Register() {
       !password.trim() ||
       !confirmPassword.trim()
     ) {
-      setError(
-        "Please fill in all required fields."
-      );
+      setError("Please fill in all required fields.");
       return;
     }
 
     if (!isValidEmail(email)) {
-      setError(
-        "Please enter a valid email address."
-      );
+      setError("Please enter a valid email address.");
       return;
     }
 
@@ -84,9 +69,7 @@ function Register() {
     }
 
     if (password !== confirmPassword) {
-      setError(
-        "Passwords do not match."
-      );
+      setError("Passwords do not match.");
       return;
     }
 
@@ -94,9 +77,7 @@ function Register() {
 
     const result = registerUser({
       name: name.trim(),
-      email: email
-        .trim()
-        .toLowerCase(),
+      email: email.trim().toLowerCase(),
       password,
       role,
     });
@@ -105,16 +86,14 @@ function Register() {
       setLoading(false);
 
       setError(
-        result.message ??
-        "Registration failed."
+        result.message ?? "Sign up failed."
       );
 
       return;
     }
 
     setSuccess(
-      result.message ??
-      "Account created successfully."
+      result.message ?? "Account created successfully."
     );
 
     setName("");
@@ -131,37 +110,30 @@ function Register() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-100 px-6 py-12">
-
       <Card className="w-full max-w-md p-8">
-
         <div className="flex justify-center">
           <Logo size="md" />
         </div>
 
         <div className="mt-8 text-center">
-
           <h1 className="text-3xl font-bold text-slate-900">
-            {title} Registration
+            {title} Sign Up
           </h1>
 
           <p className="mt-2 text-sm text-slate-600">
             Create your TalentSphere account.
           </p>
-
         </div>
 
         <form
-          onSubmit={handleRegister}
+          onSubmit={handleSignUp}
           className="mt-8 space-y-5"
         >
-
           <Input
             label="Full Name"
             placeholder="Enter your full name"
             value={name}
-            onChange={(e) =>
-              setName(e.target.value)
-            }
+            onChange={(e) => setName(e.target.value)}
           />
 
           <Input
@@ -169,18 +141,14 @@ function Register() {
             type="email"
             placeholder="Enter your email"
             value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <PasswordInput
             label="Password"
             placeholder="Create password"
             value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
+            onChange={(e) => setPassword(e.target.value)}
           />
 
           <PasswordInput
@@ -188,9 +156,7 @@ function Register() {
             placeholder="Confirm password"
             value={confirmPassword}
             onChange={(e) =>
-              setConfirmPassword(
-                e.target.value
-              )
+              setConfirmPassword(e.target.value)
             }
           />
 
@@ -213,28 +179,22 @@ function Register() {
           >
             {loading
               ? "Creating Account..."
-              : "Create Account"}
+              : "Sign Up"}
           </Button>
-
         </form>
 
         <p className="mt-8 text-center text-sm text-slate-600">
-
           Already have an account?{" "}
-
           <Link
             to={`/${role}/login`}
             className="font-semibold text-cyan-600 hover:underline"
           >
             Login
           </Link>
-
         </p>
-
       </Card>
-
     </main>
   );
 }
 
-export default Register;
+export default SignUp;

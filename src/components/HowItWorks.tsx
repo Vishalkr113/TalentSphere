@@ -10,7 +10,7 @@ const steps = [
   {
     title: "Create Account",
     description:
-      "Register as a Student, Institute or Professional to access your dedicated portal.",
+      "Sign Up as a Student, Institute or Professional to access your dedicated portal.",
     icon: UserPlus,
   },
   {

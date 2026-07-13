@@ -200,7 +200,7 @@ function Login() {
           Don't have an account?{" "}
 
           <Link
-            to={`/${role}/register`}
+            to={`/${role}/Sign Up`}
             className="font-semibold text-cyan-600 hover:underline"
           >
             Create Account

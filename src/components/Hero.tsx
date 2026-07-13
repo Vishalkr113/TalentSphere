@@ -3,173 +3,236 @@ import { CheckCircle } from "lucide-react";
 import Button from "./ui/Button";
 
 function Hero() {
-  return (
-    <section className="bg-slate-100">
+  const journeySteps = [
+    {
+      number: "✓",
+      title: "Build Your Profile",
+      description: "Tell us about your goals and interests",
+      status: "completed",
+    },
+    {
+      number: "2",
+      title: "Assess Your Skills",
+      description: "Understand your current strengths",
+      status: "current",
+    },
+    {
+      number: "3",
+      title: "Discover Career Paths",
+      description: "Explore suitable career opportunities",
+      status: "upcoming",
+    },
+    {
+      number: "4",
+      title: "Follow Your Roadmap",
+      description: "Learn with a clear development plan",
+      status: "upcoming",
+    },
+    {
+      number: "5",
+      title: "Track Your Growth",
+      description: "Monitor progress and career readiness",
+      status: "upcoming",
+    },
+  ];
 
-      <div className="mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl flex-col items-center justify-between gap-12 px-6 py-20 lg:flex-row">
+  return (
+    <section
+      id="home"
+      className="bg-slate-100"
+    >
+      <div className="mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl flex-col items-center justify-between gap-10 px-6 py-10 lg:flex-row">
 
         {/* Left */}
 
-        <div className="max-w-2xl">
-
-          <span className="rounded-full bg-cyan-100 px-4 py-2 text-sm font-semibold text-cyan-700">
+        <div className="w-full max-w-xl">
+          <span className="inline-flex rounded-full bg-cyan-100 px-3 py-1.5 text-xs font-semibold text-cyan-700">
             AI Career Development Platform
           </span>
 
-          <h1 className="mt-8 text-[38px] font-bold leading-tight text-slate-900 lg:text-[52px]">
+          <h1 className="mt-6 text-[34px] font-bold leading-[1.15] text-slate-900 md:text-[40px] lg:text-[46px]">
+            One Platform for
 
-                One Platform for
-
-          <span className="block text-cyan-600">
+            <span className="block text-cyan-600">
               High School Students,
-          </span>
+            </span>
 
-          <span className="block">
-            College Students
-          </span>
+            <span className="block">
+              College Students
+            </span>
 
-          <span className="block">
-            & Working Professionals
-          </span>
+            <span className="block">
+              & Working Professionals
+            </span>
           </h1>
-          <p className="mt-8 text-lg leading-8 text-slate-600">
 
-            TalentSphere Elevate is an AI-powered career development platform designed for
-             High School Students,College Students, 
-             and Working Professionals to learn, grow, and achieve their career goals.
+          <p className="mt-6 max-w-xl text-base leading-7 text-slate-600">
+            TalentSphere Elevate is an AI-powered career development
+            platform designed for High School Students, College Students,
+            and Working Professionals to learn, grow, and achieve their
+            career goals.
           </p>
 
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-
-            <div className="w-48">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="w-44">
               <Button>
                 Get Started
               </Button>
             </div>
 
-            <button className="rounded-xl border border-slate-300 px-6 py-3 font-semibold transition hover:bg-white">
+            <button className="rounded-xl border border-slate-300 px-5 py-3 text-sm font-semibold transition hover:bg-white">
               Learn More
             </button>
-
           </div>
 
-          <div className="mt-12 grid gap-4 sm:grid-cols-2">
-
+          <div className="mt-9 grid gap-3 sm:grid-cols-2">
             {[
-            "Career Roadmap",
-            "AI Resume Builder",
-            "Skill Assessment",
-            "Mock Interview",
+              "Career Roadmap",
+              "AI Resume Builder",
+              "Skill Assessment",
+              "Mock Interview",
             ].map((item) => (
-
               <div
                 key={item}
                 className="flex items-center gap-3"
               >
-
                 <CheckCircle
-                  size={20}
+                  size={18}
                   className="text-cyan-600"
                 />
 
-                <span className="font-medium text-slate-700">
+                <span className="text-sm font-medium text-slate-700">
                   {item}
                 </span>
-
               </div>
-
             ))}
-
           </div>
-
         </div>
 
-        {/* Right */}
+        {/* Right - How TalentSphere Works */}
 
-        <div className="flex w-full max-w-lg items-center justify-center">
+        <div className="flex w-full max-w-[460px] items-center justify-center">
+          <div className="relative w-full overflow-hidden rounded-[30px] border border-white/80 bg-white p-6 shadow-[0_24px_70px_rgba(15,23,42,0.12)]">
 
-          <div className="w-full rounded-3xl bg-white p-8 shadow-2xl border border-slate-200">
+            {/* Background Glow */}
 
-  <div className="flex items-center gap-3">
+            <div className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-cyan-300/30 blur-3xl" />
 
-    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-100 text-3xl">
-      🤖
-    </div>
+            <div className="pointer-events-none absolute -bottom-20 -left-16 h-44 w-44 rounded-full bg-violet-300/20 blur-3xl" />
 
-    <div>
-      <h3 className="text-xl font-bold text-slate-900">
-        TalentSphere AI
-      </h3>
+            {/* Header */}
 
-      <p className="text-sm text-slate-500">
-        Smart Career Assistant
-      </p>
-    </div>
+            <div className="relative flex items-start justify-between gap-4">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-cyan-600">
+                  HOW TALENTSPHERE WORKS
+                </span>
 
-  </div>
+                <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900">
+                  Build your career path ✨
+                </h2>
 
-  <div className="mt-8 space-y-4">
+                <p className="mt-1 text-sm leading-6 text-slate-500">
+                  From self-discovery to career growth in four simple steps.
+                </p>
+              </div>
 
-    <div className="rounded-2xl bg-cyan-50 p-4">
-      <h4 className="font-semibold text-cyan-700">
-        🎓 High School Student
-      </h4>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-violet-500 text-xl text-white shadow-lg">
+                ⚡
+              </div>
+            </div>
 
-      <p className="mt-2 text-sm text-slate-600">
-        Career Explorer • Subject Guidance • Scholarships
-      </p>
-    </div>
+            {/* Career Actions */}
 
-    <div className="rounded-2xl bg-blue-50 p-4">
-      <h4 className="font-semibold text-blue-700">
-        🎓 College Student
-      </h4>
+            <div className="relative mt-6 grid grid-cols-2 gap-3">
 
-      <p className="mt-2 text-sm text-slate-600">
-        Resume • Coding • Placement • Mock Interview
-      </p>
-    </div>
+              {/* Create Profile */}
 
-    <div className="rounded-2xl bg-violet-50 p-4">
-      <h4 className="font-semibold text-violet-700">
-        💼 Working Professional
-      </h4>
+              <div className="group rounded-2xl bg-cyan-50 p-4 transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-600 text-lg text-white shadow-sm">
+                  👤
+                </div>
 
-      <p className="mt-2 text-sm text-slate-600">
-        Career Growth • Promotion • AI Mentor
-      </p>
-    </div>
+                <h3 className="mt-4 font-bold text-slate-900">
+                  Create Your Profile
+                </h3>
 
-  </div>
+                <p className="mt-1 text-xs leading-5 text-slate-500">
+                  Tell us about your interests, skills and career goals.
+                </p>
+              </div>
 
-  <div className="mt-8 rounded-2xl bg-slate-100 p-5">
+              {/* Assess Skills */}
 
-    <div className="flex justify-between">
+              <div className="group rounded-2xl bg-blue-50 p-4 transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500 text-lg text-white shadow-sm">
+                  🎯
+                </div>
 
-      <span className="font-medium">
-        Career Readiness
-      </span>
+                <h3 className="mt-4 font-bold text-slate-900">
+                  Assess Your Skills
+                </h3>
 
-      <span className="font-bold text-cyan-600">
-        98%
-      </span>
+                <p className="mt-1 text-xs leading-5 text-slate-500">
+                  Understand your strengths through practical assessments.
+                </p>
+              </div>
 
-    </div>
+              {/* Discover Career Paths */}
 
-    <div className="mt-3 h-3 rounded-full bg-slate-300">
+              <div className="group rounded-2xl bg-violet-50 p-4 transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500 text-lg text-white shadow-sm">
+                  ✦
+                </div>
 
-      <div className="h-3 w-[98%] rounded-full bg-cyan-600"></div>
+                <h3 className="mt-4 font-bold text-slate-900">
+                  Discover Career Paths
+                </h3>
 
-    </div>
+                <p className="mt-1 text-xs leading-5 text-slate-500">
+                  Explore career options that match your profile.
+                </p>
+              </div>
 
-  </div>
+              {/* Follow Roadmap */}
 
-</div>
+              <div className="group rounded-2xl bg-emerald-50 p-4 transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 text-lg text-white shadow-sm">
+                  🚀
+                </div>
 
- </div>
+                <h3 className="mt-4 font-bold text-slate-900">
+                  Follow Your Roadmap
+                </h3>
 
+                <p className="mt-1 text-xs leading-5 text-slate-500">
+                  Learn, improve and move toward your career goals.
+                </p>
+              </div>
+
+            </div>
+
+            {/* Bottom CTA */}
+
+            <div className="relative mt-4 flex items-center justify-between rounded-2xl bg-slate-950 px-5 py-4 text-white">
+              <div>
+                <p className="text-xs text-slate-400">
+                  Your career journey
+                </p>
+
+                <p className="mt-1 text-sm font-bold">
+                  Starts with the right direction
+                </p>
+              </div>
+
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 text-lg shadow-lg">
+                →
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
-
     </section>
   );
 }
