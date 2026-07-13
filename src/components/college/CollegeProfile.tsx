@@ -37,7 +37,7 @@ function CollegeProfile() {
 
   const handleSave = () => {
     localStorage.setItem(
-      "collegeProfile",
+      `collegeProfile_${user?.email}`,
       JSON.stringify(formData)
     );
 

@@ -90,28 +90,27 @@ function HighSchoolProfile() {
 
   useEffect(() => {
 
-    const savedProfile =
-      localStorage.getItem(
-        "highSchoolProfile"
-      );
-      if (savedProfile) {
-  const data = JSON.parse(savedProfile);
+    const profileKey = `highSchoolProfile_${user?.email}`;
 
-  setProfile({
-    ...profile,
-    ...data,
-    address: {
-      country: "IN",
-      state: "",
-      district: "",
-      city: "",
-      pinCode: "",
-      ...(data.address || {}),
-    },
-  });
-}
+    const savedProfile = localStorage.getItem(profileKey);
+    if (savedProfile) {
+      const data = JSON.parse(savedProfile);
 
-   
+      setProfile({
+        ...profile,
+        ...data,
+        address: {
+          country: "IN",
+          state: "",
+          district: "",
+          city: "",
+          pinCode: "",
+          ...(data.address || {}),
+        },
+      });
+    }
+
+
   }, []);
 
   const handleSave = (
@@ -129,12 +128,11 @@ function HighSchoolProfile() {
 
     setProfile(updatedProfile);
 
+    const profileKey = `highSchoolProfile_${user?.email}`;
+
     localStorage.setItem(
-
-      "highSchoolProfile",
-
+      profileKey,
       JSON.stringify(updatedProfile)
-
     );
 
     setIsEditing(false);
@@ -398,7 +396,7 @@ function HighSchoolProfile() {
 
             {profile.skills.length >
 
-            0 ? (
+              0 ? (
 
               profile.skills.map(
 
