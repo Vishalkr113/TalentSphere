@@ -215,7 +215,7 @@ function AuthRoleModal({
 
     setSuccess(
       result.message ??
-        "Account created successfully."
+      "Account created successfully."
     );
 
     setPassword("");
@@ -251,7 +251,7 @@ function AuthRoleModal({
               <h2 className="text-3xl font-bold text-slate-900">
                 {currentMode === "login"
                   ? "Login to TalentSphere"
-                  : "Sign Up for TalentSphere"}
+                  : "signup for TalentSphere"}
               </h2>
 
               <p className="mt-3 text-slate-600">
@@ -300,7 +300,7 @@ function AuthRoleModal({
                 className="font-semibold text-cyan-600 hover:underline"
               >
                 {currentMode === "login"
-                  ? "Sign Up"
+                  ? "signup"
                   : "Login"}
               </button>
             </p>
@@ -324,7 +324,7 @@ function AuthRoleModal({
                 {selectedRoleTitle}{" "}
                 {currentMode === "login"
                   ? "Login"
-                  : "Sign Up"}
+                  : "signup"}
               </h2>
 
               <p className="mt-2 text-sm text-slate-600">
@@ -412,7 +412,7 @@ function AuthRoleModal({
                     : "Creating Account..."
                   : currentMode === "login"
                     ? "Login"
-                    : "Sign Up"}
+                    : "signup"}
               </Button>
             </form>
 

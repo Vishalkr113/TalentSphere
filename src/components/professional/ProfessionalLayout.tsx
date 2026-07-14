@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 
 import ProfessionalSidebar from "./ProfessionalSidebar";
 import ProfessionalTopbar from "./ProfessionalTopbar";
+import AIChatbot from "../AIChatbot";
 
 function ProfessionalLayout() {
   return (
@@ -21,6 +22,7 @@ function ProfessionalLayout() {
 
       </div>
 
+      <AIChatbot />
     </div>
   );
 }

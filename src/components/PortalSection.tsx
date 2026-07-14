@@ -46,8 +46,8 @@ function PortalSelection() {
 
   const mode = useMemo(() => {
     const params = new URLSearchParams(location.search);
-    return params.get("mode") === "Sign Up"
-      ? "Sign Up"
+    return params.get("mode") === "signup"
+      ? "signup"
       : "login";
   }, [location.search]);
 

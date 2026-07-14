@@ -10,7 +10,7 @@ const steps = [
   {
     title: "Create Account",
     description:
-      "Sign Up as a Student, Institute or Professional to access your dedicated portal.",
+      "signup as a Student, Institute or Professional to access your dedicated portal.",
     icon: UserPlus,
   },
   {
@@ -75,7 +75,7 @@ function HowItWorks() {
               >
 
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-600">
-                    <Icon size={28} />
+                  <Icon size={28} />
                 </div>
 
 

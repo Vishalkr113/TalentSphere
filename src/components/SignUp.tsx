@@ -103,9 +103,7 @@ function SignUp() {
 
     setLoading(false);
 
-    setTimeout(() => {
-      navigate(`/${role}/login`);
-    }, 1500);
+    navigate(`/${role}/login`);
   };
 
   return (
@@ -117,7 +115,7 @@ function SignUp() {
 
         <div className="mt-8 text-center">
           <h1 className="text-3xl font-bold text-slate-900">
-            {title} Sign Up
+            {title} signup
           </h1>
 
           <p className="mt-2 text-sm text-slate-600">
@@ -179,7 +177,7 @@ function SignUp() {
           >
             {loading
               ? "Creating Account..."
-              : "Sign Up"}
+              : "signup"}
           </Button>
         </form>
 

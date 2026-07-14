@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
+import AIChatbot from "./AIChatbot";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -27,6 +28,7 @@ function DashboardLayout({
 
       </div>
 
+      <AIChatbot />
     </div>
   );
 }

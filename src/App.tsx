@@ -14,6 +14,8 @@ import ForgotPassword from "./components/ForgotPassword";
 import HighSchoolLayout from "./components/high-school/HighSchoolLayout";
 import HighSchoolDashboard from "./components/high-school/HighSchoolDashboard";
 import HighSchoolProfile from "./components/high-school/HighSchoolProfile";
+import Assessment from "./components/high-school/Assessment";
+import AssessmentReports from "./components/high-school/AssessmentReports";
 import SubjectGuidance from "./components/high-school/SubjectGuidance";
 import CareerExplorer from "./components/high-school/CareerExplorer";
 import LearningRoadmap from "./components/high-school/LearningRoadmap";
@@ -23,6 +25,7 @@ import UpcomingExams from "./components/high-school/UpcomingExams";
 import Assignments from "./components/high-school/Assignments";
 import DailyGoal from "./components/high-school/DailyGoal";
 import Achievements from "./components/high-school/Achievements";
+import FinalGuidanceReport from "./components/high-school/FinalGuidanceReport";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Settings from "./components/common/Settings";
@@ -36,7 +39,7 @@ function App() {
         element={<Overview />}
       />
 
-      {/* Portal Selection */}
+      {/* Category Selection */}
       <Route
         path="/portal"
         element={<PortalSelection />}
@@ -53,7 +56,7 @@ function App() {
         element={<SignUp />}
       />
 
-      {/* High School Student Portal */}
+      {/* High School Student Category */}
       <Route
         path="/high-school-student"
         element={
@@ -85,6 +88,16 @@ function App() {
         <Route
           path="subject-guidance"
           element={<SubjectGuidance />}
+        />
+
+        <Route
+          path="assessment"
+          element={<Assessment />}
+        />
+
+        <Route
+          path="assessment-reports"
+          element={<AssessmentReports />}
         />
 
         <Route
@@ -125,6 +138,11 @@ function App() {
         <Route
           path="achievements"
           element={<Achievements />}
+        />
+
+        <Route
+          path="final-guidance"
+          element={<FinalGuidanceReport />}
         />
 
         <Route

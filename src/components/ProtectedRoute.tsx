@@ -23,24 +23,24 @@ function ProtectedRoute({
 
   if (!isAuthenticated) {
 
-   const role = location.pathname.split("/")[1];
+    const role = location.pathname.split("/")[1];
 
-const validRoles = [
-  "high-school-student",
-  "college-student",
-  "working-professional",
-];
+    const validRoles = [
+      "high-school-student",
+      "college-student",
+      "working-professional",
+    ];
 
-const loginRoute = validRoles.includes(role)
-  ? `/${role}/login`
-  : "/college-student/login";
+    const loginRoute = validRoles.includes(role)
+      ? `/${role}/login`
+      : "/";
 
-return (
-  <Navigate
-    to={loginRoute}
-    replace
-  />
-);
+    return (
+      <Navigate
+        to={loginRoute}
+        replace
+      />
+    );
 
   }
 

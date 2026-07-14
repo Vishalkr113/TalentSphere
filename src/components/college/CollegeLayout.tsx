@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 
 import CollegeSidebar from "./CollegeSidebar";
 import CollegeTopbar from "./CollegeTopbar";
+import AIChatbot from "../AIChatbot";
 
 function CollegeLayout() {
   return (
@@ -21,6 +22,7 @@ function CollegeLayout() {
 
       </div>
 
+      <AIChatbot />
     </div>
   );
 }

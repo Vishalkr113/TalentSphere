@@ -1,112 +1,16 @@
-import {
-  Laptop,
-  Stethoscope,
-  Scale,
-  Calculator,
-  Palette,
-  Cpu,
-  ChevronRight,
-} from "lucide-react";
-
-const careers = [
-  {
-    title: "Engineering",
-    description: "Software, AI, Civil, Mechanical, Electrical and more.",
-    icon: Cpu,
-  },
-  {
-    title: "Medical",
-    description: "Doctor, Dentist, Nursing, Pharmacy, MBBS and more.",
-    icon: Stethoscope,
-  },
-  {
-    title: "Commerce",
-    description: "CA, CS, Banking, Finance, Business and Management.",
-    icon: Calculator,
-  },
-  {
-    title: "Law",
-    description: "Judiciary, Advocate, Legal Advisor and Corporate Law.",
-    icon: Scale,
-  },
-  {
-    title: "Arts & Design",
-    description: "Animation, Fashion, Graphic Design, Fine Arts.",
-    icon: Palette,
-  },
-  {
-    title: "Computer Science",
-    description: "Software Engineer, AI Engineer, Data Scientist.",
-    icon: Laptop,
-  },
-];
-
-function CareerExplorer() {
-  return (
-    <div className="space-y-10">
-
-      {/* Heading */}
-
-      <div>
-
-        <h1 className="text-4xl font-bold text-slate-900">
-          Career Explorer
-        </h1>
-
-        <p className="mt-3 text-slate-600 text-lg">
-          Discover career opportunities based on your interests,
-          strengths and future goals.
-        </p>
-
-      </div>
-
-      {/* Cards */}
-
-      <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-
-        {careers.map((career) => {
-
-          const Icon = career.icon;
-
-          return (
-
-            <div
-              key={career.title}
-              className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-2 hover:shadow-xl"
-            >
-
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-600">
-
-                <Icon size={32} />
-
-              </div>
-
-              <h2 className="mt-6 text-2xl font-bold text-slate-900">
-                {career.title}
-              </h2>
-
-              <p className="mt-4 leading-7 text-slate-600">
-                {career.description}
-              </p>
-
-              <button className="mt-8 flex items-center gap-2 rounded-xl bg-cyan-600 px-5 py-3 font-medium text-white transition hover:bg-cyan-700">
-
-                Explore Career
-
-                <ChevronRight size={18} />
-
-              </button>
-
-            </div>
-
-          );
-
-        })}
-
-      </div>
-
-    </div>
-  );
-}
-
+import { Calculator, ChevronRight, Cpu, Laptop, Palette, Scale, Stethoscope, X } from "lucide-react";
+import { useState } from "react";import { useAuth } from "../../contexts/AuthContext";import { getCareerVisits, markCareerVisited } from "../../services/highSchoolWorkspaceService";import { generateFinalStreamGuidance } from "../../data/assessment/streamGuidanceService";
+const careers=[
+ {title:"Engineering",desc:"Design and build technical systems.",icon:Cpu,streams:"PCM",subjects:"Mathematics, Physics, Chemistry",paths:"B.Tech / BE, Diploma, technical specializations"},
+ {title:"Medical & Health",desc:"Healthcare and life-science pathways.",icon:Stethoscope,streams:"PCB",subjects:"Biology, Chemistry, Physics",paths:"MBBS, BDS, Nursing, Pharmacy, Allied Health"},
+ {title:"Commerce & Finance",desc:"Business, accounting and financial careers.",icon:Calculator,streams:"Commerce",subjects:"Accountancy, Economics, Business Studies",paths:"B.Com, CA, CS, CMA, BBA, Finance"},
+ {title:"Law",desc:"Legal, judiciary and policy pathways.",icon:Scale,streams:"Any stream",subjects:"English, Social Science, reasoning",paths:"BA LLB / BBA LLB / LLB and legal specializations"},
+ {title:"Arts & Design",desc:"Creative, communication and design careers.",icon:Palette,streams:"Humanities / Any",subjects:"Art, English, Humanities",paths:"Design, Fine Arts, Animation, Media"},
+ {title:"Computer Science",desc:"Software, data and computing careers.",icon:Laptop,streams:"PCM preferred for many engineering routes",subjects:"Mathematics, Computer Science, reasoning",paths:"B.Tech CSE, BCA, B.Sc CS, software skills"},
+] as const;
+function CareerExplorer(){const {user}=useAuth();const [selected,setSelected]=useState<typeof careers[number]|null>(null);const [,refresh]=useState(0);if(!user)return null;const visited=getCareerVisits(user.id);const guidance=generateFinalStreamGuidance(user.id);
+ const open=(c:typeof careers[number])=>{markCareerVisited(user.id,c.title);setSelected(c);refresh(x=>x+1)};
+ return <div className="mx-auto max-w-5xl space-y-5"><div><h1 className="text-3xl font-bold">Career Explorer</h1><p className="mt-1 text-slate-600">{guidance.ready?`Your current guidance points to ${guidance.recommendedStream}. Explore pathways before making a final decision.`:"Explore pathways and complete all assessments for evidence-based stream guidance."}</p></div><div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{careers.map(c=><div key={c.title} className="rounded-2xl border bg-white p-5 shadow-sm"><div className="iconbox"><c.icon size={22}/></div><h2 className="mt-4 text-xl font-bold">{c.title}</h2><p className="mt-2 text-sm text-slate-600">{c.desc}</p><button onClick={()=>open(c)} className="mt-4 flex items-center gap-2 font-semibold text-cyan-700">Explore Career <ChevronRight size={17}/></button>{visited.some(v=>v.career===c.title)&&<span className="ml-3 text-xs text-green-600">Explored</span>}</div>)}</div>
+ {selected&&<div className="fixed inset-0 z-[80] flex items-center justify-center bg-slate-950/50 p-4" onClick={()=>setSelected(null)}><div className="w-full max-w-xl rounded-2xl bg-white p-6 shadow-2xl" onClick={e=>e.stopPropagation()}><div className="flex justify-between"><h2 className="text-2xl font-bold">{selected.title}</h2><button onClick={()=>setSelected(null)}><X/></button></div><Info label="Typical stream alignment" value={selected.streams}/><Info label="Useful school subjects" value={selected.subjects}/><Info label="Example education paths" value={selected.paths}/><p className="mt-5 rounded-xl bg-cyan-50 p-4 text-sm text-cyan-900">Use this as exploration guidance. Eligibility depends on the course, institution and admission rules you later choose.</p></div></div>}</div>}
+function Info({label,value}:{label:string;value:string}){return <div className="mt-4"><p className="text-xs font-semibold uppercase text-slate-400">{label}</p><p className="mt-1 text-slate-700">{value}</p></div>}
 export default CareerExplorer;

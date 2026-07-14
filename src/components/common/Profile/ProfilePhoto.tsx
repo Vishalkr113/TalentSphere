@@ -55,7 +55,7 @@ function ProfilePhoto({
   };
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
 
       <div className="flex flex-col items-center">
 
@@ -69,7 +69,7 @@ function ProfilePhoto({
               )}&background=0891b2&color=ffffff&size=256`
             }
             alt="Profile"
-            className="h-44 w-44 rounded-full border-4 border-cyan-100 object-cover shadow-lg"
+            className="h-32 w-32 rounded-full border-4 border-cyan-100 object-cover shadow-lg"
           />
 
           {editable && (
@@ -84,7 +84,7 @@ function ProfilePhoto({
 
         </div>
 
-        <h2 className="mt-6 text-2xl font-bold text-slate-900">
+        <h2 className="mt-4 text-xl font-bold text-slate-900">
           {name}
         </h2>
 
@@ -93,12 +93,12 @@ function ProfilePhoto({
         </p>
 
         {editable && (
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <div className="mt-5 flex flex-wrap justify-center gap-4">
 
             <button
               type="button"
               onClick={handleBrowse}
-              className="flex items-center gap-2 rounded-xl bg-cyan-600 px-5 py-3 font-semibold text-white transition hover:bg-cyan-700"
+              className="flex items-center gap-2 rounded-xl bg-cyan-600 px-4 py-2.5 font-semibold text-white transition hover:bg-cyan-700"
             >
               <Camera size={18} />
 
@@ -108,7 +108,7 @@ function ProfilePhoto({
             <button
               type="button"
               onClick={handleBrowse}
-              className="flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700"
+              className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 font-semibold text-white transition hover:bg-blue-700"
             >
               <RefreshCw size={18} />
 
@@ -118,7 +118,7 @@ function ProfilePhoto({
             <button
               type="button"
               onClick={handleRemove}
-              className="flex items-center gap-2 rounded-xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-700"
+              className="flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 font-semibold text-white transition hover:bg-red-700"
             >
               <Trash2 size={18} />
 

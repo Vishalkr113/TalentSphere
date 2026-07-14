@@ -3,54 +3,20 @@ import { CheckCircle } from "lucide-react";
 import Button from "./ui/Button";
 
 function Hero() {
-  const journeySteps = [
-    {
-      number: "✓",
-      title: "Build Your Profile",
-      description: "Tell us about your goals and interests",
-      status: "completed",
-    },
-    {
-      number: "2",
-      title: "Assess Your Skills",
-      description: "Understand your current strengths",
-      status: "current",
-    },
-    {
-      number: "3",
-      title: "Discover Career Paths",
-      description: "Explore suitable career opportunities",
-      status: "upcoming",
-    },
-    {
-      number: "4",
-      title: "Follow Your Roadmap",
-      description: "Learn with a clear development plan",
-      status: "upcoming",
-    },
-    {
-      number: "5",
-      title: "Track Your Growth",
-      description: "Monitor progress and career readiness",
-      status: "upcoming",
-    },
-  ];
-
   return (
     <section
       id="home"
       className="bg-slate-100"
     >
-      <div className="mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl flex-col items-center justify-between gap-10 px-6 py-10 lg:flex-row">
-
+      <div className="mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl flex-col items-center justify-between gap-10 px-6 py-14 lg:flex-row">
         {/* Left */}
 
-        <div className="w-full max-w-xl">
-          <span className="inline-flex rounded-full bg-cyan-100 px-3 py-1.5 text-xs font-semibold text-cyan-700">
+        <div className="max-w-2xl">
+          <span className="rounded-full bg-cyan-100 px-3 py-1.5 text-xs font-semibold text-cyan-700">
             AI Career Development Platform
           </span>
 
-          <h1 className="mt-6 text-[34px] font-bold leading-[1.15] text-slate-900 md:text-[40px] lg:text-[46px]">
+          <h1 className="mt-6 text-[36px] font-bold leading-tight text-slate-900 lg:text-[48px]">
             One Platform for
 
             <span className="block text-cyan-600">
@@ -67,25 +33,29 @@ function Hero() {
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-7 text-slate-600">
-            TalentSphere Elevate is an AI-powered career development
-            platform designed for High School Students, College Students,
-            and Working Professionals to learn, grow, and achieve their
+            TalentSphere Elevate is an AI-powered career
+            development platform designed for High School
+            Students, College Students, and Working
+            Professionals to learn, grow, and achieve their
             career goals.
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <div className="w-44">
               <Button>
                 Get Started
               </Button>
             </div>
 
-            <button className="rounded-xl border border-slate-300 px-5 py-3 text-sm font-semibold transition hover:bg-white">
+            <button
+              type="button"
+              className="rounded-xl border border-slate-300 px-6 py-3 font-semibold transition hover:bg-white"
+            >
               Learn More
             </button>
           </div>
 
-          <div className="mt-9 grid gap-3 sm:grid-cols-2">
+          <div className="mt-10 grid gap-3 sm:grid-cols-2">
             {[
               "Career Roadmap",
               "AI Resume Builder",
@@ -97,11 +67,11 @@ function Hero() {
                 className="flex items-center gap-3"
               >
                 <CheckCircle
-                  size={18}
+                  size={19}
                   className="text-cyan-600"
                 />
 
-                <span className="text-sm font-medium text-slate-700">
+                <span className="font-medium text-slate-700">
                   {item}
                 </span>
               </div>
@@ -113,7 +83,6 @@ function Hero() {
 
         <div className="flex w-full max-w-[460px] items-center justify-center">
           <div className="relative w-full overflow-hidden rounded-[30px] border border-white/80 bg-white p-6 shadow-[0_24px_70px_rgba(15,23,42,0.12)]">
-
             {/* Background Glow */}
 
             <div className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-cyan-300/30 blur-3xl" />
@@ -133,7 +102,8 @@ function Hero() {
                 </h2>
 
                 <p className="mt-1 text-sm leading-6 text-slate-500">
-                  From self-discovery to career growth in four simple steps.
+                  From self-discovery to career growth in four
+                  simple steps.
                 </p>
               </div>
 
@@ -142,12 +112,9 @@ function Hero() {
               </div>
             </div>
 
-            {/* Career Actions */}
+            {/* Steps */}
 
             <div className="relative mt-6 grid grid-cols-2 gap-3">
-
-              {/* Create Profile */}
-
               <div className="group rounded-2xl bg-cyan-50 p-4 transition duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-600 text-lg text-white shadow-sm">
                   👤
@@ -158,11 +125,10 @@ function Hero() {
                 </h3>
 
                 <p className="mt-1 text-xs leading-5 text-slate-500">
-                  Tell us about your interests, skills and career goals.
+                  Tell us about your interests, skills and
+                  career goals.
                 </p>
               </div>
-
-              {/* Assess Skills */}
 
               <div className="group rounded-2xl bg-blue-50 p-4 transition duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500 text-lg text-white shadow-sm">
@@ -174,11 +140,10 @@ function Hero() {
                 </h3>
 
                 <p className="mt-1 text-xs leading-5 text-slate-500">
-                  Understand your strengths through practical assessments.
+                  Understand your strengths through practical
+                  assessments.
                 </p>
               </div>
-
-              {/* Discover Career Paths */}
 
               <div className="group rounded-2xl bg-violet-50 p-4 transition duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500 text-lg text-white shadow-sm">
@@ -190,11 +155,10 @@ function Hero() {
                 </h3>
 
                 <p className="mt-1 text-xs leading-5 text-slate-500">
-                  Explore career options that match your profile.
+                  Explore career options that match your
+                  profile.
                 </p>
               </div>
-
-              {/* Follow Roadmap */}
 
               <div className="group rounded-2xl bg-emerald-50 p-4 transition duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 text-lg text-white shadow-sm">
@@ -206,10 +170,10 @@ function Hero() {
                 </h3>
 
                 <p className="mt-1 text-xs leading-5 text-slate-500">
-                  Learn, improve and move toward your career goals.
+                  Learn, improve and move toward your career
+                  goals.
                 </p>
               </div>
-
             </div>
 
             {/* Bottom CTA */}
@@ -229,7 +193,6 @@ function Hero() {
                 →
               </div>
             </div>
-
           </div>
         </div>
       </div>

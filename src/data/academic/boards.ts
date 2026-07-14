@@ -1,14 +1,45 @@
 import type { SelectOption } from "../../components/common/Select/SearchSelect";
 
-export const boardOptions: SelectOption[] = [
-  { value: "CBSE", label: "CBSE" },
-  { value: "ICSE", label: "ICSE" },
-  { value: "BSEB", label: "BSEB" },
-  { value: "UP Board", label: "UP Board" },
-  { value: "MP Board", label: "MP Board" },
-  { value: "RBSE", label: "RBSE" },
-  { value: "JAC", label: "JAC" },
-  { value: "HBSE", label: "HBSE" },
-  { value: "PSEB", label: "PSEB" },
-  { value: "Maharashtra Board", label: "Maharashtra Board" }
-];
+export const boardNames = [
+  "CBSE", "CISCE / ICSE", "NIOS",
+  "Andhra Pradesh Board of Secondary Education (BSEAP)",
+  "Andhra Pradesh Board of Intermediate Education (BIEAP)",
+  "Assam State School Education Board (ASSEB)",
+  "Bihar School Examination Board (BSEB)",
+  "Chhattisgarh Board of Secondary Education (CGBSE)",
+  "Goa Board of Secondary and Higher Secondary Education (GBSHSE)",
+  "Gujarat Secondary and Higher Secondary Education Board (GSEB)",
+  "Haryana Board of School Education (HBSE)",
+  "Himachal Pradesh Board of School Education (HPBOSE)",
+  "Jammu and Kashmir Board of School Education (JKBOSE)",
+  "Jharkhand Academic Council (JAC)",
+  "Karnataka School Examination and Assessment Board (KSEAB)",
+  "Kerala Board of Public Examinations (KBPE)",
+  "Madhya Pradesh Board of Secondary Education (MPBSE)",
+  "Maharashtra State Board of Secondary and Higher Secondary Education (MSBSHSE)",
+  "Manipur Board of Secondary Education (BOSEM)",
+  "Manipur Council of Higher Secondary Education (COHSEM)",
+  "Meghalaya Board of School Education (MBOSE)",
+  "Mizoram Board of School Education (MBSE)",
+  "Nagaland Board of School Education (NBSE)",
+  "Board of Secondary Education, Odisha (BSE Odisha)",
+  "Council of Higher Secondary Education, Odisha (CHSE Odisha)",
+  "Punjab School Education Board (PSEB)",
+  "Board of Secondary Education, Rajasthan (RBSE)",
+  "Sikkim Board / State Education Department",
+  "Tamil Nadu State Board (DGE Tamil Nadu)",
+  "Telangana Board of Secondary Education (BSE Telangana)",
+  "Telangana State Board of Intermediate Education (TSBIE)",
+  "Tripura Board of Secondary Education (TBSE)",
+  "Uttar Pradesh Madhyamik Shiksha Parishad (UPMSP)",
+  "Uttarakhand Board of School Education (UBSE)",
+  "West Bengal Board of Secondary Education (WBBSE)",
+  "West Bengal Council of Higher Secondary Education (WBCHSE)",
+  "Delhi Board of School Education (DBSE)",
+  "Other / International Board"
+] as const;
+
+export const boardOptions: SelectOption[] = boardNames.map((board) => ({
+  value: board,
+  label: board,
+}));

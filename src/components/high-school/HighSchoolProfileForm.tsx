@@ -92,7 +92,7 @@ function HighSchoolProfileForm({
 
       </div>
 
-            {/* Profile Photo */}
+      {/* Profile Photo */}
 
       <div className="mb-10">
 
@@ -255,7 +255,7 @@ function HighSchoolProfileForm({
 
       </div>
 
-            {/* Parent Details */}
+      {/* Parent Details */}
 
       <div className="mt-8 rounded-2xl border border-slate-200 p-6">
 
@@ -414,7 +414,7 @@ function HighSchoolProfileForm({
 
       </div>
 
-            {/* Skills & Hobbies */}
+      {/* Skills & Hobbies */}
 
       <div className="mt-8 rounded-2xl border border-slate-200 p-6">
 

@@ -34,109 +34,116 @@ function Login() {
         ? "College Student"
         : "Working Professional";
 
-  const [email, setEmail] =
-    useState("");
-
-  const [password, setPassword] =
-    useState("");
-
-  const [loading, setLoading] =
-    useState(false);
-
-  const [error, setError] =
-    useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleLogin = (
-    e: React.FormEvent
+    e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
 
+    if (loading) {
+      return;
+    }
+
     setError("");
 
+    const normalizedEmail = email
+      .trim()
+      .toLowerCase();
+
     if (
-      !email.trim() ||
+      !normalizedEmail ||
       !password.trim()
     ) {
       setError(
         "Please fill in all required fields."
       );
+
       return;
     }
 
-    if (!isValidEmail(email)) {
+    if (!isValidEmail(normalizedEmail)) {
       setError(
         "Please enter a valid email address."
       );
+
       return;
     }
 
     setLoading(true);
 
-    const result = loginUser(
-      email.trim().toLowerCase(),
-      password,
-      role
-    );
-
-    if (!result.success) {
-      setLoading(false);
-
-      setError(
-        result.message ??
-        "Login failed."
+    try {
+      const result = loginUser(
+        normalizedEmail,
+        password,
+        role
       );
 
-      return;
-    }
+      if (!result.success) {
+        setError(
+          result.message ?? "Login failed."
+        );
 
-    if (!result.user) {
-      setLoading(false);
-
-      setError(
-        "User not found."
-      );
-
-      return;
-    }
-
-    login(result.user);
-
-    setLoading(false);
-
-    navigate(
-      `/${role}/dashboard`,
-      {
-        replace: true,
+        return;
       }
-    );
+
+      if (!result.user) {
+        setError("User not found.");
+
+        return;
+      }
+
+      login({
+        id: result.user.id,
+        name: result.user.name,
+        email: result.user.email,
+        role: result.user.role,
+      });
+
+      navigate(
+        `/${result.user.role}/dashboard`,
+        {
+          replace: true,
+        }
+      );
+    } catch (loginError) {
+      console.error(
+        "Login error:",
+        loginError
+      );
+
+      setError(
+        "Unable to sign in. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-100 px-6 py-12">
-
-      <Card className="w-full max-w-md p-8">
-
+    <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-8 sm:px-6 sm:py-12">
+      <Card className="w-full max-w-md p-6 sm:p-8">
         <div className="flex justify-center">
           <Logo size="md" />
         </div>
 
         <div className="mt-8 text-center">
-
-          <h1 className="text-3xl font-bold text-slate-900">
+          <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
             {title} Login
           </h1>
 
           <p className="mt-2 text-sm text-slate-600">
             Sign in to continue to your TalentSphere account.
           </p>
-
         </div>
 
         <form
           onSubmit={handleLogin}
           className="mt-8 space-y-5"
         >
-
           <Input
             label="Email"
             type="email"
@@ -156,29 +163,20 @@ function Login() {
             }
           />
 
-          <div className="flex items-center justify-between">
-
-            <label className="flex items-center gap-2 text-sm text-slate-600">
-
-              <input
-                type="checkbox"
-              />
-
-              Remember Me
-
-            </label>
-
+          <div className="flex items-center justify-end">
             <Link
               to="/forgot-password"
               className="text-sm font-medium text-cyan-600 hover:underline"
             >
               Forgot Password?
             </Link>
-
           </div>
 
           {error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+            <div
+              role="alert"
+              className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600"
+            >
               {error}
             </div>
           )}
@@ -192,25 +190,19 @@ function Login() {
               ? "Signing In..."
               : "Login"}
           </Button>
-
         </form>
 
         <p className="mt-8 text-center text-sm text-slate-600">
-
           Don't have an account?{" "}
-
           <Link
-            to={`/${role}/Sign Up`}
+            to={`/${role}/signup`}
             className="font-semibold text-cyan-600 hover:underline"
           >
             Create Account
           </Link>
-
         </p>
-
-      </Card >
-
-    </main >
+      </Card>
+    </main>
   );
 }
 

@@ -58,10 +58,10 @@ export const registerUser = ({
   const users = getUsers();
 
   const exists = users.find(
-  (user) =>
-    user.email.toLowerCase() === email.toLowerCase() &&
-    user.role === role
-);
+    (user) =>
+      user.email.toLowerCase() === email.toLowerCase() &&
+      user.role === role
+  );
 
   if (exists) {
     return {
@@ -101,7 +101,7 @@ export const loginUser = (
   const user = users.find(
     (item) =>
       item.email.toLowerCase() === email.toLowerCase()
-     &&
+      &&
       item.password === password &&
       item.role === role
   );
@@ -109,15 +109,14 @@ export const loginUser = (
   if (!user) {
     return {
       success: false,
-      message:
-        "Invalid email or password.",
+      message: "Invalid email or password.",
     };
   }
 
-  localStorage.setItem(
-    "currentUser",
-    JSON.stringify(user)
-  );
+  return {
+    success: true,
+    user,
+  };
 
   return {
     success: true,

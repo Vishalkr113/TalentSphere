@@ -5,7 +5,8 @@ import {
   useState,
 } from "react";
 
-type User = {
+export type User = {
+  id: string;
   name: string;
   email: string;
   role: string;
@@ -18,37 +19,71 @@ type AuthContextType = {
   isAuthenticated: boolean;
 };
 
-const AuthContext = createContext<AuthContextType>(
-  {} as AuthContextType
-);
+const AuthContext =
+  createContext<AuthContextType | null>(
+    null
+  );
 
 export function AuthProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] =
+    useState<User | null>(null);
 
   useEffect(() => {
-   const savedUser =
-  localStorage.getItem("currentUser");
+    const savedUser =
+      localStorage.getItem("currentUser");
 
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
+    if (!savedUser) {
+      return;
+    }
+
+    try {
+      const parsedUser =
+        JSON.parse(savedUser) as User;
+
+      if (
+        !parsedUser.id ||
+        !parsedUser.name ||
+        !parsedUser.email ||
+        !parsedUser.role
+      ) {
+        localStorage.removeItem(
+          "currentUser"
+        );
+
+        return;
+      }
+
+      setUser(parsedUser);
+    } catch (error) {
+      console.error(
+        "Unable to restore authenticated user:",
+        error
+      );
+
+      localStorage.removeItem(
+        "currentUser"
+      );
     }
   }, []);
 
-  const login = (user: User) => {
+  const login = (authenticatedUser: User) => {
     localStorage.setItem(
-    "currentUser",
-    JSON.stringify(user)
-  );
+      "currentUser",
+      JSON.stringify(authenticatedUser)
+    );
 
-    setUser(user);
+    setUser(authenticatedUser);
   };
 
   const logout = () => {
-    localStorage.removeItem("currentUser");
+    localStorage.removeItem(
+      "currentUser"
+    );
+
     setUser(null);
   };
 
@@ -58,7 +93,7 @@ export function AuthProvider({
         user,
         login,
         logout,
-        isAuthenticated: !!user,
+        isAuthenticated: Boolean(user),
       }}
     >
       {children}
@@ -67,5 +102,13 @@ export function AuthProvider({
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error(
+      "useAuth must be used inside AuthProvider."
+    );
+  }
+
+  return context;
 }
