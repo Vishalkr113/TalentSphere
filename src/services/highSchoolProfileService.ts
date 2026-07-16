@@ -1,4 +1,5 @@
 export type HighSchoolClass =
+    | "9"
     | "10"
     | "11"
     | "12";
@@ -144,6 +145,13 @@ export function getAssessmentPurpose(
     studentClass: HighSchoolClass
 ) {
     switch (studentClass) {
+        case "9":
+            return {
+                title: "Foundation & Career Exploration Assessment",
+                description: "Understand your subject strengths, aptitude and interests early so you can build a strong Class 10 foundation and explore future stream directions.",
+                reportTitle: "Foundation & Early Career Direction Report",
+            };
+
         case "10":
             return {
                 title:

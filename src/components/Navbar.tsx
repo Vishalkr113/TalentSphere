@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 import Logo from "./ui/Logo";
@@ -11,6 +11,15 @@ function Navbar() {
   >(null);
 
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpenAuth = (event: Event) => {
+      const mode = (event as CustomEvent<"login" | "signup">).detail;
+      if (mode === "login" || mode === "signup") openAuthModal(mode);
+    };
+    window.addEventListener("talentsphere:open-auth", handleOpenAuth);
+    return () => window.removeEventListener("talentsphere:open-auth", handleOpenAuth);
+  }, []);
 
   const openAuthModal = (
     mode: "login" | "signup"
@@ -49,6 +58,13 @@ function Navbar() {
               className="font-medium text-slate-600 transition hover:text-cyan-600"
             >
               Features
+            </a>
+
+            <a
+              href="#feedback"
+              className="font-medium text-slate-600 transition hover:text-cyan-600"
+            >
+              Feedback
             </a>
 
             <a

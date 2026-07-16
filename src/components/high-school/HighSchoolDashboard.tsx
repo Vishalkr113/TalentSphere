@@ -132,7 +132,7 @@ function HighSchoolDashboard() {
   }
 
   const currentStream = profile
-    ? profile.studentClass === "10"
+    ? (profile.studentClass === "9" || profile.studentClass === "10")
       ? "Not Selected Yet"
       : profile.currentStream ?? "Not Set"
     : "Not Set";

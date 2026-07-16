@@ -58,7 +58,7 @@ function getContextualCategoryLabel(
   category: AssessmentCategory,
   profile: HighSchoolProfileData
 ): string {
-  if (profile.studentClass === "10") {
+  if ((profile.studentClass === "9" || profile.studentClass === "10")) {
     return categoryLabels[category];
   }
 
@@ -94,7 +94,7 @@ function getContextualCategoryLabel(
 function getReportContext(
   profile: HighSchoolProfileData
 ) {
-  if (profile.studentClass === "10") {
+  if ((profile.studentClass === "9" || profile.studentClass === "10")) {
     return {
       eyebrow: "Class 10 Stream Discovery",
       title: "Your Stream Discovery Reports",

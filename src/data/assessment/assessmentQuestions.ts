@@ -1039,7 +1039,7 @@ export const reasoningQuestions: Question[] = [
     },
 ];
 
-export type StudentClass = "10" | "11" | "12";
+export type StudentClass = "9" | "10" | "11" | "12";
 
 export type StudentStream =
     | "Science PCM"
@@ -1303,6 +1303,10 @@ export function getAssessmentQuestionBank({
 }: AssessmentQuestionContext):
     AssessmentQuestionBank {
     switch (studentClass) {
+        case "9":
+            // Class 9 uses the foundation-level aptitude, reasoning and core-subject bank.
+            return class10AssessmentQuestionBank;
+
         case "10":
             return class10AssessmentQuestionBank;
 

@@ -35,9 +35,9 @@ const menuItems = [
     path: "/working-professional/career-growth",
   },
   {
-    title: "Skill Upgrade",
+    title: "Skill Assessment",
     icon: Brain,
-    path: "/working-professional/skill-upgrade",
+    path: "/working-professional/skill-assessment",
   },
   {
     title: "Resume Manager",

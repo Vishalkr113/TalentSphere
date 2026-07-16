@@ -13,7 +13,7 @@ function Hero() {
 
         <div className="max-w-2xl">
           <span className="rounded-full bg-cyan-100 px-3 py-1.5 text-xs font-semibold text-cyan-700">
-            AI Career Development Platform
+            Career Development Platform
           </span>
 
           <h1 className="mt-6 text-[36px] font-bold leading-tight text-slate-900 lg:text-[48px]">
@@ -42,16 +42,17 @@ function Hero() {
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <div className="w-44">
-              <Button>
+              <Button type="button" onClick={() => window.dispatchEvent(new CustomEvent("talentsphere:open-auth", { detail: "login" }))}>
                 Get Started
               </Button>
             </div>
 
             <button
               type="button"
+              onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
               className="rounded-xl border border-slate-300 px-6 py-3 font-semibold transition hover:bg-white"
             >
-              Learn More
+              Explore
             </button>
           </div>
 

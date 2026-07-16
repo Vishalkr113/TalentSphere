@@ -5,7 +5,7 @@ import AIChatbot from "./AIChatbot";
 import Features from "./Features";
 import AIModules from "./AIModules";
 import HowItWorks from "./HowItWorks";
-import Testimonials from "./Testimonials";
+import Feedback from "./Feedback";
 import FAQ from "./FAQ";
 import Footer from "./Footer";
 
@@ -28,7 +28,7 @@ function Overview() {
 
         <HowItWorks />
 
-        <Testimonials />
+        <Feedback />
 
         <FAQ />
 
