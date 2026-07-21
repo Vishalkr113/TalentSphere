@@ -25,6 +25,7 @@ import Assignments from "./components/high-school/Assignments";
 import DailyGoal from "./components/high-school/DailyGoal";
 import Achievements from "./components/high-school/Achievements";
 import FinalGuidanceReport from "./components/high-school/FinalGuidanceReport";
+import FinalCareerReport from "./components/college/FinalCareerReport";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Settings from "./components/common/Settings";
@@ -167,6 +168,10 @@ function App() {
           path="final-guidance"
           element={<FinalGuidanceReport />}
         />
+        <Route
+          path="final-report"
+          element={<FinalCareerReport />}
+        />
 
         <Route
           path="settings"
@@ -203,6 +208,10 @@ function App() {
         <Route path="placement-tracker" element={<PlacementTracker />} />
         <Route path="jobs-internships" element={<JobsInternships />} />
         <Route path="achievements" element={<CollegeAchievements />} />
+        <Route
+          path="final-report"
+          element={<FinalCareerReport />}
+        />
         <Route path="settings" element={<Settings />} />
       </Route>
 
