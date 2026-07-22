@@ -19,10 +19,10 @@ const Input = forwardRef<
         {label}
       </label>
 
-  < input
-    ref={ref}
-    {...props}
-    className={`
+      < input
+        ref={ref}
+        {...props}
+        className={`
           w-full
           rounded-xl
           border
@@ -41,15 +41,15 @@ const Input = forwardRef<
           ${error ? "border-red-500 focus:ring-red-100 focus:border-red-500" : ""}
           ${className}
         `}
-  />
+      />
 
-{
-  error && (
-    <p className="text-sm text-red-500">
-      {error}
-    </p>
-  )
-}
+      {
+        error && (
+          <p className="text-sm text-red-500">
+            {error}
+          </p>
+        )
+      }
 
     </div >
   );

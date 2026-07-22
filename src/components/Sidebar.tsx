@@ -67,10 +67,9 @@ function Sidebar() {
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-xl px-4 py-3 font-medium transition ${
-                      isActive
-                        ? "bg-cyan-600 text-white"
-                        : "text-slate-600 hover:bg-slate-100"
+                    `flex items-center gap-3 rounded-xl px-4 py-3 font-medium transition ${isActive
+                      ? "bg-cyan-600 text-white"
+                      : "text-slate-600 hover:bg-slate-100"
                     }`
                   }
                 >

@@ -1,1 +1,128 @@
-import{useAuth}from'../../contexts/AuthContext';import{analyzeResume,getCollegeProfile,getResume}from'../../services/collegeService';import{useNavigate}from'react-router-dom';export default function ResumeAnalyzer(){const{user}=useAuth();const nav=useNavigate();const id=user?.id||'guest';const r=getResume(id),p=getCollegeProfile(id),a=analyzeResume(r,p);return <div className="space-y-5"><div><h1 className="text-3xl font-bold">Resume Center & ATS Analysis</h1><p className="mt-1 text-slate-600">Deterministic checks based on your saved resume and target role: {p.targetRole}.</p></div><div className="grid gap-3 sm:grid-cols-3"><Score t="Resume Score" v={a.resumeScore}/><Score t="ATS Score" v={a.atsScore}/><Score t="Target Role Match" v={a.roleMatch}/></div><section className="rounded-2xl border bg-white p-5"><h2 className="text-xl font-bold">Section Analysis</h2><div className="mt-4 grid gap-3 md:grid-cols-2">{Object.entries(a.sections).map(([k,v])=><div key={k} className="rounded-xl bg-slate-50 p-3"><b>{k}</b><span className="float-right font-bold">{v}%</span></div>)}</div></section><div className="grid gap-4 md:grid-cols-2"><section className="rounded-2xl border bg-white p-5"><h2 className="text-xl font-bold text-green-700">Strengths</h2><ul className="mt-3 space-y-2">{a.strengths.length?a.strengths.map(x=><li key={x}>✓ {x}</li>):<li className="text-slate-500">Complete resume sections to build evidence.</li>}</ul></section><section className="rounded-2xl border bg-white p-5"><h2 className="text-xl font-bold text-amber-700">Priority Improvements</h2><ol className="mt-3 list-decimal space-y-2 pl-5">{a.improvements.map(x=><li key={x}>{x}</li>)}</ol></section></div><button onClick={()=>nav('/college-student/resume-builder')} className="rounded-xl bg-cyan-600 px-5 py-2.5 font-semibold text-white">Edit & Improve Resume</button></div>}function Score({t,v}:{t:string,v:number}){return <div className="rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-700 p-5 text-white"><p className="text-cyan-100">{t}</p><p className="mt-2 text-4xl font-bold">{v}%</p></div>}
+import { useAuth } from '../../contexts/AuthContext';
+import {
+    analyzeResume,
+    getCollegeProfile,
+    getResume,
+} from '../../services/collegeService';
+import { useNavigate } from 'react-router-dom';
+
+export default function ResumeAnalyzer() {
+    const { user } = useAuth();
+    const nav = useNavigate();
+
+    const id = user?.id || 'guest';
+
+    const r = getResume(id),
+        p = getCollegeProfile(id),
+        a = analyzeResume(r, p);
+
+    return (
+        <div className="space-y-5">
+            <div>
+                <h1 className="text-3xl font-bold">
+                    Resume Center & ATS Analysis
+                </h1>
+
+                <p className="mt-1 text-slate-600">
+                    Deterministic checks based on your saved resume and
+                    target role: {p.targetRole}.
+                </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+                <Score
+                    t="Resume Score"
+                    v={a.resumeScore}
+                />
+                <Score
+                    t="ATS Score"
+                    v={a.atsScore}
+                />
+                <Score
+                    t="Target Role Match"
+                    v={a.roleMatch}
+                />
+            </div>
+
+            <section className="rounded-2xl border bg-white p-5">
+                <h2 className="text-xl font-bold">
+                    Section Analysis
+                </h2>
+
+                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                    {Object.entries(a.sections).map(([k, v]) => (
+                        <div
+                            key={k}
+                            className="rounded-xl bg-slate-50 p-3"
+                        >
+                            <b>{k}</b>
+
+                            <span className="float-right font-bold">
+                                {v}%
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            <div className="grid gap-4 md:grid-cols-2">
+                <section className="rounded-2xl border bg-white p-5">
+                    <h2 className="text-xl font-bold text-green-700">
+                        Strengths
+                    </h2>
+
+                    <ul className="mt-3 space-y-2">
+                        {a.strengths.length ? (
+                            a.strengths.map((x) => (
+                                <li key={x}>✓ {x}</li>
+                            ))
+                        ) : (
+                            <li className="text-slate-500">
+                                Complete resume sections to build evidence.
+                            </li>
+                        )}
+                    </ul>
+                </section>
+
+                <section className="rounded-2xl border bg-white p-5">
+                    <h2 className="text-xl font-bold text-amber-700">
+                        Priority Improvements
+                    </h2>
+
+                    <ol className="mt-3 list-decimal space-y-2 pl-5">
+                        {a.improvements.map((x) => (
+                            <li key={x}>{x}</li>
+                        ))}
+                    </ol>
+                </section>
+            </div>
+
+            <button
+                onClick={() =>
+                    nav('/college-student/resume-builder')
+                }
+                className="rounded-xl bg-cyan-600 px-5 py-2.5 font-semibold text-white"
+            >
+                Edit & Improve Resume
+            </button>
+        </div>
+    );
+}
+
+function Score({
+    t,
+    v,
+}: {
+    t: string;
+    v: number;
+}) {
+    return (
+        <div className="rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-700 p-5 text-white">
+            <p className="text-cyan-100">{t}</p>
+
+            <p className="mt-2 text-4xl font-bold">
+                {v}%
+            </p>
+        </div>
+    );
+}

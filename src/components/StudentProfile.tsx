@@ -36,7 +36,6 @@ function StudentProfile() {
   });
 
 
-
   const [error, setError] = useState("");
 
   const [success, setSuccess] = useState("");

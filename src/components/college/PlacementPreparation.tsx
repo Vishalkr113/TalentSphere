@@ -1,1 +1,59 @@
-import{useAuth}from'../../contexts/AuthContext';import{getCollegeStats}from'../../services/collegeService';export default function PlacementPreparation(){const{user}=useAuth();const s=getCollegeStats(user?.id||'guest');const parts=[['Technical Assessment',s.assessment],['Resume Readiness',s.resume.resumeScore],['Practice Consistency',s.practicePct],['Interview Practice',s.interviewScore],['Application Activity',Math.min(100,s.placements.length*10)]] as const;return <div className="space-y-5"><div><h1 className="text-3xl font-bold">Placement Readiness</h1><p className="mt-1 text-slate-600">A combined evidence score; it is not a job guarantee.</p></div><section className="rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-700 p-6 text-white"><p>Overall Placement Readiness</p><p className="mt-2 text-5xl font-bold">{s.readiness}%</p></section><section className="rounded-2xl border bg-white p-5 space-y-4">{parts.map(([k,v])=><div key={k}><div className="flex justify-between"><b>{k}</b><span>{v}%</span></div><div className="mt-1 h-2 rounded bg-slate-100"><div className="h-2 rounded bg-cyan-600" style={{width:`${v}%`}}/></div></div>)}</section></div>}
+import { useAuth } from '../../contexts/AuthContext';
+import { getCollegeStats } from '../../services/collegeService';
+
+export default function PlacementPreparation() {
+    const { user } = useAuth();
+
+    const s = getCollegeStats(user?.id || 'guest');
+
+    const parts = [
+        ['Technical Assessment', s.assessment],
+        ['Resume Readiness', s.resume.resumeScore],
+        ['Practice Consistency', s.practicePct],
+        ['Interview Practice', s.interviewScore],
+        [
+            'Application Activity',
+            Math.min(100, s.placements.length * 10),
+        ],
+    ] as const;
+
+    return (
+        <div className="space-y-5">
+            <div>
+                <h1 className="text-3xl font-bold">
+                    Placement Readiness
+                </h1>
+
+                <p className="mt-1 text-slate-600">
+                    A combined evidence score; it is not a job guarantee.
+                </p>
+            </div>
+
+            <section className="rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-700 p-6 text-white">
+                <p>Overall Placement Readiness</p>
+
+                <p className="mt-2 text-5xl font-bold">
+                    {s.readiness}%
+                </p>
+            </section>
+
+            <section className="space-y-4 rounded-2xl border bg-white p-5">
+                {parts.map(([k, v]) => (
+                    <div key={k}>
+                        <div className="flex justify-between">
+                            <b>{k}</b>
+                            <span>{v}%</span>
+                        </div>
+
+                        <div className="mt-1 h-2 rounded bg-slate-100">
+                            <div
+                                className="h-2 rounded bg-cyan-600"
+                                style={{ width: `${v}%` }}
+                            />
+                        </div>
+                    </div>
+                ))}
+            </section>
+        </div>
+    );
+}

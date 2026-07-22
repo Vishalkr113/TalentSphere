@@ -1,1 +1,5 @@
-import ProfessionalEvidenceModule from "./ProfessionalEvidenceModule"; export default function JobSwitch(){return <ProfessionalEvidenceModule kind="job"/>}
+import ProfessionalEvidenceModule from "./ProfessionalEvidenceModule";
+export default function JobSwitch() {
+    return
+    <ProfessionalEvidenceModule kind="job" />
+}

@@ -77,11 +77,10 @@ function TaskCard({
               )}
 
               <span
-                className={`font-medium ${
-                  task.completed
+                className={`font-medium ${task.completed
                     ? "text-slate-400 line-through"
                     : "text-slate-800"
-                }`}
+                  }`}
               >
                 {task.title}
               </span>

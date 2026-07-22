@@ -1,2 +1,122 @@
-import { Link } from "react-router-dom"; import { useAuth } from "../../contexts/AuthContext"; import { professionalStats, roleSkills } from "../../services/professionalService";
-export default function ProfessionalDashboard(){const {user}=useAuth();if(!user)return null;const s=professionalStats(user.id,user.name,user.email);const gaps=roleSkills(s.p.targetRole).filter(x=>!s.p.skills.toLowerCase().includes(x.toLowerCase()));const cards=[['Profile readiness',s.profile],['Career growth',s.career],['Promotion readiness',s.promotion],['Skill evidence',s.skill],['Resume score',s.resume],['Interview evidence',s.interview]] as const;return <div className="space-y-6"><div className="rounded-3xl bg-gradient-to-r from-cyan-600 to-blue-700 p-7 text-white"><p className="text-sm font-semibold uppercase tracking-wider text-cyan-100">Working Professional Workspace</p><h1 className="mt-2 text-4xl font-bold">Welcome, {user.name} 👋</h1><p className="mt-2 text-cyan-100">{s.p.designation||'Complete your professional profile'} {s.p.company?`at ${s.p.company}`:''}</p></div>{s.profile<60&&<div className="rounded-2xl border border-amber-200 bg-amber-50 p-5"><b>Profile setup required.</b> Add role, experience, industry, skills and target role before relying on personalized analysis. <Link className="ml-2 font-semibold text-cyan-700" to="/working-professional/profile">Complete profile →</Link></div>}<div className="grid gap-4 md:grid-cols-3">{cards.map(([n,v])=><div key={n} className="rounded-2xl border bg-white p-5"><p className="text-slate-500">{n}</p><p className="mt-2 text-3xl font-bold">{v}%</p></div>)}</div><div className="grid gap-5 lg:grid-cols-2"><section className="rounded-2xl border bg-white p-6"><h2 className="text-xl font-bold">Priority growth gaps</h2><p className="mt-3 text-slate-600">{gaps.length?gaps.join(' · '):'No target-role gaps detected from saved skills. Keep adding measurable evidence.'}</p><Link to="/working-professional/skill-assessment" className="mt-5 inline-block rounded-xl bg-cyan-600 px-5 py-3 font-semibold text-white">Take skill assessment</Link></section><section className="rounded-2xl border bg-white p-6"><h2 className="text-xl font-bold">Next best action</h2><p className="mt-3 text-slate-600">{!s.p.targetRole?'Select a target role in your profile.':s.skill===0?'Complete the professional skill assessment.':s.resume<60?'Add and analyze your resume evidence.':`Build evidence in ${gaps[0]||'your current learning plan'}.`}</p></section></div></div>}
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import {
+    professionalStats,
+    roleSkills,
+} from '../../services/professionalService';
+
+export default function ProfessionalDashboard() {
+    const { user } = useAuth();
+
+    if (!user) return null;
+
+    const s = professionalStats(
+        user.id,
+        user.name,
+        user.email
+    );
+
+    const gaps = roleSkills(s.p.targetRole).filter(
+        (x) =>
+            !s.p.skills
+                .toLowerCase()
+                .includes(x.toLowerCase())
+    );
+
+    const cards = [
+        ['Profile readiness', s.profile],
+        ['Career growth', s.career],
+        ['Promotion readiness', s.promotion],
+        ['Skill evidence', s.skill],
+        ['Resume score', s.resume],
+        ['Interview evidence', s.interview],
+    ] as const;
+
+    return (
+        <div className="space-y-6">
+            <div className="rounded-3xl bg-gradient-to-r from-cyan-600 to-blue-700 p-7 text-white">
+                <p className="text-sm font-semibold uppercase tracking-wider text-cyan-100">
+                    Working Professional Workspace
+                </p>
+
+                <h1 className="mt-2 text-4xl font-bold">
+                    Welcome, {user.name} 👋
+                </h1>
+
+                <p className="mt-2 text-cyan-100">
+                    {s.p.designation ||
+                        'Complete your professional profile'}{' '}
+                    {s.p.company ? `at ${s.p.company}` : ''}
+                </p>
+            </div>
+
+            {s.profile < 60 && (
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+                    <b>Profile setup required.</b> Add role,
+                    experience, industry, skills and target role
+                    before relying on personalized analysis.
+
+                    <Link
+                        className="ml-2 font-semibold text-cyan-700"
+                        to="/working-professional/profile"
+                    >
+                        Complete profile →
+                    </Link>
+                </div>
+            )}
+
+            <div className="grid gap-4 md:grid-cols-3">
+                {cards.map(([n, v]) => (
+                    <div
+                        key={n}
+                        className="rounded-2xl border bg-white p-5"
+                    >
+                        <p className="text-slate-500">{n}</p>
+
+                        <p className="mt-2 text-3xl font-bold">
+                            {v}%
+                        </p>
+                    </div>
+                ))}
+            </div>
+
+            <div className="grid gap-5 lg:grid-cols-2">
+                <section className="rounded-2xl border bg-white p-6">
+                    <h2 className="text-xl font-bold">
+                        Priority growth gaps
+                    </h2>
+
+                    <p className="mt-3 text-slate-600">
+                        {gaps.length
+                            ? gaps.join(' · ')
+                            : 'No target-role gaps detected from saved skills. Keep adding measurable evidence.'}
+                    </p>
+
+                    <Link
+                        to="/working-professional/skill-assessment"
+                        className="mt-5 inline-block rounded-xl bg-cyan-600 px-5 py-3 font-semibold text-white"
+                    >
+                        Take skill assessment
+                    </Link>
+                </section>
+
+                <section className="rounded-2xl border bg-white p-6">
+                    <h2 className="text-xl font-bold">
+                        Next best action
+                    </h2>
+
+                    <p className="mt-3 text-slate-600">
+                        {!s.p.targetRole
+                            ? 'Select a target role in your profile.'
+                            : s.skill === 0
+                                ? 'Complete the professional skill assessment.'
+                                : s.resume < 60
+                                    ? 'Add and analyze your resume evidence.'
+                                    : `Build evidence in ${gaps[0] || 'your current learning plan'
+                                    }.`}
+                    </p>
+                </section>
+            </div>
+        </div>
+    );
+}
