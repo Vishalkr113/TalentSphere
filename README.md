@@ -1,32 +1,123 @@
-# React + TypeScript + Vite
+# 🎓 TalentSphere – AI Career Development Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+TalentSphere is an AI-powered Career Development Platform designed to help students improve their career readiness through profile management, resume analysis, skill assessments, and personalized career reports.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### 🔐 Authentication
+- User Registration
+- Secure Login
+- Forgot Password
+- Role-Based Access
 
-## React Compiler
+### 👨‍🎓 College Student Module
+- Student Profile Management
+- Resume Builder
+- Resume Analysis
+- ATS Score Analysis
+- Skill Assessment
+- Coding Assessment
+- Career Readiness Score
+- Placement Score
+- Final Career Report
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 📊 Final Career Report
+- Profile Completion Score
+- Resume Score
+- ATS Score
+- Assessment Score
+- Coding Score
+- Placement Readiness
+- Overall Career Score
 
-## Expanding the Oxlint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+### Frontend
+- React.js
+- TypeScript
+- Vite
+- Tailwind CSS
+- React Router
+- Lucide React
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+### Backend
+- FastAPI
+- Python
+- JWT Authentication
+- SQLite
+
+### AI
+- Google Gemini API
+
+## 📂 Project Structure
+
+```
+TalentSphere/
+│
+├── frontend/
+├── backend/
+├── components/
+├── services/
+├── contexts/
+├── pages/
+├── assets/
+└── README.md
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## ⚙️ Installation
+
+### Clone Repository
+
+```bash
+git clone https://github.com/Vishalkr113/TalentSphere.git
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Backend
+
+```bash
+cd backend
+python -m venv .venv
+pip install -r requirements.lock
+python -m alembic upgrade head
+uvicorn app.main:app --reload
+```
+
+## 🌟 Current Modules
+
+- ✅ Authentication
+- ✅ College Student Profile
+- ✅ Resume Builder
+- ✅ Resume Analysis
+- ✅ Assessment Module
+- ✅ Final Career Report
+
+## 🚧 Upcoming Modules
+
+- Working Professional Module
+- High School Student Module
+- AI Mock Interview
+- Career Recommendation
+- Skill Gap Analysis
+- Weekly Progress Report
+
+## 📸 Screenshots
+
+> Add screenshots of the Dashboard, Resume Analysis, Assessment, and Final Career Report here.
+
+## 👨‍💻 Developed By
+
+**Vishal Kumar**
+
+B.Tech CSE Student
+
+## 📄 License
+
+This project is developed for educational and internship purposes.
