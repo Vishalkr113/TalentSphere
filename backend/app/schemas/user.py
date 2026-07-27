@@ -1,18 +1,26 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from enum import Enum
+
+from pydantic import BaseModel, ConfigDict, EmailStr
+
+
+class UserRole(str, Enum):
+    HIGH_SCHOOL_STUDENT = "high_school_student"
+    COLLEGE_STUDENT = "college_student"
+    WORKING_PROFESSIONAL = "working_professional"
 
 
 class UserRegister(BaseModel):
     full_name: str
     email: EmailStr
     password: str
-    role: str
+    role: UserRole
 
 
 class UserResponse(BaseModel):
     id: int
     full_name: str
     email: EmailStr
-    role: str
+    role: UserRole
 
     model_config = ConfigDict(from_attributes=True)
 

@@ -1,27 +1,71 @@
-from fastapi import FastAPI
-from app.db.database import Base, engine
-from app.models.user import User
-from app.api.auth import router as auth_router
+from pathlib import Path
 
-Base.metadata.create_all(bind=engine)
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+
+# Import models so SQLAlchemy can register all mappings
+import app.models  # noqa: F401
+
+# Import API routers
+from app.api.auth import router as auth_router
+from app.api.profile import router as profile_router
+from app.api.dashboard import router as dashboard_router
+from app.api.assessment import router as assessment_router
+
+
+# ---------------------------------------------------------
+# Application
+# ---------------------------------------------------------
 
 app = FastAPI(
     title="TalentSphere API",
     description="Backend API for TalentSphere Career Development Platform",
-    version="1.0.0"
+    version="1.0.0",
 )
 
+# ---------------------------------------------------------
+# Upload Directory
+# ---------------------------------------------------------
+
+UPLOAD_DIR = Path("uploads")
+
+UPLOAD_DIR.mkdir(
+    parents=True,
+    exist_ok=True,
+)
+
+# ---------------------------------------------------------
+# Static File Serving
+# ---------------------------------------------------------
+
+app.mount(
+    "/uploads",
+    StaticFiles(directory=str(UPLOAD_DIR)),
+    name="uploads",
+)
+
+# ---------------------------------------------------------
+# API Routers
+# ---------------------------------------------------------
+
 app.include_router(auth_router)
+app.include_router(profile_router)
+app.include_router(dashboard_router)
+app.include_router(assessment_router)
+
+# ---------------------------------------------------------
+# Basic Routes
+# ---------------------------------------------------------
 
 @app.get("/")
 def root():
     return {
         "status": "success",
-        "message": "TalentSphere Backend Running Successfully 🚀"
+        "message": "TalentSphere Backend Running Successfully 🚀",
     }
 
 @app.get("/health")
 def health():
     return {
-        "status": "healthy"
+        "status": "healthy",
     }

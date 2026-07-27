@@ -1,4 +1,4 @@
-import { useAuth } from '../../contexts/AuthContext';
+﻿import { useAuth } from '../../contexts/AuthContext';
 import { getCollegeStats } from '../../services/collegeService';
 export default
     function Achievements() {
@@ -12,7 +12,7 @@ export default
         ['Placement Tracker', s.placements.length > 0], ['Placement Ready', s.readiness >= 75
 
         ]];
-    return
+    return (
     <div className="space-y-5">
         <div>
             <h1 className="text-3xl font-bold">Achievements</h1>
@@ -24,16 +24,17 @@ export default
             {badges.map(([t, ok]) =>
                 <div key={String(t)} className={`rounded-2xl border bg-white p-5 ${ok ? '' : 'opacity-50'}`}>
                     <div className="text-3xl">
-                        🏆
+                        ðŸ†
                     </div>
                     <h2 className="mt-3 text-xl font-bold">
                         {t}
                     </h2>
                     <p className="mt-2 text-sm text-slate-500">
-                        {ok ? 'Unlocked from your activity.' : 'Locked — continue your College journey.'}
+                        {ok ? 'Unlocked from your activity.' : 'Locked â€” continue your College journey.'}
                     </p>
                 </div>
             )}
         </div>
     </div>
+    );
 }

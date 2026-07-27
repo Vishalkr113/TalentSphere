@@ -4,12 +4,15 @@ from jose import JWTError
 from sqlalchemy.orm import Session
 
 from app.core.security import decode_access_token
-from app.db.dependencies import get_db
 from app.crud.user import get_user_by_email
+from app.db.dependencies import get_db
 from app.schemas.user import TokenData
 
+
 # OAuth2 Scheme
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="/auth/login"
+)
 
 
 def get_current_user(
@@ -19,7 +22,9 @@ def get_current_user(
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
+        headers={
+            "WWW-Authenticate": "Bearer"
+        },
     )
 
     payload = decode_access_token(token)
@@ -29,12 +34,17 @@ def get_current_user(
 
     email: str | None = payload.get("sub")
 
-    token_data = TokenData(email=email)
+    token_data = TokenData(
+        email=email
+    )
 
     if token_data.email is None:
         raise credentials_exception
 
-    user = get_user_by_email(db, token_data.email)
+    user = get_user_by_email(
+        db,
+        token_data.email,
+    )
 
     if user is None:
         raise credentials_exception
