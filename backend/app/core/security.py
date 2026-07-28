@@ -1,16 +1,18 @@
-from datetime import datetime, timedelta, timezone
+﻿from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from jose import JWTError, jwt
 from pwdlib import PasswordHash
 
+from app.core.config import settings
+
 # ==========================
 # JWT Configuration
 # ==========================
 
-SECRET_KEY = "TalentSphereSecretKey123456789"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 # ==========================
 # Password Hasher (Argon2)
@@ -63,6 +65,50 @@ def decode_access_token(token: str):
             algorithms=[ALGORITHM],
         )
         return payload
+
+    except JWTError:
+        return None
+
+
+def create_password_reset_token(
+    email: str,
+) -> str:
+    expire = datetime.now(timezone.utc) + timedelta(
+        minutes=15
+    )
+
+    payload = {
+        "sub": email,
+        "purpose": "password_reset",
+        "exp": expire,
+    }
+
+    return jwt.encode(
+        payload,
+        SECRET_KEY,
+        algorithm=ALGORITHM,
+    )
+
+
+def decode_password_reset_token(
+    token: str,
+) -> str | None:
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM],
+        )
+
+        if payload.get("purpose") != "password_reset":
+            return None
+
+        email = payload.get("sub")
+
+        if not isinstance(email, str):
+            return None
+
+        return email
 
     except JWTError:
         return None

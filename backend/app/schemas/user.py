@@ -32,3 +32,36 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: str | None = None
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+class VerifyEmailRequest(BaseModel):
+    email: EmailStr
+    otp: str
+
+
+class ResendOTPRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+
+class VerifyEmailRequest(BaseModel):
+    email: EmailStr
+    otp: str
+
+
+class ResendOTPRequest(BaseModel):
+    email: EmailStr
