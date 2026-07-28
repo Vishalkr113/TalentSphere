@@ -1,27 +1,17 @@
-# Logs
-logs
+﻿# Logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Frontend dependencies and builds
+node_modules/
+dist/
+dist-ssr/
+*.tsbuildinfo
 *.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
 
 # Python / Backend
 backend/.venv/
@@ -29,19 +19,27 @@ backend/.venv/
 *.py[cod]
 *.pyo
 
-# Local database
-backend/talentsphere.db
+# Local databases
 *.db
 
-# Environment / secrets
+# Environment variables / secrets
 .env
-backend/.env
+.env.*
+!.env.example
 
-# Uploads
+# Runtime uploads
 backend/uploads/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # Temporary / archive files
 *.zip
-
-# TypeScript build cache
-*.tsbuildinfo

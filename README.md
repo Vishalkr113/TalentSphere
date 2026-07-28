@@ -1,123 +1,81 @@
-# 🎓 TalentSphere – AI Career Development Platform
+﻿# TalentSphere
 
-TalentSphere is an AI-powered Career Development Platform designed to help students improve their career readiness through profile management, resume analysis, skill assessments, and personalized career reports.
+TalentSphere is a career development platform for high school students, college students, and working professionals.
 
-## 🚀 Features
+The project provides role-specific profiles, dashboards, assessments, career development tools, and career guidance features.
 
-### 🔐 Authentication
-- User Registration
-- Secure Login
-- Forgot Password
-- Role-Based Access
+## Project Structure
 
-### 👨‍🎓 College Student Module
-- Student Profile Management
-- Resume Builder
-- Resume Analysis
-- ATS Score Analysis
-- Skill Assessment
-- Coding Assessment
-- Career Readiness Score
-- Placement Score
-- Final Career Report
+- frontend/ - React and TypeScript frontend
+- backend/ - FastAPI backend
+- .gitignore - Git ignore rules
+- README.md - Project documentation
 
-### 📊 Final Career Report
-- Profile Completion Score
-- Resume Score
-- ATS Score
-- Assessment Score
-- Coding Score
-- Placement Readiness
-- Overall Career Score
+## Frontend
 
-## 🛠️ Tech Stack
-
-### Frontend
-- React.js
+Technologies:
+- React
 - TypeScript
 - Vite
 - Tailwind CSS
 - React Router
 - Lucide React
 
-### Backend
-- FastAPI
+Run the frontend:
+
+    cd frontend
+    npm ci
+    npm run dev
+
+Production build:
+
+    npm run build
+
+## Backend
+
+Technologies:
 - Python
+- FastAPI
+- SQLAlchemy
+- Alembic
 - JWT Authentication
 - SQLite
 
-### AI
-- Google Gemini API
+Run the backend:
 
-## 📂 Project Structure
+    cd backend
+    python -m venv .venv
+    .\.venv\Scripts\Activate.ps1
+    pip install -r requirements.lock
+    python -m alembic upgrade head
+    uvicorn app.main:app --reload
 
-```
-TalentSphere/
-│
-├── frontend/
-├── backend/
-├── components/
-├── services/
-├── contexts/
-├── pages/
-├── assets/
-└── README.md
-```
+## User Categories
 
-## ⚙️ Installation
+- High School Student
+- College Student
+- Working Professional
 
-### Clone Repository
+## Current Development
 
-```bash
-git clone https://github.com/Vishalkr113/TalentSphere.git
-```
+The project contains role-specific frontend modules and a FastAPI backend with authentication, profile, dashboard, and assessment functionality.
 
-### Frontend
+Frontend-to-backend integration and final module cleanup are being completed incrementally.
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+## Development Principles
 
-### Backend
+- Clear frontend and backend separation
+- Modular and readable code
+- Secure backend authentication
+- Minimal duplicate and unused code
+- Maintainable structure for future development
 
-```bash
-cd backend
-python -m venv .venv
-pip install -r requirements.lock
-python -m alembic upgrade head
-uvicorn app.main:app --reload
-```
+## Developed By
 
-## 🌟 Current Modules
+Vishal Kumar
 
-- ✅ Authentication
-- ✅ College Student Profile
-- ✅ Resume Builder
-- ✅ Resume Analysis
-- ✅ Assessment Module
-- ✅ Final Career Report
+B.Tech Computer Science and Engineering
 
-## 🚧 Upcoming Modules
+## Purpose
 
-- Working Professional Module
-- High School Student Module
-- AI Mock Interview
-- Career Recommendation
-- Skill Gap Analysis
-- Weekly Progress Report
-
-## 📸 Screenshots
-
-> Add screenshots of the Dashboard, Resume Analysis, Assessment, and Final Career Report here.
-
-## 👨‍💻 Developed By
-
-**Vishal Kumar**
-
-B.Tech CSE Student
-
-## 📄 License
-
-This project is developed for educational and internship purposes.
+Developed as an educational and internship project.
