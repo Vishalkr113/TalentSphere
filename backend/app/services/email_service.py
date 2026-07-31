@@ -1,10 +1,12 @@
+import logging
 import smtplib
 import ssl
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 from app.core.config import settings
 
+logger = logging.getLogger(__name__)
 
 SMTP_HOST = settings.SMTP_HOST
 SMTP_PORT = int(settings.SMTP_PORT)
@@ -14,6 +16,18 @@ SMTP_FROM = settings.SMTP_FROM
 
 
 def send_otp_email(recipient_email: str, otp: str) -> bool:
+
+    print("========== OTP DEBUG ==========")
+    print("Sending OTP To:", recipient_email)
+
+    """
+    Sends OTP email to the specified recipient.
+
+    Returns:
+        True  -> Email sent successfully
+        False -> Failed to send email
+    """
+
     try:
         message = MIMEMultipart("alternative")
         message["Subject"] = "Verify Your Email - TalentSphere"
@@ -22,7 +36,7 @@ def send_otp_email(recipient_email: str, otp: str) -> bool:
 
         html = f"""
         <html>
-        <body style="font-family:Arial,sans-serif;">
+        <body style="font-family: Arial, sans-serif;">
             <h2>TalentSphere Email Verification</h2>
 
             <p>Your OTP is:</p>
@@ -31,7 +45,7 @@ def send_otp_email(recipient_email: str, otp: str) -> bool:
                 {otp}
             </h1>
 
-            <p>This OTP is valid for 10 minutes.</p>
+            <p>This OTP is valid for <strong>10 minutes</strong>.</p>
 
             <p>If you didn't request this email, you can safely ignore it.</p>
         </body>
@@ -60,16 +74,9 @@ def send_otp_email(recipient_email: str, otp: str) -> bool:
                 message.as_string(),
             )
 
-        print("=" * 60)
-        print("EMAIL SENT SUCCESSFULLY")
-        print("=" * 60)
-
+        logger.info("OTP email sent successfully to %s", recipient_email)
         return True
 
-    except Exception as e:
-        print("=" * 60)
-        print("EMAIL SENDING FAILED")
-        print(type(e))
-        print(repr(e))
-        print("=" * 60)
+    except Exception:
+        logger.exception("Failed to send OTP email to %s", recipient_email)
         return False

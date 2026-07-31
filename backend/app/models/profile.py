@@ -1,4 +1,14 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Text
+from datetime import datetime
+
+from sqlalchemy import (
+    Column,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    JSON,
+    String,
+)
 from sqlalchemy.orm import relationship
 
 from app.db.database import Base
@@ -20,15 +30,18 @@ class Profile(Base):
     # ---------- Common Details ----------
 
     phone = Column(String, nullable=True)
-    date_of_birth = Column(String, nullable=True)
+    date_of_birth = Column(Date, nullable=True)
     gender = Column(String, nullable=True)
     city = Column(String, nullable=True)
     state = Column(String, nullable=True)
 
-    skills = Column(Text, nullable=True)
-    interests = Column(Text, nullable=True)
+    skills = Column(JSON, nullable=True)
+    interests = Column(JSON, nullable=True)
     career_goal = Column(String, nullable=True)
-    linkedin_url = Column(String, nullable=True)
+
+    linkedin_url = Column(String(500), nullable=True)
+    github_url = Column(String(500), nullable=True)
+    portfolio_url = Column(String(500), nullable=True)
 
     # ---------- High School ----------
 
@@ -94,4 +107,24 @@ class Profile(Base):
         nullable=False,
     )
 
-    user = relationship("User")
+    # ---------- Metadata ----------
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+
+    updated_at = Column(
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        nullable=False,
+    )
+
+    # ---------- Relationship ----------
+
+    user = relationship(
+        "User",
+        back_populates="profile",
+    )

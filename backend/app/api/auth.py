@@ -2,8 +2,9 @@
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from app.db.dependencies import get_db
 from app.core.dependencies import get_current_user
+from app.db.dependencies import get_db
+
 from app.schemas.user import (
     ForgotPasswordRequest,
     PasswordChange,
@@ -13,21 +14,26 @@ from app.schemas.user import (
     ResendOTPRequest,
 )
 
-from app.services.auth_service import verify_email
-
 from app.services.auth_service import (
-    register_user,
-    login_user,
     change_password,
+    login_user,
+    register_user,
     request_password_reset,
     reset_password,
+    verify_email,
+    resend_email_otp,
 )
+
 
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"],
 )
 
+
+# ==========================================================
+# Register
+# ==========================================================
 
 @router.post("/register")
 def register(
@@ -36,6 +42,10 @@ def register(
 ):
     return register_user(db, user)
 
+
+# ==========================================================
+# Login
+# ==========================================================
 
 @router.post("/login")
 def login(
@@ -49,8 +59,12 @@ def login(
     )
 
 
+# ==========================================================
+# Current User
+# ==========================================================
+
 @router.get("/me")
-def me(
+def get_me(
     current_user=Depends(get_current_user),
 ):
     return {
@@ -61,12 +75,9 @@ def me(
     }
 
 
-@router.get("/test")
-def test():
-    return {
-        "message": "Authentication Router Working Successfully"
-    }
-
+# ==========================================================
+# Change Password
+# ==========================================================
 
 @router.post("/change-password")
 def update_password(
@@ -81,6 +92,11 @@ def update_password(
         new_password=password_data.new_password,
     )
 
+
+# ==========================================================
+# Forgot Password
+# ==========================================================
+
 @router.post("/forgot-password")
 def forgot_password(
     request: ForgotPasswordRequest,
@@ -92,8 +108,12 @@ def forgot_password(
     )
 
 
+# ==========================================================
+# Reset Password
+# ==========================================================
+
 @router.post("/reset-password")
-def update_forgotten_password(
+def reset_password_route(
     request: ResetPasswordRequest,
     db: Session = Depends(get_db),
 ):
@@ -102,6 +122,12 @@ def update_forgotten_password(
         token=request.token,
         new_password=request.new_password,
     )
+
+
+# ==========================================================
+# Verify Email
+# ==========================================================
+
 @router.post("/verify-email")
 def verify_email_route(
     request: VerifyEmailRequest,
@@ -112,3 +138,30 @@ def verify_email_route(
         email=request.email,
         otp=request.otp,
     )
+
+
+# ==========================================================
+# Resend OTP
+# ==========================================================
+
+@router.post("/resend-otp")
+def resend_otp(
+    request: ResendOTPRequest,
+    db: Session = Depends(get_db),
+):
+    return resend_email_otp(
+        db=db,
+        email=request.email,
+    )
+
+
+# ==========================================================
+# Health Check
+# ==========================================================
+
+@router.get("/test")
+def auth_test():
+    return {
+        "status": "success",
+        "message": "Authentication API is working.",
+    }

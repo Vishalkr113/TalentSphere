@@ -2,32 +2,41 @@ from ..enums import Difficulty, QuestionType, Topic
 from ..schemas import Question
 
 
-PCB_QUESTIONS: list[Question] = [
+PROFESSIONAL_COMMON_QUESTIONS: list[Question] = [
 
     # =====================================================
-    # PHYSICS (PCB001–PCB050)
+    # APTITUDE (PRO001–PRO040)
     # =====================================================
 
-    # PCB001
+    # PRO001
     # ...
-    # PCB050
+    # PRO040
 
 
     # =====================================================
-    # CHEMISTRY (PCB051–PCB100)
+    # LOGICAL REASONING (PRO041–PRO080)
     # =====================================================
 
-    # PCB051
+    # PRO041
     # ...
-    # PCB100
+    # PRO080
 
 
     # =====================================================
-    # BIOLOGY (PCB101–PCB150)
+    # BUSINESS APTITUDE (PRO081–PRO110)
     # =====================================================
 
-    # PCB101
+    # PRO081
     # ...
-    # PCB150
+    # PRO110
+
+
+    # =====================================================
+    # COMMUNICATION SKILLS (PRO111–PRO150)
+    # =====================================================
+
+    # PRO111
+    # ...
+    # PRO150
 
 ]

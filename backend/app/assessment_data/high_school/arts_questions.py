@@ -1,50 +1,51 @@
 from ..enums import Difficulty, QuestionType, Topic
 from ..schemas import Question
 
-HIGH_SCHOOL_COMMON_QUESTIONS: list[Question] = [
+
+ARTS_QUESTIONS: list[Question] = [
 
     # =====================================================
-    # MATHEMATICS (HSC001–HSC030)
+    # HISTORY (ART001–ART030)
     # =====================================================
 
-    # HSC001
+    # ART001
     # ...
-    # HSC030
+    # ART030
 
 
     # =====================================================
-    # ENGLISH (HSC031–HSC060)
+    # GEOGRAPHY (ART031–ART060)
     # =====================================================
 
-    # HSC031
+    # ART031
     # ...
-    # HSC060
+    # ART060
 
 
     # =====================================================
-    # SCIENCE (HSC061–HSC090)
+    # POLITICAL SCIENCE (ART061–ART090)
     # =====================================================
 
-    # HSC061
+    # ART061
     # ...
-    # HSC090
+    # ART090
 
 
     # =====================================================
-    # COMPUTER BASICS (HSC091–HSC120)
+    # SOCIOLOGY (ART091–ART120)
     # =====================================================
 
-    # HSC091
+    # ART091
     # ...
-    # HSC120
+    # ART120
 
 
     # =====================================================
-    # GENERAL AWARENESS (HSC121–HSC150)
+    # ENGLISH (ART121–ART150)
     # =====================================================
 
-    # HSC121
+    # ART121
     # ...
-    # HSC150
+    # ART150
 
 ]

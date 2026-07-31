@@ -4,16 +4,22 @@ from app.models.assessment import (
     AssessmentAttemptQuestion,
     AssessmentQuestion,
 )
+
+from app.models.assessment_result import AssessmentResult
+
 from app.models.profile import Profile
 from app.models.user import User
 from app.models.email_otp import EmailOTP
+
 
 __all__ = [
     "User",
     "EmailOTP",
     "Profile",
+
     "AssessmentQuestion",
     "AssessmentAttempt",
     "AssessmentAttemptQuestion",
     "AssessmentAnswer",
+    "AssessmentResult",
 ]

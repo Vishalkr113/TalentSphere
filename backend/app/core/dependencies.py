@@ -1,6 +1,5 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError
 from sqlalchemy.orm import Session
 
 from app.core.security import decode_access_token
@@ -8,22 +7,32 @@ from app.crud.user import get_user_by_email
 from app.db.dependencies import get_db
 from app.schemas.user import TokenData
 
+# ==========================================================
+# OAuth2 Configuration
+# ==========================================================
 
-# OAuth2 Scheme
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="/auth/login"
+    tokenUrl="/auth/login",
 )
 
+
+# ==========================================================
+# Current Authenticated User Dependency
+# ==========================================================
 
 def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
 ):
+    """
+    Validate JWT access token and return the authenticated user.
+    """
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="Invalid or expired authentication token.",
         headers={
-            "WWW-Authenticate": "Bearer"
+            "WWW-Authenticate": "Bearer",
         },
     )
 
@@ -32,18 +41,16 @@ def get_current_user(
     if payload is None:
         raise credentials_exception
 
-    email: str | None = payload.get("sub")
+    email = payload.get("sub")
 
-    token_data = TokenData(
-        email=email
-    )
-
-    if token_data.email is None:
+    if not isinstance(email, str):
         raise credentials_exception
 
+    token_data = TokenData(email=email)
+
     user = get_user_by_email(
-        db,
-        token_data.email,
+        db=db,
+        email=token_data.email,
     )
 
     if user is None:

@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user
 from app.db.dependencies import get_db
+
 from app.schemas.assessment import (
-    AssessmentHistoryItem,
     AssessmentHistoryResponse,
     AssessmentResultResponse,
     AssessmentSubmit,
@@ -12,6 +12,7 @@ from app.schemas.assessment import (
     AttemptResponse,
     QuestionResponse,
 )
+
 from app.services.assessment_service import (
     get_assessment_history,
     get_assessment_result,
@@ -50,7 +51,7 @@ def get_user_assessment_history(
 
 @router.get(
     "/results/{attempt_id}",
-    response_model=AssessmentHistoryItem,
+    response_model=AssessmentResultResponse,
 )
 def get_user_assessment_result(
     attempt_id: int,
@@ -77,11 +78,11 @@ def start_user_assessment(
     current_user=Depends(get_current_user),
 ):
     result = start_assessment(
-    db=db,
-    user_id=current_user.id,
-    user_role=current_user.role,
-    assessment_type=assessment_type,
-)
+        db=db,
+        user_id=current_user.id,
+        user_role=current_user.role,
+        assessment_type=assessment_type,
+    )
 
     return {
         "attempt": AttemptResponse.model_validate(

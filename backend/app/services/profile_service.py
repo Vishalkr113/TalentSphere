@@ -24,7 +24,11 @@ def calculate_profile_completion(
     profile,
     user_role,
 ) -> int:
-    role = UserRole(user_role)
+
+    try:
+        role = UserRole(user_role)
+    except ValueError:
+        return 0
 
     # Fields required for every user type
     common_fields = [
@@ -36,6 +40,8 @@ def calculate_profile_completion(
         profile.skills,
         profile.interests,
         profile.career_goal,
+        profile.profile_photo,
+        profile.resume_url,
     ]
 
     if role == UserRole.HIGH_SCHOOL_STUDENT:
@@ -129,8 +135,12 @@ def create_user_profile(
         )
     )
 
-    db.commit()
-    db.refresh(profile)
+    try:
+        db.commit()
+        db.refresh(profile)
+    except Exception:
+        db.rollback()
+        raise
 
     return profile
 
@@ -164,8 +174,11 @@ def update_user_profile(
             user_role,
         )
     )
-
-    db.commit()
-    db.refresh(profile)
+    try:
+        db.commit()
+        db.refresh(profile)
+    except Exception:
+        db.rollback()
+        raise
 
     return profile

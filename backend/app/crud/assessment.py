@@ -212,10 +212,13 @@ def create_attempt_questions(
             attempt_question
         )
 
-    db.commit()
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
 
     return attempt_questions
-
 
 def get_attempt_questions(
     db: Session,

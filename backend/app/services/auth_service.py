@@ -45,13 +45,59 @@ def verify_email(
             status_code=400,
             detail="Invalid or expired OTP.",
         )
-
     user.is_verified = True
 
-    db.commit()
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
 
     return {
         "message": "Email verified successfully."
+    }
+
+def resend_email_otp(
+    db: Session,
+    email: str,
+):
+    user = get_user_by_email(
+        db,
+        email,
+    )
+
+    if user is None:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found.",
+        )
+
+    if user.is_verified:
+        raise HTTPException(
+            status_code=400,
+            detail="Email already verified.",
+        )
+
+    otp_record = create_email_otp(
+        db=db,
+        user_id=user.id,
+        purpose="REGISTER",
+    )
+
+    email_sent = send_otp_email(
+        recipient_email=user.email,
+        otp=otp_record.otp,
+    )
+
+    if not email_sent:
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to send OTP email.",
+        )
+
+    return {
+        "message": "OTP resent successfully.",
+        "email": user.email,
     }
 
 def register_user(
@@ -151,11 +197,17 @@ def login_user(
             "role": user.role,
         }
     )
-
     return {
-        "access_token": access_token,
-        "token_type": "bearer",
-    }
+    "access_token": access_token,
+    "token_type": "bearer",
+    "user": {
+        "id": user.id,
+        "full_name": user.full_name,
+        "email": user.email,
+        "role": user.role,
+        "is_verified": user.is_verified,
+    },
+}
 
 def change_password(
     db: Session,
@@ -186,7 +238,12 @@ def change_password(
     )
 
     db.add(user)
-    db.commit()
+
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
 
     return {
         "message": "Password changed successfully"
@@ -215,10 +272,8 @@ def request_password_reset(
     )
 
     return {
-        "message": "Password reset request created successfully.",
-        "reset_token": reset_token,
-    }
-
+    "message": "If the email exists, a password reset link has been sent."
+}
 
 def reset_password(
     db: Session,
@@ -251,11 +306,13 @@ def reset_password(
     )
 
     db.add(user)
-    db.commit()
+
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
 
     return {
         "message": "Password reset successfully"
     }
-
-
-

@@ -26,6 +26,13 @@ from app.services.profile_service import (
     update_user_profile,
 )
 
+from app.services.profile_service import (
+    create_user_profile,
+    get_user_profile,
+    update_user_profile,
+    calculate_profile_completion,
+)
+
 
 router = APIRouter(
     prefix="/profile",
@@ -95,11 +102,11 @@ def create_profile(
     current_user=Depends(get_current_user),
 ):
     return create_user_profile(
-    db=db,
-    user_id=current_user.id,
-    user_role=current_user.role,
-    profile_data=profile_data,
-)
+        db=db,
+        user_id=current_user.id,
+        user_role=current_user.role,
+        profile_data=profile_data,
+    )
 
 # ---------------------------------------------------------
 # Get Current User Profile
@@ -133,11 +140,11 @@ def update_my_profile(
     current_user=Depends(get_current_user),
 ):
     return update_user_profile(
-    db=db,
-    user_id=current_user.id,
-    user_role=current_user.role,
-    profile_data=profile_data,
-)
+        db=db,
+        user_id=current_user.id,
+        user_role=current_user.role,
+        profile_data=profile_data,
+    )
 # ---------------------------------------------------------
 # Upload Profile Photo
 # ---------------------------------------------------------
@@ -228,7 +235,13 @@ async def upload_profile_photo(
         old_photo_path = Path(profile.profile_photo)
 
     # Update database
+    
     profile.profile_photo = file_path.as_posix()
+
+    profile.profile_completion = calculate_profile_completion(
+        profile,
+        current_user.role,
+    )
 
     try:
         db.commit()
@@ -332,6 +345,11 @@ async def upload_resume(
 
     # Update database
     profile.resume_url = file_path.as_posix()
+
+    profile.profile_completion = calculate_profile_completion(
+        profile,
+        current_user.role,
+    )
 
     try:
         db.commit()

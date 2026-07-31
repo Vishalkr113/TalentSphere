@@ -1,86 +1,116 @@
 ﻿from datetime import datetime, timedelta, timezone
-from typing import Optional
+from typing import Any
 
 from jose import JWTError, jwt
 from pwdlib import PasswordHash
 
 from app.core.config import settings
 
-# ==========================
+# ==========================================================
 # JWT Configuration
-# ==========================
+# ==========================================================
 
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
-# ==========================
-# Password Hasher (Argon2)
-# ==========================
+# ==========================================================
+# Password Hashing (Argon2)
+# ==========================================================
 
 password_hash = PasswordHash.recommended()
 
 
 def hash_password(password: str) -> str:
+    """Hash a plain-text password using Argon2."""
     return password_hash.hash(password)
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
+    """Verify a plain-text password against its hash."""
     return password_hash.verify(password, hashed_password)
 
 
-# ==========================
-# JWT Token
-# ==========================
+# ==========================================================
+# JWT Access Token
+# ==========================================================
 
 def create_access_token(
-    data: dict,
-    expires_delta: Optional[timedelta] = None,
-):
-    to_encode = data.copy()
+    data: dict[str, Any],
+    expires_delta: timedelta | None = None,
+) -> str:
+    """
+    Create a signed JWT access token.
+    """
 
-    if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
-    else:
-        expire = datetime.now(timezone.utc) + timedelta(
-            minutes=ACCESS_TOKEN_EXPIRE_MINUTES
-        )
+    expire = datetime.now(timezone.utc) + (
+        expires_delta
+        if expires_delta
+        else timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
 
-    to_encode.update({"exp": expire})
+    payload = data.copy()
+    payload.update(
+        {
+            "exp": expire,
+            "iat": datetime.now(timezone.utc),
+            "type": "access",
+        }
+    )
 
-    encoded_jwt = jwt.encode(
-        to_encode,
+    return jwt.encode(
+        payload,
         SECRET_KEY,
         algorithm=ALGORITHM,
     )
 
-    return encoded_jwt
 
+def decode_access_token(
+    token: str,
+) -> dict[str, Any] | None:
+    """
+    Decode and validate an access token.
+    """
 
-def decode_access_token(token: str):
     try:
         payload = jwt.decode(
             token,
             SECRET_KEY,
             algorithms=[ALGORITHM],
         )
+
+        if payload.get("type") != "access":
+            return None
+
         return payload
 
     except JWTError:
         return None
 
 
+# ==========================================================
+# Password Reset Token
+# ==========================================================
+
+PASSWORD_RESET_EXPIRE_MINUTES = 15
+
+
 def create_password_reset_token(
     email: str,
 ) -> str:
+    """
+    Create password reset token.
+    """
+
     expire = datetime.now(timezone.utc) + timedelta(
-        minutes=15
+        minutes=PASSWORD_RESET_EXPIRE_MINUTES
     )
 
     payload = {
         "sub": email,
         "purpose": "password_reset",
         "exp": expire,
+        "iat": datetime.now(timezone.utc),
     }
 
     return jwt.encode(
@@ -93,6 +123,10 @@ def create_password_reset_token(
 def decode_password_reset_token(
     token: str,
 ) -> str | None:
+    """
+    Decode password reset token.
+    """
+
     try:
         payload = jwt.decode(
             token,

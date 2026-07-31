@@ -1,88 +1,78 @@
-from .enums import Difficulty, QuestionType, Topic
-from .schemas import Question
+from ..enums import Difficulty, QuestionType, Topic
+from ..schemas import Question
 
 
-CODING_QUESTIONS: list[Question] = [
+PROFESSIONAL_TECHNICAL_QUESTIONS: list[Question] = [
 
     # =====================================================
-    # C PROGRAMMING (COD001–COD030)
+    # SYSTEM DESIGN (PTECH001–PTECH030)
     # =====================================================
 
-    # COD001
-    # COD002
+    # PTECH001
     # ...
-    # COD030
+    # PTECH030
 
 
     # =====================================================
-    # C++ (COD031–COD060)
+    # DATABASE (PTECH031–PTECH060)
     # =====================================================
 
-    # COD031
+    # PTECH031
     # ...
-    # COD060
+    # PTECH060
 
 
     # =====================================================
-    # JAVA (COD061–COD100)
+    # BACKEND DEVELOPMENT (PTECH061–PTECH090)
     # =====================================================
 
-    # COD061
+    # PTECH061
     # ...
-    # COD100
+    # PTECH090
 
 
     # =====================================================
-    # PYTHON (COD101–COD140)
+    # REST API & MICROSERVICES (PTECH091–PTECH120)
     # =====================================================
 
-    # COD101
+    # PTECH091
     # ...
-    # COD140
+    # PTECH120
 
 
     # =====================================================
-    # JAVASCRIPT (COD141–COD170)
+    # CLOUD COMPUTING (PTECH121–PTECH145)
     # =====================================================
 
-    # COD141
+    # PTECH121
     # ...
-    # COD170
+    # PTECH145
 
 
     # =====================================================
-    # SQL (COD171–COD200)
+    # DEVOPS (PTECH146–PTECH165)
     # =====================================================
 
-    # COD171
+    # PTECH146
     # ...
-    # COD200
+    # PTECH165
 
 
     # =====================================================
-    # DSA (COD201–COD240)
+    # CYBER SECURITY (PTECH166–PTECH185)
     # =====================================================
 
-    # COD201
+    # PTECH166
     # ...
-    # COD240
+    # PTECH185
 
 
     # =====================================================
-    # OOPS / DBMS / OS / CN (COD241–COD280)
+    # PERFORMANCE & DEBUGGING (PTECH186–PTECH200)
     # =====================================================
 
-    # COD241
+    # PTECH186
     # ...
-    # COD280
-
-
-    # =====================================================
-    # DEBUGGING / OUTPUT BASED (COD281–COD300)
-    # =====================================================
-
-    # COD281
-    # ...
-    # COD300
+    # PTECH200
 
 ]

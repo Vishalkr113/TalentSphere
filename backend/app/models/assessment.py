@@ -6,6 +6,7 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Integer,
+    Float,
     String,
     Text,
 )
@@ -192,7 +193,7 @@ class AssessmentAttempt(Base):
     )
 
     score = Column(
-        Integer,
+        Float,
         nullable=False,
         default=0,
     )

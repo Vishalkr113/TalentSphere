@@ -28,6 +28,25 @@ class DashboardProfile(BaseModel):
 
 
 # ---------------------------------------------------------
+# Career Recommendation
+# ---------------------------------------------------------
+
+class DashboardCareer(BaseModel):
+    available: bool = False
+
+    recommended_role: str | None = None
+
+    confidence: int | None = None
+
+    strengths: list[str] = []
+
+    skill_gaps: list[str] = []
+
+    learning_path: list[str] = []
+
+
+
+# ---------------------------------------------------------
 # Dashboard Sections
 # ---------------------------------------------------------
 
@@ -35,6 +54,7 @@ class DashboardSection(BaseModel):
     key: str
     title: str
     available: bool
+
 
 
 # ---------------------------------------------------------
@@ -50,6 +70,7 @@ class DashboardAssessmentItem(BaseModel):
     completed_at: datetime | None = None
 
 
+
 # ---------------------------------------------------------
 # Assessment Summary
 # ---------------------------------------------------------
@@ -62,13 +83,21 @@ class DashboardAssessment(BaseModel):
     coding: DashboardAssessmentItem
 
 
+
 # ---------------------------------------------------------
 # Dashboard Response
 # ---------------------------------------------------------
 
 class DashboardResponse(BaseModel):
+
     dashboard_type: UserRole
+
     user: DashboardUser
+
     profile: DashboardProfile
+
     assessment: DashboardAssessment
+
+    career: DashboardCareer
+
     sections: list[DashboardSection]

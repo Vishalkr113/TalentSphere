@@ -66,6 +66,10 @@ def verify_email_otp(
 
     record.is_used = True
 
-    db.commit()
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
 
     return True

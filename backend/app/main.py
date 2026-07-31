@@ -1,10 +1,11 @@
-﻿from pathlib import Path
+﻿from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-# Import models so SQLAlchemy can register all mappings
+# Import models so SQLAlchemy registers all mappings
 import app.models  # noqa: F401
 
 # Import API routers
@@ -15,17 +16,29 @@ from app.api.assessment import router as assessment_router
 
 
 # ---------------------------------------------------------
-# Application
+# Application Lifespan
+# ---------------------------------------------------------
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("🚀 TalentSphere Backend Started")
+    yield
+    print("🛑 TalentSphere Backend Stopped")
+
+
+# ---------------------------------------------------------
+# FastAPI Application
 # ---------------------------------------------------------
 
 app = FastAPI(
     title="TalentSphere API",
     description="Backend API for TalentSphere Career Development Platform",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 # ---------------------------------------------------------
-# CORS
+# CORS Configuration
 # ---------------------------------------------------------
 
 app.add_middleware(
@@ -44,14 +57,10 @@ app.add_middleware(
 # ---------------------------------------------------------
 
 UPLOAD_DIR = Path("uploads")
-
-UPLOAD_DIR.mkdir(
-    parents=True,
-    exist_ok=True,
-)
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------
-# Static File Serving
+# Static Files
 # ---------------------------------------------------------
 
 app.mount(
@@ -61,27 +70,50 @@ app.mount(
 )
 
 # ---------------------------------------------------------
-# API Routers
+# Register API Routers
 # ---------------------------------------------------------
 
-app.include_router(auth_router)
-app.include_router(profile_router)
-app.include_router(dashboard_router)
-app.include_router(assessment_router)
+app.include_router(
+    auth_router,
+    tags=["Authentication"],
+)
+
+app.include_router(
+    profile_router,
+    tags=["Profile"],
+)
+
+app.include_router(
+    dashboard_router,
+    tags=["Dashboard"],
+)
+
+app.include_router(
+    assessment_router,
+    tags=["Assessment"],
+)
 
 # ---------------------------------------------------------
-# Basic Routes
+# Root Endpoint
 # ---------------------------------------------------------
 
-@app.get("/")
+@app.get("/", tags=["System"])
 def root():
     return {
         "status": "success",
-        "message": "TalentSphere Backend Running Successfully ðŸš€",
+        "message": "TalentSphere Backend Running Successfully 🚀",
+        "version": "1.0.0",
     }
 
-@app.get("/health")
+
+# ---------------------------------------------------------
+# Health Check
+# ---------------------------------------------------------
+
+@app.get("/health", tags=["System"])
 def health():
     return {
         "status": "healthy",
+        "service": "TalentSphere API",
+        "version": "1.0.0",
     }

@@ -1,50 +1,60 @@
 from ..enums import Difficulty, QuestionType, Topic
 from ..schemas import Question
 
-HIGH_SCHOOL_COMMON_QUESTIONS: list[Question] = [
+
+COLLEGE_COMMON_QUESTIONS: list[Question] = [
 
     # =====================================================
-    # MATHEMATICS (HSC001–HSC030)
+    # DBMS (COL001–COL030)
     # =====================================================
 
-    # HSC001
+    # COL001
     # ...
-    # HSC030
+    # COL030
 
 
     # =====================================================
-    # ENGLISH (HSC031–HSC060)
+    # OPERATING SYSTEM (COL031–COL060)
     # =====================================================
 
-    # HSC031
+    # COL031
     # ...
-    # HSC060
+    # COL060
 
 
     # =====================================================
-    # SCIENCE (HSC061–HSC090)
+    # COMPUTER NETWORKS (COL061–COL090)
     # =====================================================
 
-    # HSC061
+    # COL061
     # ...
-    # HSC090
+    # COL090
 
 
     # =====================================================
-    # COMPUTER BASICS (HSC091–HSC120)
+    # OBJECT ORIENTED PROGRAMMING (COL091–COL120)
     # =====================================================
 
-    # HSC091
+    # COL091
     # ...
-    # HSC120
+    # COL120
 
 
     # =====================================================
-    # GENERAL AWARENESS (HSC121–HSC150)
+    # DATA STRUCTURES & ALGORITHMS (COL121–COL150)
     # =====================================================
 
-    # HSC121
+    # COL121
     # ...
-    # HSC150
+    # COL150
+
+
+    # =====================================================
+    # SOFTWARE ENGINEERING (COL151–COL180)
+    # =====================================================
+
+    # COL151
+    # ...
+    # COL180
 
 ]
