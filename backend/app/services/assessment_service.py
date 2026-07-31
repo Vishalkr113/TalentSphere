@@ -213,7 +213,7 @@ def get_assessment_questions(
             assessment_type=bank_type,
             user_role=user_role,
         )
-        
+
         questions = [
             question
             for question in questions
@@ -405,30 +405,26 @@ def start_assessment(
 
 def validate_attempt_time(attempt):
 
-    if attempt.completed_at:
-        return
-
-    if not attempt.started_at:
-        return
-
-    expires_at = (
-        attempt.started_at
-        + timedelta(
-            minutes=ASSESSMENT_DURATION_MINUTES
-        )
-    )
-
     now = datetime.now(timezone.utc)
+
+    started_at = attempt.started_at
+
+    if started_at.tzinfo is None:
+        started_at = started_at.replace(
+            tzinfo=timezone.utc
+        )
+
+    expires_at = started_at + timedelta(
+        minutes=30
+    )
 
     if now > expires_at:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=(
-                "Assessment time has expired."
-            ),
+            status_code=400,
+            detail="Assessment time expired"
         )
 
-    # ---------------------------------------------------------
+# ---------------------------------------------------------
 # Submit Assessment
 # ---------------------------------------------------------
 

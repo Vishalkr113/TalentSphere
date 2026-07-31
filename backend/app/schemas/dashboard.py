@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.schemas.user import UserRole
 
@@ -30,22 +30,40 @@ class DashboardProfile(BaseModel):
 # ---------------------------------------------------------
 # Career Recommendation
 # ---------------------------------------------------------
-
 class DashboardCareer(BaseModel):
+
     available: bool = False
 
     recommended_role: str | None = None
 
-    confidence: int | None = None
+    confidence: float | None = None
 
-    strengths: list[str] = []
+    strengths: list[str] = Field(
+        default_factory=list
+    )
 
-    skill_gaps: list[str] = []
+    skill_gaps: list[str] = Field(
+        default_factory=list
+    )
 
-    learning_path: list[str] = []
+    learning_path: list[str] = Field(
+        default_factory=list
+    )
 
 
+# ---------------------------------------------------------
+# Dashboard Progress
+# ---------------------------------------------------------
 
+class DashboardProgress(BaseModel):
+
+    resume: int
+
+    assessment: int
+
+    coding: int
+
+    placement: int
 # ---------------------------------------------------------
 # Dashboard Sections
 # ---------------------------------------------------------
@@ -60,16 +78,19 @@ class DashboardSection(BaseModel):
 # ---------------------------------------------------------
 # Individual Assessment Summary
 # ---------------------------------------------------------
-
 class DashboardAssessmentItem(BaseModel):
+
     completed: bool
-    score: int | None = None
+
+    score: float | None = None
+
     correct_answers: int | None = None
+
     total_questions: int | None = None
+
     attempt_id: int | None = None
+
     completed_at: datetime | None = None
-
-
 
 # ---------------------------------------------------------
 # Assessment Summary
@@ -99,5 +120,7 @@ class DashboardResponse(BaseModel):
     assessment: DashboardAssessment
 
     career: DashboardCareer
+
+    progress: DashboardProgress
 
     sections: list[DashboardSection]
