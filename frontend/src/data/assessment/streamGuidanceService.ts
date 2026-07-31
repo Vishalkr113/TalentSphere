@@ -1,8 +1,8 @@
 import {
     assessmentQuestionBank,
     type AssessmentCategory,
-    type AssessmentSkill,
-} from "./assessmentQuestions";
+    type AssessmentSkill
+} from "./assessmentAnalysisService";
 
 import {
     getUserAssessmentResults,

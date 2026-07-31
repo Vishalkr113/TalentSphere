@@ -1,140 +1,197 @@
+﻿import { API_BASE_URL, request } from "./api";
+
 export type UserRole =
   | "high-school-student"
   | "college-student"
   | "working-professional";
 
-export interface User {
+export interface AuthUser {
   id: string;
-  name: string;
+  full_name: string;
+  email: string;
+  role: UserRole;
+  is_verified?: boolean;
+
+  name?: string;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  token_type: string;
+  user: AuthUser;
+}
+
+export interface RegisterRequest {
+  full_name: string;
   email: string;
   password: string;
   role: UserRole;
 }
 
-const STORAGE_KEY = "talentsphere_users";
-
-const getUsers = (): User[] => {
-  const users = localStorage.getItem(STORAGE_KEY);
-
-  if (!users) return [];
-
-  return JSON.parse(users);
-};
-
-const saveUsers = (users: User[]) => {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(users)
-  );
-};
-
-export const isValidEmail = (
-  email: string
-) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-    email
-  );
-};
-
-export const isValidPassword = (
-  password: string
-) => {
-  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(
-    password
-  );
-};
-
-export const registerUser = ({
-  name,
-  email,
-  password,
-  role,
-}: {
-  name: string;
+export interface RegisterResponse {
+  message: string;
   email: string;
-  password: string;
-  role: UserRole;
-}) => {
-  const users = getUsers();
+}
 
-  const exists = users.find(
-    (user) =>
-      user.email.toLowerCase() === email.toLowerCase() &&
-      user.role === role
-  );
+export interface VerifyEmailRequest {
+  email: string;
+  otp: string;
+}
 
-  if (exists) {
-    return {
-      success: false,
-      message:
-        "Account already exists.",
-    };
-  }
+export interface VerifyEmailResponse {
+  message: string;
+}
 
-  const newUser: User = {
-    id: crypto.randomUUID(),
-    name,
-    email,
-    password,
-    role,
-  };
+export interface ForgotPasswordRequest {
+  email: string;
+}
 
-  users.push(newUser);
+export interface ForgotPasswordResponse {
+  message: string;
+}
 
-  saveUsers(users);
+export interface ResetPasswordRequest {
+  token: string;
+  new_password: string;
+}
 
-  return {
-    success: true,
-    message:
-      "Account created successfully.",
-    user: newUser,
-  };
-};
+export interface ResetPasswordResponse {
+  message: string;
+}
 
-export const loginUser = (
+export interface ChangePasswordRequest {
+  current_password: string;
+  new_password: string;
+}
+
+export interface ChangePasswordResponse {
+  message: string;
+}
+
+export const TOKEN_KEY = "access_token";
+
+export function saveToken(token: string): void {
+  localStorage.setItem(TOKEN_KEY, token);
+}
+
+export function getToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+export function removeToken(): void {
+  localStorage.removeItem(TOKEN_KEY);
+}
+
+export function logoutUser(): void {
+  removeToken();
+}
+
+export function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+export function isValidPassword(password: string): boolean {
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
+}
+
+export async function loginUser(
   email: string,
-  password: string,
-  role: UserRole
-) => {
-  const users = getUsers();
+  password: string
+): Promise<LoginResponse> {
+  const formData = new URLSearchParams();
 
-  const user = users.find(
-    (item) =>
-      item.email.toLowerCase() === email.toLowerCase()
-      &&
-      item.password === password &&
-      item.role === role
-  );
+  formData.append("username", email);
+  formData.append("password", password);
 
-  if (!user) {
-    return {
-      success: false,
-      message: "Invalid email or password.",
-    };
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.detail ?? "Login failed.");
   }
 
-  return {
-    success: true,
-    user,
-  };
+  saveToken(data.access_token);
 
   return {
-    success: true,
-    user,
-  };
-};
+   ...data,
+   user: {
+      ...data.user,
+      name: data.user.full_name
+   }
+}
+}
 
-export const logoutUser = () => {
-  localStorage.removeItem(
-    "currentUser"
-  );
-};
+export async function registerUser(
+  payload: RegisterRequest
+): Promise<RegisterResponse> {
+  return request<RegisterResponse>("/auth/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+}
 
-export const getCurrentUser = () => {
-  const user =
-    localStorage.getItem("currentUser");
+export async function verifyEmail(
+  payload: VerifyEmailRequest
+): Promise<VerifyEmailResponse> {
+  return request<VerifyEmailResponse>("/auth/verify-email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+}
 
-  if (!user) return null;
+export async function forgotPassword(
+  payload: ForgotPasswordRequest
+): Promise<ForgotPasswordResponse> {
+  return request<ForgotPasswordResponse>("/auth/forgot-password", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+}
 
-  return JSON.parse(user);
-};
+export async function resetPassword(
+  payload: ResetPasswordRequest
+): Promise<ResetPasswordResponse> {
+  return request<ResetPasswordResponse>("/auth/reset-password", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function changePassword(
+  payload: ChangePasswordRequest
+): Promise<ChangePasswordResponse> {
+  return request<ChangePasswordResponse>("/auth/change-password", {
+    method: "POST",
+    token: getToken() ?? undefined,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getCurrentUser(): Promise<AuthUser> {
+  return request<AuthUser>("/auth/me", {
+    method: "GET",
+    token: getToken() ?? undefined,
+  });
+}

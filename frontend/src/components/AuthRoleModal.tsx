@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -91,7 +91,7 @@ function AuthRoleModal({
     setConfirmPassword("");
   };
 
-  const handleLogin = (
+  const handleLogin = async (
     e: React.FormEvent
   ) => {
     e.preventDefault();
@@ -119,37 +119,25 @@ function AuthRoleModal({
 
     setLoading(true);
 
-    const result = loginUser(
+    const result = await loginUser(
       email.trim().toLowerCase(),
-      password,
-      selectedRole
+      password
     );
 
-    if (!result.success || !result.user) {
-      setLoading(false);
-
-      setError(
-        result.message ?? "Login failed."
-      );
-
-      return;
-    }
-
-    login(result.user);
+    login(
+      result.access_token,
+      result.user
+    );
 
     setLoading(false);
-
     onClose();
 
-    navigate(
-      `/${selectedRole}/dashboard`,
-      {
-        replace: true,
-      }
-    );
+    navigate(`/${result.user.role}/dashboard`, {
+      replace: true,
+    });
   };
 
-  const handleSignUp = (
+  const handleSignUp = async (
     e: React.FormEvent
   ) => {
     e.preventDefault();
@@ -194,22 +182,18 @@ function AuthRoleModal({
 
     setLoading(true);
 
-    const result = registerUser({
-      name: name.trim(),
+    const result = await registerUser({
+      full_name: name.trim(),
       email: email.trim().toLowerCase(),
       password,
       role: selectedRole,
     });
 
-    if (!result.success) {
-      setLoading(false);
+    setLoading(false);
 
-      setError(
-        result.message ?? "Sign up failed."
-      );
-
-      return;
-    }
+    setSuccess(
+      result.message
+    );
 
     setLoading(false);
 

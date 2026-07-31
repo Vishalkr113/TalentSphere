@@ -1,6 +1,4 @@
-import type {
-    Question,
-} from "./assessmentQuestions";
+import type { Question } from "./assessmentAnalysisService";
 
 export interface AssessmentResult {
     id: string;

@@ -1,5 +1,4 @@
-
-import { class11PCMQuestionBank } from "./questions/class11PCMQuestions";export type AssessmentSkill =
+export type AssessmentSkill =
     | "Numerical Ability"
     | "Arithmetic"
     | "Logical Reasoning"
@@ -1169,137 +1168,11 @@ export const class12HumanitiesQuestionBank:
 
 /* STREAM NORMALIZATION */
 
-function normalizeStream(
-    stream?: StudentStream | null
-):
-    | "pcm"
-    | "pcb"
-    | "pcmb"
-    | "commerce"
-    | "humanities"
-    | "unknown" {
-    if (!stream) {
-        return "unknown";
-    }
-
-    const normalized = stream
-        .trim()
-        .toLowerCase();
-
-    if (
-        normalized.includes("pcmb") ||
-        (
-            normalized.includes("physics") &&
-            normalized.includes("chemistry") &&
-            normalized.includes("mathematics") &&
-            normalized.includes("biology")
-        )
-    ) {
-        return "pcmb";
-    }
-
-    if (
-        normalized.includes("pcm") ||
-        (
-            normalized.includes("physics") &&
-            normalized.includes("chemistry") &&
-            normalized.includes("mathematics")
-        )
-    ) {
-        return "pcm";
-    }
-
-    if (
-        normalized.includes("pcb") ||
-        (
-            normalized.includes("physics") &&
-            normalized.includes("chemistry") &&
-            normalized.includes("biology")
-        )
-    ) {
-        return "pcb";
-    }
-
-    if (
-        normalized.includes("commerce") ||
-        normalized.includes("business")
-    ) {
-        return "commerce";
-    }
-
-    if (
-        normalized.includes("humanities") ||
-        normalized.includes("arts")
-    ) {
-        return "humanities";
-    }
-
-    return "unknown";
-}
-
-/* CLASS 11 QUESTION BANK RESOLVER */
-
-function getClass11QuestionBank(
-    currentStream?: StudentStream | null
-): AssessmentQuestionBank {
-    const stream =
-        normalizeStream(currentStream);
-
-    switch (stream) {
-        case "pcm":
-            return class11PCMQuestionBank;
-
-        case "pcb":
-            return class11PCBQuestionBank;
-
-        case "pcmb":
-            return class11PCMBQuestionBank;
-
-        case "commerce":
-            return class11CommerceQuestionBank;
-
-        case "humanities":
-            return class11HumanitiesQuestionBank;
-
-        default:
-            return class10AssessmentQuestionBank;
-    }
-}
-
-/* CLASS 12 QUESTION BANK RESOLVER */
-
-function getClass12QuestionBank(
-    currentStream?: StudentStream | null
-): AssessmentQuestionBank {
-    const stream =
-        normalizeStream(currentStream);
-
-    switch (stream) {
-        case "pcm":
-            return class12PCMQuestionBank;
-
-        case "pcb":
-            return class12PCBQuestionBank;
-
-        case "pcmb":
-            return class12PCMBQuestionBank;
-
-        case "commerce":
-            return class12CommerceQuestionBank;
-
-        case "humanities":
-            return class12HumanitiesQuestionBank;
-
-        default:
-            return class10AssessmentQuestionBank;
-    }
-}
 
 /*MAIN CLASS-AWARE QUESTION BANK RESOLVER */
 
 export function getAssessmentQuestionBank({
     studentClass,
-    currentStream,
 }: AssessmentQuestionContext):
     AssessmentQuestionBank {
     switch (studentClass) {
@@ -1311,14 +1184,10 @@ export function getAssessmentQuestionBank({
             return class10AssessmentQuestionBank;
 
         case "11":
-            return getClass11QuestionBank(
-                currentStream
-            );
+            return class11PCBQuestionBank;
 
         case "12":
-            return getClass12QuestionBank(
-                currentStream
-            );
+            return class12PCMQuestionBank;
 
         default:
             return class10AssessmentQuestionBank;

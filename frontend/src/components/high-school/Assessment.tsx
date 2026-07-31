@@ -24,8 +24,8 @@ import {
   getAssessmentQuestionBank,
   type AssessmentCategory,
   type AssessmentQuestionBank,
-  type Question,
-} from "../../data/assessment/assessmentQuestions";
+  type Question
+} from "../../data/assessment/assessmentAnalysisService";
 
 import {
   getUserAssessmentResults,

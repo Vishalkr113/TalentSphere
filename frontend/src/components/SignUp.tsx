@@ -18,11 +18,23 @@ import {
   type UserRole,
 } from "../services/authService";
 
+const ALLOWED_ROLES: UserRole[] = [
+  "high-school-student",
+  "college-student",
+  "working-professional",
+];
+
 function SignUp() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const role = location.pathname.split("/")[1] as UserRole;
+  const pathRole = location.pathname.split("/")[1];
+
+  const role: UserRole = ALLOWED_ROLES.includes(
+    pathRole as UserRole
+  )
+    ? (pathRole as UserRole)
+    : "college-student";
 
   const title =
     role === "high-school-student"
@@ -34,30 +46,45 @@ function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [loading, setLoading] =
+    useState(false);
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const [error, setError] =
+    useState("");
+
+  const handleSignUp = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
+    if (loading) return;
+
     setError("");
-    setSuccess("");
+
+    const fullName = name.trim();
+    const normalizedEmail = email
+      .trim()
+      .toLowerCase();
 
     if (
-      !name.trim() ||
-      !email.trim() ||
-      !password.trim() ||
-      !confirmPassword.trim()
+      !fullName ||
+      !normalizedEmail ||
+      !password ||
+      !confirmPassword
     ) {
-      setError("Please fill in all required fields.");
+      setError(
+        "Please fill in all required fields."
+      );
       return;
     }
 
-    if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
+    if (!isValidEmail(normalizedEmail)) {
+      setError(
+        "Please enter a valid email address."
+      );
       return;
     }
 
@@ -69,41 +96,44 @@ function SignUp() {
     }
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+      setError(
+        "Passwords do not match."
+      );
       return;
     }
 
     setLoading(true);
 
-    const result = registerUser({
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      password,
-      role,
-    });
+    try {
+      const result =
+        await registerUser({
+          full_name: fullName,
+          email: normalizedEmail,
+          password,
+          role,
+        });
 
-    if (!result.success) {
-      setLoading(false);
-
-      setError(
-        result.message ?? "Sign up failed."
+      navigate(
+        "/verify-email",
+        {
+          replace: true,
+          state: {
+            email:
+              result.email ??
+              normalizedEmail,
+            role,
+          },
+        }
       );
-
-      return;
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Unable to create account."
+      );
+    } finally {
+      setLoading(false);
     }
-
-    setSuccess(
-      result.message ?? "Account created successfully."
-    );
-
-    setName("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-
-    setLoading(false);
-
-    navigate(`/${role}/login`);
   };
 
   return (
@@ -115,7 +145,7 @@ function SignUp() {
 
         <div className="mt-8 text-center">
           <h1 className="text-3xl font-bold text-slate-900">
-            {title} signup
+            {title} Sign Up
           </h1>
 
           <p className="mt-2 text-sm text-slate-600">
@@ -131,7 +161,11 @@ function SignUp() {
             label="Full Name"
             placeholder="Enter your full name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) =>
+              setName(e.target.value)
+            }
+            required
+            autoComplete="name"
           />
 
           <Input
@@ -139,14 +173,22 @@ function SignUp() {
             type="email"
             placeholder="Enter your email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
+            required
+            autoComplete="email"
           />
 
           <PasswordInput
             label="Password"
             placeholder="Create password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
+            required
+            autoComplete="new-password"
           />
 
           <PasswordInput
@@ -154,19 +196,17 @@ function SignUp() {
             placeholder="Confirm password"
             value={confirmPassword}
             onChange={(e) =>
-              setConfirmPassword(e.target.value)
+              setConfirmPassword(
+                e.target.value
+              )
             }
+            required
+            autoComplete="new-password"
           />
 
           {error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
               {error}
-            </div>
-          )}
-
-          {success && (
-            <div className="rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-600">
-              {success}
             </div>
           )}
 
@@ -177,7 +217,7 @@ function SignUp() {
           >
             {loading
               ? "Creating Account..."
-              : "signup"}
+              : "Create Account"}
           </Button>
         </form>
 

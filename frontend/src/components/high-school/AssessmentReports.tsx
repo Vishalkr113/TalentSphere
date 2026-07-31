@@ -15,8 +15,8 @@ import { useAuth } from "../../contexts/AuthContext";
 
 import {
   getAssessmentQuestionBank,
-  type AssessmentCategory,
-} from "../../data/assessment/assessmentQuestions";
+  type AssessmentCategory
+} from "../../data/assessment/assessmentAnalysisService";
 
 import {
   getUserAssessmentResults,
@@ -107,8 +107,8 @@ function getReportContext(
   if (profile.studentClass === "11") {
     return {
       eyebrow: `Class 11${profile.currentStream
-          ? ` • ${profile.currentStream}`
-          : ""
+        ? ` • ${profile.currentStream}`
+        : ""
         }`,
       title: "Your Stream Performance Reports",
       description:
@@ -119,8 +119,8 @@ function getReportContext(
 
   return {
     eyebrow: `Class 12${profile.currentStream
-        ? ` • ${profile.currentStream}`
-        : ""
+      ? ` • ${profile.currentStream}`
+      : ""
       }`,
     title: "Your Higher Study Readiness Reports",
     description:
@@ -662,11 +662,10 @@ function AssessmentReports() {
           <p className="mt-2 text-xl font-bold text-slate-900">
             {finalGuidanceReady
               ? "Ready for Analysis"
-              : `${totalAssessments - completedAssessments} ${
-                  totalAssessments - completedAssessments === 1
-                    ? "Assessment"
-                    : "Assessments"
-                } Remaining`}
+              : `${totalAssessments - completedAssessments} ${totalAssessments - completedAssessments === 1
+                ? "Assessment"
+                : "Assessments"
+              } Remaining`}
           </p>
         </div>
       </div>

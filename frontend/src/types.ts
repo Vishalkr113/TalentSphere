@@ -86,7 +86,7 @@ export interface HowItWorksStep {
 
 export interface Testimonial {
   id: number;
-  name: string;
+  full_name: string;
   role: string;
   message: string;
 }

@@ -1,4 +1,4 @@
-import {
+﻿import {
   Navigate,
   Route,
   Routes,
@@ -12,7 +12,6 @@ import ForgotPassword from "./components/ForgotPassword";
 
 import HighSchoolLayout from "./components/high-school/HighSchoolLayout";
 import HighSchoolDashboard from "./components/high-school/HighSchoolDashboard";
-import HighSchoolProfile from "./components/high-school/HighSchoolProfile";
 import Assessment from "./components/high-school/Assessment";
 import AssessmentReports from "./components/high-school/AssessmentReports";
 import SubjectGuidance from "./components/high-school/SubjectGuidance";
@@ -103,12 +102,7 @@ function App() {
           path="dashboard"
           element={<HighSchoolDashboard />}
         />
-
-        <Route
-          path="profile"
-          element={<HighSchoolProfile />}
-        />
-
+        
         <Route
           path="subject-guidance"
           element={<SubjectGuidance />}

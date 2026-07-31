@@ -1,50 +1,60 @@
-import type { ReactNode } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { Navigate } from "react-router-dom";
+import type { ReactNode } from "react";
 
-type Props = {
+import { useAuth } from "../contexts/AuthContext";
+import type { UserRole } from "../services/authService";
+
+interface ProtectedRouteProps {
   children: ReactNode;
-};
+  allowedRoles?: UserRole[];
+}
 
-const roles = [
-  'high-school-student',
-  'college-student',
-  'working-professional',
-];
-
-export default function ProtectedRoute({
+function ProtectedRoute({
   children,
-}: Props) {
-  const { isAuthenticated, user } = useAuth();
+  allowedRoles,
+}: ProtectedRouteProps) {
+  const {
+    user,
+    loading,
+    isAuthenticated,
+  } = useAuth();
 
-  const location = useLocation();
-  const requestedRole =
-    location.pathname.split('/')[1];
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-100">
+        <div className="text-center">
+          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-cyan-600 border-t-transparent" />
 
-  if (!isAuthenticated) {
+          <p className="mt-4 text-sm text-slate-600">
+            Loading...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !user) {
     return (
       <Navigate
-        to={
-          roles.includes(requestedRole)
-            ? `/${requestedRole}/login`
-            : '/'
-        }
+        to="/college-student/login"
         replace
       />
     );
   }
 
   if (
-    roles.includes(requestedRole) &&
-    user?.role !== requestedRole
+    allowedRoles &&
+    !allowedRoles.includes(user.role)
   ) {
     return (
       <Navigate
-        to={`/${user?.role}/dashboard`}
+        to={`/${user.role}/dashboard`}
         replace
       />
     );
   }
 
-  return children;
+  return <>{children}</>;
 }
+
+export default ProtectedRoute;

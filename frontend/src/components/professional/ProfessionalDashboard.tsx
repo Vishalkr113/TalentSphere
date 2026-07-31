@@ -12,7 +12,7 @@ export default function ProfessionalDashboard() {
 
     const s = professionalStats(
         user.id,
-        user.name,
+        user.full_name,
         user.email
     );
 
@@ -40,7 +40,7 @@ export default function ProfessionalDashboard() {
                 </p>
 
                 <h1 className="mt-2 text-4xl font-bold">
-                    Welcome, {user.name} 👋
+                    Welcome, {user.full_name} 👋
                 </h1>
 
                 <p className="mt-2 text-cyan-100">

@@ -1,100 +1,97 @@
-import {
+﻿import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
+  type ReactNode,
 } from "react";
 
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-};
+import {
+  getCurrentUser,
+  getToken,
+  logoutUser,
+  saveToken,
+  type AuthUser,
+} from "../services/authService";
 
 type AuthContextType = {
-  user: User | null;
-  login: (user: User) => void;
-  logout: () => void;
+  user: AuthUser | null;
+  loading: boolean;
   isAuthenticated: boolean;
+  login: (token: string, user: AuthUser) => void;
+  logout: () => void;
+  refreshUser: () => Promise<void>;
 };
 
-const AuthContext =
-  createContext<AuthContextType | null>(
-    null
-  );
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const [user, setUser] =
-    useState<User | null>(null);
+    useState<AuthUser | null>(null);
 
-  useEffect(() => {
-    const savedUser =
-      localStorage.getItem("currentUser");
+  const [loading, setLoading] =
+    useState(true);
 
-    if (!savedUser) {
+  const refreshUser = async () => {
+    const token = getToken();
+
+    if (!token) {
+      setUser(null);
+      setLoading(false);
       return;
     }
 
     try {
-      const parsedUser =
-        JSON.parse(savedUser) as User;
+      const profile =
+        await getCurrentUser();
 
-      if (
-        !parsedUser.id ||
-        !parsedUser.name ||
-        !parsedUser.email ||
-        !parsedUser.role
-      ) {
-        localStorage.removeItem(
-          "currentUser"
-        );
-
-        return;
-      }
-
-      setUser(parsedUser);
-    } catch (error) {
-      console.error(
-        "Unable to restore authenticated user:",
-        error
-      );
-
-      localStorage.removeItem(
-        "currentUser"
-      );
+      setUser(profile);
+    } catch {
+      logoutUser();
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    refreshUser();
   }, []);
 
-  const login = (authenticatedUser: User) => {
-    localStorage.setItem(
-      "currentUser",
-      JSON.stringify(authenticatedUser)
-    );
-
+  const login = (
+    token: string,
+    authenticatedUser: AuthUser
+  ) => {
+    saveToken(token);
     setUser(authenticatedUser);
   };
 
   const logout = () => {
-    localStorage.removeItem(
-      "currentUser"
-    );
-
+    logoutUser();
     setUser(null);
   };
 
+  const value = useMemo(
+    () => ({
+      user,
+      loading,
+      login,
+      logout,
+      refreshUser,
+      isAuthenticated:
+        Boolean(user),
+    }),
+    [user, loading]
+  );
+
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        login,
-        logout,
-        isAuthenticated: Boolean(user),
-      }}
+      value={value}
     >
       {children}
     </AuthContext.Provider>
@@ -102,7 +99,8 @@ export function AuthProvider({
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
+  const context =
+    useContext(AuthContext);
 
   if (!context) {
     throw new Error(

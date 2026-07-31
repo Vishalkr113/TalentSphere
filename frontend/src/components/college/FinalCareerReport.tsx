@@ -5,7 +5,6 @@ import {
     BarChart3,
     Target,
     Code2,
-    MessageSquare,
     Briefcase,
     Trophy,
     Brain,

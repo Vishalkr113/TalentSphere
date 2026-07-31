@@ -83,7 +83,7 @@ export default function CollegeProfile() {
     const [msg, setMsg] = useState('');
 
     useEffect(() => {
-        setData((d) => ({
+        setData(() => ({
             ...getCollegeProfile(id),
             fullName:
                 getCollegeProfile(id).fullName || user?.name || '',

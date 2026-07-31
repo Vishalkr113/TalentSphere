@@ -155,7 +155,7 @@ function HighSchoolDashboard() {
             </div>
 
             <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-              Welcome back, {user.name}
+              Welcome back, {user.full_name}
               <span className="ml-2">👋</span>
             </h1>
 

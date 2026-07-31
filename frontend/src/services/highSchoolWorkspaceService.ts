@@ -33,13 +33,11 @@ export type CareerVisit = {
     career: string;
     visitedAt: string;
 };
-
 const key = (
     userId: string,
-    name: string
-) =>
-    `talentsphere_hs_${name}_${userId}`;
-
+    section: string
+): string =>
+    `talentsphere_hs_${section}_${userId}`;
 const read = <T>(
     k: string,
     fallback: T

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import {
   Link,
   useLocation,
@@ -19,104 +19,90 @@ import {
 
 import { useAuth } from "../contexts/AuthContext";
 
+const ALLOWED_ROLES: UserRole[] = [
+  "high-school-student",
+  "college-student",
+  "working-professional",
+];
+
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
   const { login } = useAuth();
 
-  const role = location.pathname.split("/")[1] as UserRole;
+  const pathRole = location.pathname.split("/")[1];
+
+  const role: UserRole = ALLOWED_ROLES.includes(
+    pathRole as UserRole
+  )
+    ? (pathRole as UserRole)
+    : "college-student";
 
   const title =
     role === "high-school-student"
       ? "High School Student"
       : role === "college-student"
-        ? "College Student"
-        : "Working Professional";
+      ? "College Student"
+      : "Working Professional";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = (
+  const handleLogin = async (
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
 
-    if (loading) {
-      return;
-    }
+    if (loading) return;
 
     setError("");
 
-    const normalizedEmail = email
-      .trim()
-      .toLowerCase();
+    const normalizedEmail = email.trim().toLowerCase();
 
-    if (
-      !normalizedEmail ||
-      !password.trim()
-    ) {
-      setError(
-        "Please fill in all required fields."
-      );
-
+    if (!normalizedEmail || !password.trim()) {
+      setError("Please fill in all required fields.");
       return;
     }
 
     if (!isValidEmail(normalizedEmail)) {
-      setError(
-        "Please enter a valid email address."
-      );
-
+      setError("Please enter a valid email address.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const result = loginUser(
+      const result = await loginUser(
         normalizedEmail,
-        password,
-        role
+        password
       );
 
-      if (!result.success) {
-        setError(
-          result.message ?? "Login failed."
-        );
+      login(
+        result.access_token,
+        result.user
+      );
 
-        return;
-      }
-
-      if (!result.user) {
-        setError("User not found.");
-
-        return;
-      }
-
-      login({
-        id: result.user.id,
-        name: result.user.name,
-        email: result.user.email,
-        role: result.user.role,
-      });
+      const dashboardRole = ALLOWED_ROLES.includes(
+        result.user.role
+      )
+        ? result.user.role
+        : role;
 
       navigate(
-        `/${result.user.role}/dashboard`,
+        `/${dashboardRole}/dashboard`,
         {
           replace: true,
         }
       );
-    } catch (loginError) {
-      console.error(
-        "Login error:",
-        loginError
-      );
-
+    } catch (err) {
       setError(
-        "Unable to sign in. Please try again."
+        err instanceof Error
+          ? err.message
+          : "Unable to sign in."
       );
     } finally {
       setLoading(false);
@@ -152,6 +138,8 @@ function Login() {
             onChange={(e) =>
               setEmail(e.target.value)
             }
+            autoComplete="email"
+            required
           />
 
           <PasswordInput
@@ -161,6 +149,8 @@ function Login() {
             onChange={(e) =>
               setPassword(e.target.value)
             }
+            autoComplete="current-password"
+            required
           />
 
           <div className="flex items-center justify-end">
@@ -175,7 +165,7 @@ function Login() {
           {error && (
             <div
               role="alert"
-              className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600"
+              className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700"
             >
               {error}
             </div>

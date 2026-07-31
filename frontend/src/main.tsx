@@ -7,28 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 
 import "./index.css";
 
-const navigationEntry =
-  performance.getEntriesByType(
-    "navigation"
-  )[0] as PerformanceNavigationTiming | undefined;
-
-const isPageReload =
-  navigationEntry?.type === "reload";
-
-if (
-  isPageReload &&
-  window.location.pathname !== "/"
-) {
-  window.history.replaceState(
-    null,
-    "",
-    "/"
-  );
-}
-
-createRoot(
-  document.getElementById("root")!
-).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
