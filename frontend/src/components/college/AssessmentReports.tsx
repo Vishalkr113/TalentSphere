@@ -45,14 +45,14 @@ export default function AssessmentReports() {
             avg >= 70
               ? 'Good'
               : avg >= 50
-              ? 'Improving'
-              : 'Needs Focus'
+                ? 'Improving'
+                : 'Needs Focus'
           }
         />
       </div>
 
       {!a.length ? (
-        <Empty on={() => nav('/college-student/assessment')} />
+        <Empty on={() => nav('/college_student/assessment')} />
       ) : (
         <>
           <section className="rounded-2xl border bg-white p-5">
@@ -116,7 +116,7 @@ export default function AssessmentReports() {
 
             <button
               onClick={() =>
-                nav('/college-student/assessment')
+                nav('/college_student/assessment')
               }
               className="mt-4 rounded-xl bg-cyan-600 px-5 py-2.5 font-semibold text-white"
             >

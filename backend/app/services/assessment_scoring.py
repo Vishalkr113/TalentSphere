@@ -45,7 +45,6 @@ class AssessmentScorer:
         skill_scores = defaultdict(float)
         skill_total = defaultdict(float)
 
-
         correct_answers = 0
         wrong_answers = 0
         skipped = 0
@@ -68,7 +67,6 @@ class AssessmentScorer:
 
 
             topic_total[topic] += self.correct_marks
-
             skill_total[skill] += self.correct_marks
 
 
@@ -80,7 +78,38 @@ class AssessmentScorer:
                 continue
 
 
-            if selected == question.correct_answer:
+            correct = question.correct_answer
+
+
+            option_map = {
+                "A": question.option_a,
+                "B": question.option_b,
+                "C": question.option_c,
+                "D": question.option_d,
+            }
+
+
+            # Check answer
+            if correct in option_map:
+
+                selected_is_correct = (
+                    selected == correct
+                    or
+                    selected.strip().lower()
+                    ==
+                    str(option_map[correct]).strip().lower()
+                )
+
+            else:
+
+                selected_is_correct = (
+                    selected.strip().lower()
+                    ==
+                    str(correct).strip().lower()
+                )
+
+
+            if selected_is_correct:
 
                 correct_answers += 1
 
@@ -144,47 +173,37 @@ class AssessmentScorer:
             "total_questions":
                 total_questions,
 
-
             "correct":
                 correct_answers,
-
 
             "wrong":
                 wrong_answers,
 
-
             "skipped":
                 skipped,
 
-
             "score":
-                round(obtained_score,2),
-
+                round(obtained_score, 2),
 
             "percentage":
                 percentage,
-
 
             "grade":
                 self._grade(
                     percentage
                 ),
 
-
             "topic_scores":
                 dict(topic_scores),
 
-
             "skill_scores":
                 skill_percentage,
-
 
             "strengths":
                 self._strengths(
                     topic_scores,
                     topic_total,
                 ),
-
 
             "weaknesses":
                 self._weaknesses(
@@ -228,13 +247,9 @@ class AssessmentScorer:
         total,
     ):
 
-        result=[]
+        result = []
 
         for topic in total:
-
-            if total[topic] == 0:
-                continue
-
 
             percentage = (
                 score[topic]
@@ -257,14 +272,10 @@ class AssessmentScorer:
         total,
     ):
 
-        result=[]
+        result = []
 
 
         for topic in total:
-
-            if total[topic] == 0:
-                continue
-
 
             percentage = (
                 score[topic]

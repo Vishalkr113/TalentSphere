@@ -128,7 +128,7 @@ function ForgotPassword() {
         <p className="mt-8 text-center text-sm text-slate-600">
           Remember your password?{" "}
           <Link
-            to="/college-student/login"
+            to="/college_student/login"
             className="font-semibold text-cyan-600 hover:underline"
           >
             Login

@@ -19,7 +19,7 @@ export default function CollegeProfileRequired({
             </p>
 
             <button
-                onClick={() => nav('/college-student/profile')}
+                onClick={() => nav('/college_student/profile')}
                 className="mt-5 rounded-xl bg-cyan-600 px-5 py-2.5 font-semibold text-white"
             >
                 Complete Profile

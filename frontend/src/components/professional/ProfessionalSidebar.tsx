@@ -22,62 +22,62 @@ const menuItems = [
   {
     title: "Dashboard",
     icon: LayoutDashboard,
-    path: "/working-professional/dashboard",
+    path: "/working_professional/dashboard",
   },
   {
     title: "My Profile",
     icon: User,
-    path: "/working-professional/profile",
+    path: "/working_professional/profile",
   },
   {
     title: "Career Growth",
     icon: TrendingUp,
-    path: "/working-professional/career-growth",
+    path: "/working_professional/career-growth",
   },
   {
     title: "Skill Assessment",
     icon: Brain,
-    path: "/working-professional/skill-assessment",
+    path: "/working_professional/skill-assessment",
   },
   {
     title: "Resume Manager",
     icon: FileText,
-    path: "/working-professional/resume-manager",
+    path: "/working_professional/resume-manager",
   },
   {
     title: "Interview Preparation",
     icon: MessageSquare,
-    path: "/working-professional/interview-preparation",
+    path: "/working_professional/interview-preparation",
   },
   {
     title: "Job Switch",
     icon: Briefcase,
-    path: "/working-professional/job-switch",
+    path: "/working_professional/job-switch",
   },
   {
     title: "Salary Insights",
     icon: IndianRupee,
-    path: "/working-professional/salary-insights",
+    path: "/working_professional/salary-insights",
   },
   {
     title: "Learning Hub",
     icon: BookOpen,
-    path: "/working-professional/learning-hub",
+    path: "/working_professional/learning-hub",
   },
   {
     title: "Certificates",
     icon: Award,
-    path: "/working-professional/certificates",
+    path: "/working_professional/certificates",
   },
   {
     title: "Achievements",
     icon: Trophy,
-    path: "/working-professional/achievements",
+    path: "/working_professional/achievements",
   },
   {
     title: "Settings",
     icon: Settings,
-    path: "/working-professional/settings",
+    path: "/working_professional/settings",
   },
 ];
 

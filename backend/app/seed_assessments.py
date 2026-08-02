@@ -1,296 +1,448 @@
-from app.assessment_data.aptitude_questions import (
-    APTITUDE_QUESTIONS,
-)
-from app.assessment_data.coding_questions import (
-    CODING_QUESTIONS,
-)
-from app.assessment_data.high_school.common_questions import (
-    HIGH_SCHOOL_COMMON_QUESTIONS,
-)
-from app.assessment_data.high_school.class11_pcm_questions import (
-    CLASS11_PCM_QUESTIONS,
-)
-from app.assessment_data.high_school.class11_pcb_questions import (
-    CLASS11_PCB_QUESTIONS,
-)
+"""
+Assessment Question Seeder
+
+Loads questions from assessment_data loader,
+validates them and inserts into database.
+"""
+
+
 from app.db.database import SessionLocal
-from app.models.assessment import AssessmentQuestion
 
+from app.models.assessment import (
+    AssessmentQuestion,
+)
 
-# ---------------------------------------------------------
-# Managed Assessment Question Banks
-# ---------------------------------------------------------
+from app.assessment_data.loader import (
+    get_all_questions,
+)
 
-QUESTIONS = (
-    APTITUDE_QUESTIONS
-    + CODING_QUESTIONS
-    + HIGH_SCHOOL_COMMON_QUESTIONS
-    + CLASS11_PCM_QUESTIONS
-    + CLASS11_PCB_QUESTIONS
+from app.assessment_data.validator import (
+    validate_question_bank,
 )
 
 
-# ---------------------------------------------------------
-# Fields Stored In AssessmentQuestion
-# ---------------------------------------------------------
-
-QUESTION_FIELDS = {
-    "assessment_type",
-    "question_text",
-    "option_a",
-    "option_b",
-    "option_c",
-    "option_d",
-    "correct_answer",
-    "explanation",
-    "difficulty",
-    "is_active",
-    "user_role",
-    "category",
-    "skill",
-    "student_class",
-    "stream",
-    "degree",
-    "branch",
-    "experience_level",
-    "domain",
-}
+# =========================================================
+# Assessment Type Mapper
+# =========================================================
 
 
-UPDATABLE_FIELDS = (
-    "option_a",
-    "option_b",
-    "option_c",
-    "option_d",
-    "correct_answer",
-    "explanation",
-    "difficulty",
-    "user_role",
-    "category",
-    "skill",
-    "student_class",
-    "stream",
-    "degree",
-    "branch",
-    "experience_level",
-    "domain",
-)
+def get_assessment_type(question):
+
+    code = question.question_code.upper()
 
 
-# ---------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------
+    # Aptitude
+    if code.startswith("APT-"):
+        return "college_aptitude"
 
-def clean_question_data(
-    question_data: dict,
-) -> dict:
-    """
-    Keep only fields supported by AssessmentQuestion.
 
-    This intentionally ignores conversion-only metadata such
-    as frontend_id.
-    """
+    # Coding
+    if code.startswith("COD-"):
+        return "college_coding"
+
+
+    # DSA
+    if code.startswith("DSA-"):
+        return "college_coding"
+
+
+    # High School Foundation
+    if code.startswith("HS-COMMON"):
+        return "high_school_foundation"
+
+
+    # High School PCM
+    if code.startswith("HS-PCM"):
+        return "high_school_pcm"
+
+
+    # High School PCB
+    if code.startswith("HS-PCB"):
+        return "high_school_pcb"
+
+
+    # High School Commerce
+    if code.startswith("HS-COM"):
+        return "high_school_commerce"
+
+
+    # High School Arts
+    if code.startswith("HS-ART"):
+        return "high_school_arts"
+
+
+    # Reasoning
+    if code.startswith("REA-"):
+        return "reasoning"
+
+
+    # Default
+
+    return "aptitude"
+
+
+# =========================================================
+# Question Category Mapper
+# =========================================================
+
+def get_question_category(question):
+
+    code = question.question_code.upper()
+
+
+    if code.startswith("HS-PCM"):
+        return "math"
+
+
+    if code.startswith("HS-PCB"):
+        return "science"
+
+
+    if code.startswith("HS-COMMON"):
+        return "science"
+
+
+    if code.startswith("HS-COM"):
+        return "commerce"
+
+
+    if code.startswith("HS-ART"):
+        return "arts"
+
+    return getattr(
+        question,
+        "category",
+        None,
+    )
+
+
+
+
+# =========================================================
+# Convert Question Schema
+# To Database Format
+# =========================================================
+
+
+def prepare_question_data(question):
+
+
+    options = question.options or []
+
+
     return {
-        key: value
-        for key, value in question_data.items()
-        if key in QUESTION_FIELDS
+
+
+        "question_code":
+            question.question_code,
+
+
+        "assessment_type":
+            get_assessment_type(question),
+
+
+
+        "question_text":
+            question.question,
+
+
+
+        "option_a":
+            options[0]
+            if len(options) > 0
+            else None,
+
+
+        "option_b":
+            options[1]
+            if len(options) > 1
+            else None,
+
+
+        "option_c":
+            options[2]
+            if len(options) > 2
+            else None,
+
+
+        "option_d":
+            options[3]
+            if len(options) > 3
+            else None,
+
+
+
+        "correct_answer":
+            question.answer,
+
+
+
+        "explanation":
+            question.explanation,
+
+
+
+        "difficulty":
+            question.difficulty,
+
+
+
+        "category":
+            get_question_category(question),
+
+
+        "topic":
+            question.topic,
+
+
+
+        "sub_topic":
+            getattr(
+                question,
+                "sub_topic",
+                None,
+            ),
+
+
+
+        "skill":
+            getattr(
+                question,
+                "skill",
+                None,
+            ),
+
+
+
+        "language":
+            getattr(
+                question,
+                "language",
+                None,
+            ),
+
+
+
+        "question_type":
+            question.question_type,
+
+
+
+        "user_role":
+            getattr(
+                question,
+                "user_role",
+                None,
+            ),
+
+
+
+        "student_class":
+            getattr(
+                question,
+                "student_class",
+                None,
+            ),
+
+
+
+        "stream":
+            getattr(
+                question,
+                "stream",
+                None,
+            ),
+
+
+
+        "degree":
+            getattr(
+                question,
+                "degree",
+                None,
+            ),
+
+
+
+        "branch":
+            getattr(
+                question,
+                "branch",
+                None,
+            ),
+
+
+
+        "experience_level":
+            getattr(
+                question,
+                "experience_level",
+                None,
+            ),
+
+
+
+        "domain":
+            getattr(
+                question,
+                "domain",
+                None,
+            ),
+
+
+
+        "is_active":
+            question.is_active,
+
     }
 
 
-def validate_question_banks():
-    expected_total = 285
-
-    if len(QUESTIONS) != expected_total:
-        raise ValueError(
-            "Managed assessment bank must contain "
-            f"exactly {expected_total} questions. "
-            f"Found: {len(QUESTIONS)}"
-        )
-
-    required_fields = {
-        "assessment_type",
-        "question_text",
-        "option_a",
-        "option_b",
-        "option_c",
-        "option_d",
-        "correct_answer",
-        "difficulty",
-    }
-
-    valid_answers = {
-        "A",
-        "B",
-        "C",
-        "D",
-    }
-
-    for index, question in enumerate(
-        QUESTIONS,
-        start=1,
-    ):
-        missing_fields = [
-            field
-            for field in required_fields
-            if field not in question
-        ]
-
-        if missing_fields:
-            raise ValueError(
-                f"Question #{index} is missing "
-                f"required fields: {missing_fields}"
-            )
-
-        if not str(
-            question["question_text"]
-        ).strip():
-            raise ValueError(
-                f"Question #{index} has empty text"
-            )
-
-        if (
-            question["correct_answer"]
-            not in valid_answers
-        ):
-            raise ValueError(
-                f"Question #{index} has invalid "
-                "correct_answer"
-            )
 
 
-# ---------------------------------------------------------
-# Seed Assessment Questions
-# ---------------------------------------------------------
+
+# =========================================================
+# Seed Function
+# =========================================================
+
 
 def seed_assessment_questions():
-    validate_question_banks()
+
+
+    questions = get_all_questions()
+
+
+    if not questions:
+
+        print(
+            "No assessment questions found."
+        )
+
+        return
+
+
+
+    # Validation before insert
+
+    raw_questions = [
+
+        question.model_dump()
+
+        for question in questions
+
+    ]
+
+
+    validate_question_bank(
+        raw_questions
+    )
+
+
 
     db = SessionLocal()
 
+
     try:
+
         added = 0
+
         updated = 0
-        unchanged = 0
 
-        for raw_question_data in QUESTIONS:
-            question_data = clean_question_data(
-                raw_question_data
+
+
+        for question in questions:
+
+
+            data = prepare_question_data(
+                question
             )
 
-            existing_question = (
-                db.query(AssessmentQuestion)
+
+
+            existing = (
+
+                db.query(
+                    AssessmentQuestion
+                )
+
                 .filter(
-                    AssessmentQuestion.assessment_type
-                    == question_data[
-                        "assessment_type"
-                    ],
-                    AssessmentQuestion.question_text
-                    == question_data[
-                        "question_text"
-                    ],
+
+                    AssessmentQuestion.question_code
+                    ==
+                    data["question_code"]
+
                 )
+
                 .first()
+
             )
 
-            if existing_question is None:
-                question = AssessmentQuestion(
-                    **question_data
-                )
 
-                db.add(question)
-                added += 1
-                continue
 
-            changed = False
+            if existing:
 
-            for field in UPDATABLE_FIELDS:
-                if field not in question_data:
-                    continue
 
-                new_value = question_data[field]
+                for key, value in data.items():
 
-                old_value = getattr(
-                    existing_question,
-                    field,
-                )
-
-                if old_value != new_value:
                     setattr(
-                        existing_question,
-                        field,
-                        new_value,
+                        existing,
+                        key,
+                        value,
                     )
-                    changed = True
 
-            desired_active = question_data.get(
-                "is_active",
-                True,
-            )
 
-            if (
-                existing_question.is_active
-                != desired_active
-            ):
-                existing_question.is_active = (
-                    desired_active
-                )
-                changed = True
-
-            if changed:
                 updated += 1
+
+
+
             else:
-                unchanged += 1
+
+
+                db.add(
+
+                    AssessmentQuestion(
+                        **data
+                    )
+
+                )
+
+
+                added += 1
+
+
 
         db.commit()
 
-        assessment_types = sorted(
-            {
-                question["assessment_type"]
-                for question in QUESTIONS
-            }
-        )
 
-        counts = {}
-
-        for assessment_type in assessment_types:
-            counts[assessment_type] = (
-                db.query(AssessmentQuestion)
-                .filter(
-                    AssessmentQuestion.assessment_type
-                    == assessment_type
-                )
-                .count()
-            )
 
         print(
-            "Assessment questions seeded successfully."
+            "Assessment question seed completed."
         )
-        print(f"Added: {added}")
-        print(f"Updated: {updated}")
-        print(f"Unchanged: {unchanged}")
-
-        print("\nQuestion counts:")
-
-        total = 0
-
-        for assessment_type, count in counts.items():
-            print(
-                f"{assessment_type}: {count}"
-            )
-            total += count
 
         print(
-            f"Total managed assessment questions: "
-            f"{total}"
+            f"Added: {added}"
         )
 
-    except Exception:
+        print(
+            f"Updated: {updated}"
+        )
+
+        print(
+            f"Total: {len(questions)}"
+        )
+
+
+
+    except Exception as e:
+
+
         db.rollback()
-        raise
+
+        raise e
+
+
 
     finally:
+
         db.close()
 
 
-if __name__ == "__main__":
-    seed_assessment_questions()

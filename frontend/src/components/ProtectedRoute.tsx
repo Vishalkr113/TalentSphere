@@ -36,7 +36,7 @@ function ProtectedRoute({
   if (!isAuthenticated || !user) {
     return (
       <Navigate
-        to="/college-student/login"
+        to="/college_student/login"
         replace
       />
     );

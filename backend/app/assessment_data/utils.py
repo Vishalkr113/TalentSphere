@@ -1,50 +1,122 @@
+"""
+Assessment Question Utilities
+
+Common helper functions for:
+- Shuffle questions
+- Shuffle options
+- Group questions
+"""
+
+
 import random
 
 from .schemas import Question
 
 
-def shuffle_questions(questions: list[Question]) -> list[Question]:
+
+def shuffle_questions(
+    questions: list[Question],
+) -> list[Question]:
     """
-    Return a shuffled copy of the question list.
+    Return shuffled copy of questions.
     """
+
     shuffled = questions.copy()
-    random.shuffle(shuffled)
+
+    random.shuffle(
+        shuffled
+    )
+
     return shuffled
 
 
-def shuffle_options(question: Question) -> Question:
+
+def shuffle_options(
+    question: Question,
+) -> Question:
     """
-    Return a copy of the question with shuffled options.
+    Shuffle MCQ options while
+    keeping Question schema format.
     """
-    options = question.options.copy()
-    random.shuffle(options)
+
+    options = [
+
+        question.option_a,
+
+        question.option_b,
+
+        question.option_c,
+
+        question.option_d,
+
+    ]
+
+
+    random.shuffle(
+        options
+    )
+
 
     return question.model_copy(
         update={
-            "options": options
+
+            "option_a": options[0],
+
+            "option_b": options[1],
+
+            "option_c": options[2],
+
+            "option_d": options[3],
+
         }
     )
+
 
 
 def group_by_topic(
     questions: list[Question],
 ) -> dict[str, list[Question]]:
-    grouped: dict[str, list[Question]] = {}
+
+
+    grouped = {}
+
 
     for question in questions:
-        key = question.topic.value
-        grouped.setdefault(key, []).append(question)
+
+        key = question.topic
+
+
+        grouped.setdefault(
+            key,
+            []
+        ).append(
+            question
+        )
+
 
     return grouped
+
 
 
 def group_by_difficulty(
     questions: list[Question],
 ) -> dict[str, list[Question]]:
-    grouped: dict[str, list[Question]] = {}
+
+
+    grouped = {}
+
 
     for question in questions:
+
         key = question.difficulty.value
-        grouped.setdefault(key, []).append(question)
+
+
+        grouped.setdefault(
+            key,
+            []
+        ).append(
+            question
+        )
+
 
     return grouped

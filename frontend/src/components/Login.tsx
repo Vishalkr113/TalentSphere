@@ -20,11 +20,10 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 
 const ALLOWED_ROLES: UserRole[] = [
-  "high-school-student",
-  "college-student",
-  "working-professional",
+  "high_school_student",
+  "college_student",
+  "working_professional",
 ];
-
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,17 +33,18 @@ function Login() {
   const pathRole = location.pathname.split("/")[1];
 
   const role: UserRole = ALLOWED_ROLES.includes(
-    pathRole as UserRole
-  )
-    ? (pathRole as UserRole)
-    : "college-student";
+  pathRole as UserRole
+)
+  ? (pathRole as UserRole)
+  : "college_student";
 
+  
   const title =
-    role === "high-school-student"
+    role === "high_school_student"
       ? "High School Student"
-      : role === "college-student"
-      ? "College Student"
-      : "Working Professional";
+      : role === "college_student"
+        ? "College Student"
+        : "Working Professional";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

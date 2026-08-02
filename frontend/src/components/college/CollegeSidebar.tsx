@@ -55,12 +55,11 @@ export default function CollegeSidebar() {
           {items.map(([title, Icon, path]) => (
             <li key={title}>
               <NavLink
-                to={`/college-student/${path}`}
+                to={`/college_student/${path}`}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${
-                    isActive
-                      ? "bg-cyan-600 text-white"
-                      : "text-slate-600 hover:bg-slate-100"
+                  `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${isActive
+                    ? "bg-cyan-600 text-white"
+                    : "text-slate-600 hover:bg-slate-100"
                   }`
                 }
               >

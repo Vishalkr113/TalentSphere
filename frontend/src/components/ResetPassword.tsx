@@ -98,7 +98,7 @@ function ResetPassword() {
 
             setTimeout(() => {
                 navigate(
-                    "/college-student/login",
+                    "/college_student/login",
                     {
                         replace: true,
                     }

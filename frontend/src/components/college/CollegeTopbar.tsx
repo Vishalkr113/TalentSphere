@@ -24,13 +24,13 @@ export default function CollegeTopbar() {
 
                             if (q.includes('resume')) {
                                 location.href =
-                                    '/college-student/resume-analyzer';
+                                    '/college_student/resume-analyzer';
                             } else if (q.includes('assessment')) {
                                 location.href =
-                                    '/college-student/assessment';
+                                    '/college_student/assessment';
                             } else if (q.includes('placement')) {
                                 location.href =
-                                    '/college-student/placement-readiness';
+                                    '/college_student/placement-readiness';
                             }
                         }
                     }}

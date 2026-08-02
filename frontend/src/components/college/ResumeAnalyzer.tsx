@@ -99,7 +99,7 @@ export default function ResumeAnalyzer() {
 
             <button
                 onClick={() =>
-                    nav('/college-student/resume-builder')
+                    nav('/college_student/resume-builder')
                 }
                 className="rounded-xl bg-cyan-600 px-5 py-2.5 font-semibold text-white"
             >

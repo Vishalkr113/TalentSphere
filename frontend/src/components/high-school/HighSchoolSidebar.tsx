@@ -30,77 +30,77 @@ const menuItems = [
   {
     title: "Dashboard",
     icon: LayoutDashboard,
-    path: "/high-school-student/dashboard",
+    path: "/high_school_student/dashboard",
   },
   {
     title: "My Profile",
     icon: User,
-    path: "/high-school-student/profile",
+    path: "/high_school_student/profile",
   },
   {
     title: "Assessment",
     icon: ClipboardList,
-    path: "/high-school-student/assessment",
+    path: "/high_school_student/assessment",
   },
   {
     title: "Assessment Reports",
     icon: BarChart3,
-    path: "/high-school-student/assessment-reports",
+    path: "/high_school_student/assessment-reports",
   },
   {
     title: "Final Guidance",
     icon: FileCheck2,
-    path: "/high-school-student/final-guidance",
+    path: "/high_school_student/final-guidance",
   },
   {
     title: "Subject Guidance",
     icon: BookOpen,
-    path: "/high-school-student/subject-guidance",
+    path: "/high_school_student/subject-guidance",
   },
   {
     title: "Career Explorer",
     icon: Compass,
-    path: "/high-school-student/career-explorer",
+    path: "/high_school_student/career-explorer",
   },
   {
     title: "Learning Roadmap",
     icon: Map,
-    path: "/high-school-student/learning-roadmap",
+    path: "/high_school_student/learning-roadmap",
   },
   {
     title: "AI Learning Support",
     icon: Bot,
-    path: "/high-school-student/ai-learning-support",
+    path: "/high_school_student/ai-learning-support",
   },
   {
     title: "Academic Progress",
     icon: BarChart3,
-    path: "/high-school-student/academic-progress",
+    path: "/high_school_student/academic-progress",
   },
   {
     title: "Upcoming Exams",
     icon: CalendarDays,
-    path: "/high-school-student/upcoming-exams",
+    path: "/high_school_student/upcoming-exams",
   },
   {
     title: "Assignments",
     icon: ClipboardList,
-    path: "/high-school-student/assignments",
+    path: "/high_school_student/assignments",
   },
   {
     title: "Daily Goal",
     icon: Target,
-    path: "/high-school-student/daily-goal",
+    path: "/high_school_student/daily-goal",
   },
   {
     title: "Achievements",
     icon: Trophy,
-    path: "/high-school-student/achievements",
+    path: "/high_school_student/achievements",
   },
   {
     title: "Settings",
     icon: Settings,
-    path: "/high-school-student/settings",
+    path: "/high_school_student/settings",
   },
 ];
 
@@ -118,8 +118,8 @@ function HighSchoolSidebar({
   return (
     <aside
       className={`fixed left-0 top-0 z-50 flex h-dvh w-64 flex-col border-r border-slate-200 bg-white shadow-xl transition-transform duration-300 ease-in-out lg:z-40 lg:h-screen lg:translate-x-0 lg:shadow-none ${isOpen
-          ? "translate-x-0"
-          : "-translate-x-full"
+        ? "translate-x-0"
+        : "-translate-x-full"
         }`}
     >
       {/* Logo */}

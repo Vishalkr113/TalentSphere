@@ -58,7 +58,7 @@ export default function ProfessionalDashboard() {
 
                     <Link
                         className="ml-2 font-semibold text-cyan-700"
-                        to="/working-professional/profile"
+                        to="/working_professional/profile"
                     >
                         Complete profile →
                     </Link>
@@ -93,7 +93,7 @@ export default function ProfessionalDashboard() {
                     </p>
 
                     <Link
-                        to="/working-professional/skill-assessment"
+                        to="/working_professional/skill-assessment"
                         className="mt-5 inline-block rounded-xl bg-cyan-600 px-5 py-3 font-semibold text-white"
                     >
                         Take skill assessment

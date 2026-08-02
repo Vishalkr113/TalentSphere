@@ -1,9 +1,11 @@
+import json
 import logging
 import random
 from datetime import datetime, timedelta, timezone
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
+
 
 from app.crud.assessment import (
     create_answer,
@@ -13,19 +15,26 @@ from app.crud.assessment import (
     get_attempt_questions,
     get_user_attempt,
     get_user_attempts,
+    get_in_progress_attempt,
 )
-from app.crud.profile import get_profile_by_user_id
-from app.schemas.assessment import (
-    AssessmentSubmit,
-    AssessmentType,
-)
-from app.services.assessment_scoring import AssessmentScorer
-
-import json
 
 from app.crud.assessment_result import (
     create_assessment_result,
     get_result_by_attempt_id,
+    result_exists,
+)
+
+from app.crud.profile import (
+    get_profile_by_user_id,
+)
+
+from app.schemas.assessment import (
+    AssessmentSubmit,
+    AssessmentType,
+)
+
+from app.services.assessment_scoring import (
+    AssessmentScorer,
 )
 
 from app.services.assessment_recommendation import (
@@ -36,12 +45,17 @@ from app.services.assessment_report import (
     AssessmentReportService,
 )
 
+from app.utils.json_helper import (
+    safe_json_load,
+)
+from app.assessment_data.schemas import Question
+
 logger = logging.getLogger(__name__)
+
 
 QUESTIONS_PER_ASSESSMENT = 15
 
 ASSESSMENT_DURATION_MINUTES = 30
-
 
 # ---------------------------------------------------------
 # High School Mapping
@@ -54,7 +68,6 @@ HIGH_SCHOOL_CATEGORY_MAP = {
     AssessmentType.HS_ENGLISH: "english",
     AssessmentType.HS_REASONING: "reasoning",
 }
-
 
 # ---------------------------------------------------------
 # Helpers
@@ -174,97 +187,185 @@ def get_assessment_questions(
     assessment_type: AssessmentType,
 ):
 
+
+    # =====================================================
+    # High School Student
+    # =====================================================
+
     if user_role == "high_school_student":
 
         category = HIGH_SCHOOL_CATEGORY_MAP.get(
             assessment_type
         )
 
+
         if category is None:
+
             raise HTTPException(
+
                 status_code=status.HTTP_400_BAD_REQUEST,
+
                 detail=(
                     "This assessment is not available "
                     "for high school students"
                 ),
+
             )
 
+
         profile = get_profile_by_user_id(
+
             db=db,
+
             user_id=user_id,
+
         )
 
+
         if profile is None:
+
             raise HTTPException(
+
                 status_code=status.HTTP_400_BAD_REQUEST,
+
                 detail=(
                     "Complete your profile before "
                     "starting an assessment"
                 ),
+
             )
 
+
         bank_type = resolve_high_school_bank(
+
             student_class=profile.student_class,
+
             stream=profile.stream,
+
         )
+
 
         questions = get_active_questions(
+
             db=db,
+
             assessment_type=bank_type,
+
             user_role=user_role,
+
         )
 
+
         questions = [
+
             question
+
             for question in questions
+
             if question.category == category
+
         ]
+
 
         return questions
 
+
+
+
+    # =====================================================
+    # College Student
+    # =====================================================
+
     if user_role == "college_student":
 
-        if assessment_type not in {
-            AssessmentType.APTITUDE,
-            AssessmentType.CODING,
-            AssessmentType.LOGICAL_REASONING,
-        }:
+
+        allowed_assessments = {
+
+            "college_aptitude",
+
+            "college_coding",
+
+        }
+
+
+        if assessment_type.value not in allowed_assessments:
+
             raise HTTPException(
+
                 status_code=status.HTTP_400_BAD_REQUEST,
+
                 detail=(
                     "This assessment is not currently "
                     "available for college students"
                 ),
+
             )
 
+
+
         college_map = {
-            AssessmentType.APTITUDE: "college_aptitude",
-            AssessmentType.CODING: "college_coding",
-            AssessmentType.LOGICAL_REASONING: "college_aptitude",
+
+            AssessmentType.APTITUDE:
+                "college_aptitude",
+
+
+            AssessmentType.CODING:
+                "college_coding",
+
+
+            AssessmentType.LOGICAL_REASONING:
+                "college_aptitude",
+
         }
 
+
+
         return get_active_questions(
+
             db=db,
+
             assessment_type=college_map.get(
+
                 assessment_type,
+
                 assessment_type.value,
+
             ),
+
+            user_role=user_role,
+
         )
+
+
+
+
+    # =====================================================
+    # Professional
+    # =====================================================
 
     if user_role == "working_professional":
 
         raise HTTPException(
+
             status_code=status.HTTP_400_BAD_REQUEST,
+
             detail=(
                 "Professional assessments "
                 "are not available yet"
             ),
+
         )
 
+
+
     raise HTTPException(
+
         status_code=status.HTTP_400_BAD_REQUEST,
+
         detail="Unsupported user role",
+
     )
+
 
 # ---------------------------------------------------------
 # Start Assessment
@@ -286,23 +387,11 @@ def start_assessment(
     # -----------------------------------------------------
     # Prevent Multiple Active Attempts
     # -----------------------------------------------------
-
-    previous_attempts = get_user_attempts(
+    
+    active_attempt = get_in_progress_attempt(
         db=db,
         user_id=user_id,
-    )
-
-    active_attempt = next(
-        (
-            attempt
-            for attempt in previous_attempts
-            if (
-                attempt.assessment_type
-                == assessment_type.value
-                and (attempt.status or "").lower() == "in_progress"
-            )
-        ),
-        None,
+        assessment_type=assessment_type.value,
     )
 
     if active_attempt:
@@ -403,27 +492,38 @@ def start_assessment(
 # Assessment Expiry Validation
 # ---------------------------------------------------------
 
-def validate_attempt_time(attempt):
+def validate_attempt_time(
+    db: Session,
+    attempt,
+):
 
     now = datetime.now(timezone.utc)
 
     started_at = attempt.started_at
+
 
     if started_at.tzinfo is None:
         started_at = started_at.replace(
             tzinfo=timezone.utc
         )
 
+
     expires_at = started_at + timedelta(
-        minutes=30
+        minutes=ASSESSMENT_DURATION_MINUTES
     )
 
-    if now > expires_at:
-        raise HTTPException(
-            status_code=400,
-            detail="Assessment time expired"
-        )
 
+    if now > expires_at:
+
+        attempt.status = "expired"
+
+        db.commit()
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Assessment time expired",
+        )
+    
 # ---------------------------------------------------------
 # Submit Assessment
 # ---------------------------------------------------------
@@ -447,23 +547,32 @@ def submit_assessment(
             detail="Assessment attempt not found",
         )
 
-    if (attempt.status or "").lower() == "completed":
+
+    if attempt.status == "completed":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Assessment already submitted",
         )
 
-    validate_attempt_time(attempt)
+
+    validate_attempt_time(
+        db=db,
+        attempt=attempt,
+    )
+
 
     assigned_questions = get_attempt_questions(
         db=db,
         attempt_id=attempt.id,
     )
 
-    assigned_question_map = {
-        q.id: q
-        for q in assigned_questions
-    }
+
+    if not assigned_questions:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No questions assigned",
+        )
+
 
     if len(submission.answers) != len(assigned_questions):
         raise HTTPException(
@@ -471,57 +580,106 @@ def submit_assessment(
             detail="All questions must be answered",
         )
 
-    submitted_question_ids = [
+
+    assigned_question_map = {
+        q.id: q
+        for q in assigned_questions
+    }
+
+
+    submitted_ids = [
         answer.question_id
         for answer in submission.answers
     ]
 
-    if len(submitted_question_ids) != len(set(submitted_question_ids)):
+
+    if len(submitted_ids) != len(set(submitted_ids)):
+
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Duplicate question answers are not allowed",
+            detail="Duplicate answers found",
         )
 
-    assigned_question_ids = {
-        question.id
-        for question in assigned_questions
-    }
 
-    if set(submitted_question_ids) != assigned_question_ids:
+    if set(submitted_ids) != set(assigned_question_map.keys()):
+
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Submitted questions do not match assigned questions",
+            detail="Invalid questions submitted",
         )
+
 
     try:
 
         answers_map = {}
 
+
         for answer in submission.answers:
+
 
             question = assigned_question_map.get(
                 answer.question_id
             )
 
-            if question is None:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Invalid question submitted",
-                )
 
             selected = (
                 answer.selected_answer or ""
-            ).strip().upper()
+            ).strip()
 
-            expected = (
-                question.correct_answer.strip().upper()
+
+            correct = (
+                question.correct_answer
+                .strip()
+                .upper()
             )
 
-            is_correct = (
-                selected == expected
-            )
 
-            answers_map[str(question.id)] = selected
+            option_map = {
+
+                "A": question.option_a,
+
+                "B": question.option_b,
+
+                "C": question.option_c,
+
+                "D": question.option_d,
+
+            }
+
+
+            if correct in option_map:
+
+                is_correct = (
+
+                    selected.upper() == correct
+
+                    or
+
+                    selected.lower()
+                    ==
+                    str(
+                        option_map[correct]
+                    ).lower()
+
+                )
+
+
+            else:
+
+                is_correct = (
+
+                    selected.lower()
+                    ==
+                    correct.lower()
+
+                )
+
+
+            answers_map[
+                str(question.id)
+            ] = selected
+
+
 
             create_answer(
                 db=db,
@@ -532,13 +690,22 @@ def submit_assessment(
             )
 
 
+        # -----------------------------
+        # Calculate Score
+        # -----------------------------
+
         scorer = AssessmentScorer()
+
 
         assessment_result = scorer.evaluate(
             questions=assigned_questions,
             answers=answers_map,
         )
 
+
+        # -----------------------------
+        # Career Recommendation
+        # -----------------------------
 
         recommendation = (
             AssessmentRecommendationService()
@@ -547,6 +714,10 @@ def submit_assessment(
             )
         )
 
+
+        # -----------------------------
+        # Report Generation
+        # -----------------------------
 
         report = (
             AssessmentReportService()
@@ -557,43 +728,81 @@ def submit_assessment(
         )
 
 
+        # -----------------------------
+        # Save Result
+        # -----------------------------
+
+        if result_exists(
+            db=db,
+            attempt_id=attempt.id,
+        ):
+
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Assessment result already exists",
+            )
+
+
         create_assessment_result(
             db=db,
             data={
+
                 "attempt_id": attempt.id,
+
                 "user_id": user_id,
-                "score": assessment_result["score"],
-                "percentage": assessment_result["percentage"],
-                "grade": assessment_result["grade"],
 
-                "strengths": json.dumps(
-                    assessment_result["strengths"]
-                ),
+                "score":
+                    assessment_result["score"],
 
-                "weaknesses": json.dumps(
-                    assessment_result["weaknesses"]
-                ),
+                "percentage":
+                    assessment_result["percentage"],
 
-                "recommendation": json.dumps(
-                    recommendation
-                ),
+                "grade":
+                    assessment_result["grade"],
 
-                "report": json.dumps(
-                    report
-                ),
+
+                "strengths":
+                    json.dumps(
+                        assessment_result["strengths"]
+                    ),
+
+
+                "weaknesses":
+                    json.dumps(
+                        assessment_result["weaknesses"]
+                    ),
+
+
+                "recommendation":
+                    json.dumps(
+                        recommendation
+                    ),
+
+
+                "report":
+                    json.dumps(
+                        report
+                    ),
             },
         )
 
+
+        # -----------------------------
+        # Complete Attempt
+        # -----------------------------
 
         attempt.correct_answers = (
             assessment_result["correct"]
         )
 
+
         attempt.score = (
             assessment_result["percentage"]
         )
 
+
         attempt.status = "completed"
+
 
         attempt.completed_at = datetime.now(
             timezone.utc
@@ -601,11 +810,12 @@ def submit_assessment(
 
 
         db.commit()
+
         db.refresh(attempt)
 
 
         logger.info(
-            "Assessment %s completed.",
+            "Assessment %s completed successfully",
             attempt.id,
         )
 
@@ -621,10 +831,11 @@ def submit_assessment(
         db.rollback()
 
         logger.exception(
-            "Assessment submission failed for user %s attempt %s",
+            "Assessment submission failed user=%s attempt=%s",
             user_id,
             attempt_id,
         )
+
 
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -633,30 +844,57 @@ def submit_assessment(
 
 
     return {
-        "attempt_id": attempt.id,
-        "assessment_type": attempt.assessment_type,
 
-        "total_questions": attempt.total_questions,
+        "attempt_id":
+            attempt.id,
 
-        "correct_answers": attempt.correct_answers,
 
-        "score": attempt.score,
+        "assessment_type":
+            attempt.assessment_type,
 
-        "percentage": assessment_result["percentage"],
 
-        "grade": assessment_result["grade"],
+        "total_questions":
+            attempt.total_questions,
 
-        "strengths": assessment_result["strengths"],
 
-        "weaknesses": assessment_result["weaknesses"],
+        "correct_answers":
+            attempt.correct_answers,
 
-        "recommendation": recommendation,
 
-        "report": report,
+        "score":
+            attempt.score,
 
-        "status": attempt.status,
 
-        "completed_at": attempt.completed_at,
+        "percentage":
+            assessment_result["percentage"],
+
+
+        "grade":
+            assessment_result["grade"],
+
+
+        "strengths":
+            assessment_result["strengths"],
+
+
+        "weaknesses":
+            assessment_result["weaknesses"],
+
+
+        "recommendation":
+            recommendation,
+
+
+        "report":
+            report,
+
+
+        "status":
+            attempt.status,
+
+
+        "completed_at":
+            attempt.completed_at,
     }
 
 # ---------------------------------------------------------
@@ -666,7 +904,124 @@ def submit_assessment(
 def get_assessment_history(
     db: Session,
     user_id: int,
+    page: int = 1,
+    limit: int = 10,
 ):
+
+    offset = (
+        (page - 1)
+        * limit
+    )
+
+
+    attempts = (
+        get_user_attempts(
+            db=db,
+            user_id=user_id,
+        )
+    )
+
+
+    total_attempts = len(attempts)
+
+
+    attempts = attempts[
+        offset:
+        offset + limit
+    ]
+
+
+    history = []
+
+
+    for attempt in attempts:
+
+        result = get_result_by_attempt_id(
+            db=db,
+            attempt_id=attempt.id,
+        )
+
+
+        history.append(
+            {
+
+                "attempt_id":
+                    attempt.id,
+
+
+                "assessment_type":
+                    attempt.assessment_type,
+
+
+                "total_questions":
+                    attempt.total_questions,
+
+
+                "correct_answers":
+                    attempt.correct_answers,
+
+
+                "score":
+                    attempt.score,
+
+
+                "percentage":
+                    result.percentage
+                    if result else 0,
+
+
+                "grade":
+                    result.grade
+                    if result else None,
+
+
+                "strengths":
+                    safe_json_load(
+                        result.strengths
+                    )
+                    if result else [],
+
+
+                "weaknesses":
+                    safe_json_load(
+                        result.weaknesses
+                    )
+                    if result else [],
+
+
+                "status":
+                    attempt.status,
+
+
+                "started_at":
+                    attempt.started_at,
+
+
+                "completed_at":
+                    attempt.completed_at,
+
+            }
+        )
+
+
+    return {
+
+        "total_attempts":
+            total_attempts,
+
+
+        "page":
+            page,
+
+
+        "limit":
+            limit,
+
+
+        "attempts":
+            history,
+
+    }
 
     attempts = get_user_attempts(
         db=db,
@@ -677,16 +1032,55 @@ def get_assessment_history(
 
     for attempt in attempts:
 
+        result = get_result_by_attempt_id(
+            db=db,
+            attempt_id=attempt.id,
+        )
+
         history.append(
             {
                 "attempt_id": attempt.id,
-                "assessment_type": attempt.assessment_type,
-                "total_questions": attempt.total_questions,
-                "correct_answers": attempt.correct_answers,
-                "score": attempt.score,
-                "status": attempt.status,
-                "started_at": attempt.started_at,
-                "completed_at": attempt.completed_at,
+
+                "assessment_type":
+                    attempt.assessment_type,
+
+                "total_questions":
+                    attempt.total_questions,
+
+                "correct_answers":
+                    attempt.correct_answers,
+
+                "score":
+                    attempt.score,
+
+                "percentage":
+                    result.percentage
+                    if result else 0,
+
+                "grade":
+                    result.grade
+                    if result else None,
+
+                "strengths":
+                    safe_json_load(
+                        result.strengths
+                    )
+                    if result else [],
+
+                "weaknesses":
+                    safe_json_load(
+                        result.weaknesses
+                    )
+                    if result else [],
+
+                "status":
+                    attempt.status,
+
+                "started_at":
+                    attempt.started_at,
+
+                "completed_at":
+                    attempt.completed_at,
             }
         )
 
@@ -726,41 +1120,43 @@ def get_assessment_result(
 
 
     return {
-        "attempt_id": attempt.id,
+    "attempt_id": attempt.id,
 
-        "assessment_type": attempt.assessment_type,
+    "assessment_type": attempt.assessment_type,
 
-        "total_questions": attempt.total_questions,
+    "total_questions": attempt.total_questions,
 
-        "correct_answers": attempt.correct_answers,
+    "correct_answers": attempt.correct_answers,
 
-        "score": attempt.score,
+    "score": attempt.score,
 
-        "percentage": result.percentage if result else 0,
+    "percentage": result.percentage if result else 0,
 
-        "grade": result.grade if result else "",
+    "grade": result.grade if result else "",
 
-        "strengths": json.loads(
-            result.strengths
-        ) if result and result.strengths else [],
-
-
-        "weaknesses": json.loads(
-            result.weaknesses
-        ) if result and result.weaknesses else [],
+    "strengths": safe_json_load(
+        result.strengths,
+        default=[]
+    ) if result else [],
 
 
-        "recommendation": json.loads(
-            result.recommendation
-        ) if result and result.recommendation else None,
+    "weaknesses": safe_json_load(
+        result.weaknesses,
+        default=[]
+    ) if result else [],
 
 
-        "report": json.loads(
-            result.report
-        ) if result and result.report else None,
+    "recommendation": safe_json_load(
+        result.recommendation
+    ) if result else {},
 
 
-        "status": attempt.status,
+    "report": safe_json_load(
+        result.report
+    ) if result else {},
 
-        "completed_at": attempt.completed_at,
-    }
+
+    "status": attempt.status,
+
+    "completed_at": attempt.completed_at,
+}

@@ -36,70 +36,70 @@ const cards = [
     description:
       "Explore subjects based on your academic profile.",
     icon: BookOpen,
-    path: "/high-school-student/subject-guidance",
+    path: "/high_school_student/subject-guidance",
   },
   {
     title: "Career Explorer",
     description:
       "Discover career paths and future opportunities.",
     icon: Compass,
-    path: "/high-school-student/career-explorer",
+    path: "/high_school_student/career-explorer",
   },
   {
     title: "Learning Roadmap",
     description:
       "Follow a structured learning path for your goals.",
     icon: Map,
-    path: "/high-school-student/learning-roadmap",
+    path: "/high_school_student/learning-roadmap",
   },
   {
     title: "AI Learning Support",
     description:
       "Get learning support for academic questions.",
     icon: Bot,
-    path: "/high-school-student/ai-learning-support",
+    path: "/high_school_student/ai-learning-support",
   },
   {
     title: "Academic Progress",
     description:
       "Track your academic performance and progress.",
     icon: BarChart3,
-    path: "/high-school-student/academic-progress",
+    path: "/high_school_student/academic-progress",
   },
   {
     title: "Upcoming Exams",
     description:
       "View and manage your upcoming examinations.",
     icon: CalendarDays,
-    path: "/high-school-student/upcoming-exams",
+    path: "/high_school_student/upcoming-exams",
   },
   {
     title: "Assignments",
     description:
       "Manage pending and completed assignments.",
     icon: ClipboardList,
-    path: "/high-school-student/assignments",
+    path: "/high_school_student/assignments",
   },
   {
     title: "Daily Goal",
     description:
       "Stay focused on today's learning targets.",
     icon: Target,
-    path: "/high-school-student/daily-goal",
+    path: "/high_school_student/daily-goal",
   },
   {
     title: "Achievements",
     description:
       "View your milestones and achievements.",
     icon: Trophy,
-    path: "/high-school-student/achievements",
+    path: "/high_school_student/achievements",
   },
   {
     title: "Recent Activity",
     description:
       "See your latest learning and assessment activity.",
     icon: Clock3,
-    path: "/high-school-student/assessment-reports",
+    path: "/high_school_student/assessment-reports",
   },
 ];
 
@@ -171,7 +171,7 @@ function HighSchoolDashboard() {
               type="button"
               onClick={() =>
                 navigate(
-                  "/high-school-student/assessment"
+                  "/high_school_student/assessment"
                 )
               }
               className="inline-flex items-center gap-2 rounded-xl bg-cyan-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-cyan-700"
@@ -185,7 +185,7 @@ function HighSchoolDashboard() {
               type="button"
               onClick={() =>
                 navigate(
-                  "/high-school-student/final-guidance"
+                  "/high_school_student/final-guidance"
                 )
               }
               className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
@@ -313,7 +313,7 @@ function HighSchoolDashboard() {
                 type="button"
                 onClick={() =>
                   navigate(
-                    "/high-school-student/profile"
+                    "/high_school_student/profile"
                   )
                 }
                 className="shrink-0 text-sm font-semibold text-cyan-700 hover:text-cyan-800"
@@ -342,7 +342,7 @@ function HighSchoolDashboard() {
             type="button"
             onClick={() =>
               navigate(
-                "/high-school-student/assessment"
+                "/high_school_student/assessment"
               )
             }
             className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan-700 hover:text-cyan-800"

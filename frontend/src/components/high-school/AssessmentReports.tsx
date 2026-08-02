@@ -443,7 +443,7 @@ function AssessmentReports() {
           type="button"
           onClick={() =>
             navigate(
-              "/high-school-student/profile"
+              "/high_school_student/profile"
             )
           }
           className="mt-6 rounded-xl bg-cyan-600 px-6 py-3 font-semibold text-white transition hover:bg-cyan-700"
@@ -480,7 +480,7 @@ function AssessmentReports() {
           type="button"
           onClick={() =>
             navigate(
-              "/high-school-student/profile"
+              "/high_school_student/profile"
             )
           }
           className="mt-6 rounded-xl bg-cyan-600 px-6 py-3 font-semibold text-white transition hover:bg-cyan-700"
@@ -571,7 +571,7 @@ function AssessmentReports() {
             type="button"
             onClick={() =>
               navigate(
-                "/high-school-student/assessment"
+                "/high_school_student/assessment"
               )
             }
             className="mt-6 rounded-xl bg-cyan-600 px-6 py-3 font-semibold text-white transition hover:bg-cyan-700"
@@ -703,7 +703,7 @@ function AssessmentReports() {
             disabled={!finalGuidanceReady}
             onClick={() =>
               navigate(
-                "/high-school-student/final-guidance"
+                "/high_school_student/final-guidance"
               )
             }
             className="rounded-xl bg-cyan-600 px-6 py-3 font-semibold text-white transition hover:bg-cyan-700 disabled:cursor-not-allowed disabled:bg-slate-300"

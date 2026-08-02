@@ -1,36 +1,170 @@
-from collections import Counter
+"""
+Assessment Question Validator
 
-from .schemas import Question
+Validates all question banks before
+database insertion.
+"""
 
 
-class QuestionValidator:
-    @staticmethod
-    def validate_question(question: Question) -> None:
-        if len(question.options) != 4:
-            raise ValueError(f"{question.id}: Question must have exactly 4 options.")
+from app.assessment_data.schemas import Question
 
-        if question.answer not in question.options:
+
+
+# =========================================================
+# Required Fields
+# =========================================================
+
+REQUIRED_FIELDS = {
+
+    "question_code",
+
+    "assessment_type",
+
+    "question_text",
+
+    "option_a",
+
+    "option_b",
+
+    "option_c",
+
+    "option_d",
+
+    "correct_answer",
+
+    "difficulty",
+
+    "category",
+
+    "topic",
+
+    "question_type",
+
+}
+
+
+
+VALID_ANSWERS = {
+
+    "A",
+    "B",
+    "C",
+    "D",
+
+}
+
+
+
+# =========================================================
+# Single Question Validation
+# =========================================================
+
+def validate_question(
+    question: dict,
+    index: int = 0,
+) -> bool:
+
+
+    missing_fields = [
+
+        field
+
+        for field in REQUIRED_FIELDS
+
+        if field not in question
+
+    ]
+
+
+    if missing_fields:
+
+        raise ValueError(
+
+            f"Question #{index} missing fields: "
+            f"{missing_fields}"
+
+        )
+
+
+
+    if not str(
+        question["question_text"]
+    ).strip():
+
+        raise ValueError(
+
+            f"Question #{index} has empty question text"
+
+        )
+
+
+
+    if question["correct_answer"] not in VALID_ANSWERS:
+
+        raise ValueError(
+
+            f"Question #{index} has invalid answer "
+            f"{question['correct_answer']}"
+
+        )
+
+
+
+    return True
+
+
+
+# =========================================================
+# Complete Bank Validation
+# =========================================================
+
+def validate_question_bank(
+    questions: list[dict],
+):
+
+
+    if not isinstance(
+        questions,
+        list,
+    ):
+
+        raise TypeError(
+            "Question bank must be a list"
+        )
+
+
+
+    codes = set()
+
+
+
+    for index, question in enumerate(
+        questions,
+        start=1,
+    ):
+
+
+        validate_question(
+            question,
+            index,
+        )
+
+
+        code = question["question_code"]
+
+
+
+        if code in codes:
+
             raise ValueError(
-                f"{question.id}: Answer must exist in the options list."
+
+                f"Duplicate question code found: {code}"
+
             )
 
-    @staticmethod
-    def validate_question_bank(questions: list[Question]) -> None:
-        if not questions:
-            raise ValueError("Question bank is empty.")
 
-        ids = [question.id for question in questions]
+        codes.add(code)
 
-        duplicates = [
-            question_id
-            for question_id, count in Counter(ids).items()
-            if count > 1
-        ]
 
-        if duplicates:
-            raise ValueError(
-                f"Duplicate Question IDs found: {', '.join(duplicates)}"
-            )
 
-        for question in questions:
-            QuestionValidator.validate_question(question)
+    return True

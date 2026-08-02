@@ -115,6 +115,8 @@ def empty_assessment_item() -> dict:
     return {
         "completed": False,
         "score": None,
+        "percentage": None,
+        "grade": None,
         "correct_answers": None,
         "total_questions": None,
         "attempt_id": None,
@@ -131,10 +133,12 @@ def build_assessment_summary(
         user_id=user_id,
     )
 
+
     completed_attempts = [
         attempt
         for attempt in attempts
-        if (attempt.status or "").lower() == "completed"
+        if (attempt.status or "").lower()
+        == "completed"
     ]
 
 
@@ -144,41 +148,84 @@ def build_assessment_summary(
 
     for attempt in completed_attempts:
 
+
+        data = {
+            "completed": True,
+            "score": attempt.score,
+            "percentage": attempt.score,
+            "correct_answers": attempt.correct_answers,
+            "total_questions": attempt.total_questions,
+            "attempt_id": attempt.id,
+            "completed_at": attempt.completed_at,
+        }
+
+
         if (
-            attempt.assessment_type == "aptitude"
+            "aptitude" in attempt.assessment_type
             and not aptitude["completed"]
         ):
-
-            aptitude = {
-                "completed": True,
-                "score": attempt.score,
-                "correct_answers": attempt.correct_answers,
-                "total_questions": attempt.total_questions,
-                "attempt_id": attempt.id,
-                "completed_at": attempt.completed_at,
-            }
+            aptitude = data
 
 
         elif (
-            attempt.assessment_type == "coding"
+            "coding" in attempt.assessment_type
             and not coding["completed"]
         ):
+            coding = data
 
-            coding = {
-                "completed": True,
-                "score": attempt.score,
-                "correct_answers": attempt.correct_answers,
-                "total_questions": attempt.total_questions,
-                "attempt_id": attempt.id,
-                "completed_at": attempt.completed_at,
-            }
+
+
+    results = get_user_results(
+        db=db,
+        user_id=user_id,
+    )
+
+
+    latest_result = None
+
+    if results:
+        latest_result = results[0]
+
 
 
     return {
+
         "available": True,
-        "total_completed": len(completed_attempts),
+
+
+        "total_completed":
+            len(completed_attempts),
+
+
+        "latest_score":
+            latest_result.percentage
+            if latest_result
+            else None,
+
+
+        "latest_grade":
+            latest_result.grade
+            if latest_result
+            else None,
+
+
+        "latest_assessment":
+            completed_attempts[0].assessment_type
+            if completed_attempts
+            else None,
+
+
+        "latest_completed_at":
+            completed_attempts[0].completed_at
+            if completed_attempts
+            else None,
+
+
         "aptitude": aptitude,
+
+
         "coding": coding,
+
     }
 
 def build_career_summary(
@@ -270,7 +317,7 @@ def build_progress_summary(
 
     if assessment:
 
-        if assessment["total_completed"] > 0:
+        if assessment.get("total_completed",0) > 0:
             assessment_progress = 100
 
 
@@ -282,9 +329,11 @@ def build_progress_summary(
             "coding"
         )
 
-        if coding and coding["completed"]:
+        if coding and coding.get("completed"):
+
             coding_progress = round(
-                coding["score"] or 0
+                coding.get("percentage",0)
+                or 0
             )
 
 

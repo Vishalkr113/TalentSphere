@@ -1,102 +1,191 @@
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import engine_from_config, pool
+
+from sqlalchemy import (
+    engine_from_config,
+)
+
+from sqlalchemy import pool
+
 
 from app.core.config import settings
+
 from app.db.database import Base
 
-# ---------------------------------------------------------
-# Import all models
-# ---------------------------------------------------------
-# These imports register all database tables in Base.metadata
-# so Alembic can detect schema changes.
 
+
+# ==========================================================
+# Import Models
+# ==========================================================
+
+
+# User
 from app.models.user import User  # noqa: F401
+
+
+# Pending User (OTP verification flow)
+from app.models.pending_user import PendingUser  # noqa: F401
+
+
+# Email OTP
+from app.models.email_otp import EmailOTP  # noqa: F401
+
+
+# Profile
 from app.models.profile import Profile  # noqa: F401
-from app.models.assessment import (  # noqa: F401
+
+
+# Assessment
+from app.models.assessment import (
     AssessmentAnswer,
     AssessmentAttempt,
     AssessmentAttemptQuestion,
     AssessmentQuestion,
-)
+)  # noqa: F401
 
 
-# ---------------------------------------------------------
-# Alembic Configuration
-# ---------------------------------------------------------
+# Assessment Result
+from app.models.assessment_result import (
+    AssessmentResult,
+)  # noqa: F401
+
+
+
+
+
+# ==========================================================
+# Alembic Config
+# ==========================================================
+
 
 config = context.config
 
-# Always use the same database URL as the application.
+
+
+# Always use application database
+
 config.set_main_option(
     "sqlalchemy.url",
     settings.DATABASE_URL,
 )
 
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
 
 
-# ---------------------------------------------------------
+if config.config_file_name:
+
+    fileConfig(
+        config.config_file_name
+    )
+
+
+
+
+
+# ==========================================================
 # Metadata
-# ---------------------------------------------------------
+# ==========================================================
+
 
 target_metadata = Base.metadata
 
 
-# ---------------------------------------------------------
-# Offline Migrations
-# ---------------------------------------------------------
 
-def run_migrations_offline() -> None:
+
+
+# ==========================================================
+# Offline Migration
+# ==========================================================
+
+
+def run_migrations_offline():
+
     url = config.get_main_option(
         "sqlalchemy.url"
     )
 
+
     context.configure(
+
         url=url,
+
         target_metadata=target_metadata,
+
         literal_binds=True,
+
         dialect_opts={
             "paramstyle": "named",
         },
+
         compare_type=True,
+
     )
 
+
     with context.begin_transaction():
+
         context.run_migrations()
 
 
-# ---------------------------------------------------------
-# Online Migrations
-# ---------------------------------------------------------
 
-def run_migrations_online() -> None:
+
+
+
+
+
+# ==========================================================
+# Online Migration
+# ==========================================================
+
+
+def run_migrations_online():
+
     connectable = engine_from_config(
+
         config.get_section(
             config.config_ini_section,
             {},
         ),
+
         prefix="sqlalchemy.",
+
         poolclass=pool.NullPool,
+
     )
 
+
     with connectable.connect() as connection:
+
+
         context.configure(
+
             connection=connection,
+
             target_metadata=target_metadata,
+
             compare_type=True,
+
             render_as_batch=True,
+
         )
 
+
         with context.begin_transaction():
+
             context.run_migrations()
 
 
-# RUN
+
+# ==========================================================
+# Run Migration
+# ==========================================================
+
 
 if context.is_offline_mode():
+
     run_migrations_offline()
+
+
 else:
+
     run_migrations_online()

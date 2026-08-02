@@ -20,7 +20,7 @@ function VerifyEmail() {
 
     const role =
         location.state?.role ??
-        "college-student";
+        "college_student";
 
     const [otp, setOtp] =
         useState("");

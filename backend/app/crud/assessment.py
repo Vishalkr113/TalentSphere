@@ -185,6 +185,24 @@ def get_user_attempts(
         .all()
     )
 
+# ---------------------------------------------------------
+# Active Attempt
+# ---------------------------------------------------------
+
+def get_in_progress_attempt(
+    db: Session,
+    user_id: int,
+    assessment_type: str,
+):
+    return (
+        db.query(AssessmentAttempt)
+        .filter(
+            AssessmentAttempt.user_id == user_id,
+            AssessmentAttempt.assessment_type == assessment_type,
+            AssessmentAttempt.status == "in_progress",
+        )
+        .first()
+    )
 
 # ---------------------------------------------------------
 # Attempt Questions

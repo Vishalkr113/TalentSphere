@@ -70,18 +70,18 @@ function App() {
 
       {/* High School Authentication */}
       <Route
-        path="/high-school-student/login"
+        path="/high_school_student/login"
         element={<Login />}
       />
 
       <Route
-        path="/high-school-student/signup"
+        path="/high_school_student/signup"
         element={<SignUp />}
       />
 
       {/* High School Student Category */}
       <Route
-        path="/high-school-student"
+        path="/high_school_student"
         element={
           <ProtectedRoute>
             <HighSchoolLayout />
@@ -102,7 +102,7 @@ function App() {
           path="dashboard"
           element={<HighSchoolDashboard />}
         />
-        
+
         <Route
           path="subject-guidance"
           element={<SubjectGuidance />}
@@ -175,17 +175,17 @@ function App() {
 
       {/* College Student Authentication */}
       <Route
-        path="/college-student/login"
+        path="/college_student/login"
         element={<Login />}
       />
 
       <Route
-        path="/college-student/signup"
+        path="/college_student/signup"
         element={<SignUp />}
       />
 
       {/* College Student Portal */}
-      <Route path="/college-student" element={<ProtectedRoute><CollegeLayout /></ProtectedRoute>}>
+      <Route path="/college_student" element={<ProtectedRoute><CollegeLayout /></ProtectedRoute>}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<CollegeDashboard />} />
         <Route path="profile" element={<CollegeProfile />} />
@@ -211,17 +211,17 @@ function App() {
 
       {/* Working Professional Authentication */}
       <Route
-        path="/working-professional/login"
+        path="/working_professional/login"
         element={<Login />}
       />
 
       <Route
-        path="/working-professional/signup"
+        path="/working_professional/signup"
         element={<SignUp />}
       />
 
       {/* Working Professional Portal */}
-      <Route path="/working-professional" element={<ProtectedRoute><ProfessionalLayout /></ProtectedRoute>}>
+      <Route path="/working_professional" element={<ProtectedRoute><ProfessionalLayout /></ProtectedRoute>}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<ProfessionalDashboard />} />
         <Route path="profile" element={<ProfessionalProfile />} />

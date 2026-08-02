@@ -1,5 +1,6 @@
 ﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import {
   ArrowLeft,
   Briefcase,
@@ -17,414 +18,1109 @@ import {
   isValidPassword,
   loginUser,
   registerUser,
+  verifyEmail,
   type UserRole,
 } from "../services/authService";
 
 import { useAuth } from "../contexts/AuthContext";
 
-type AuthMode = "login" | "signup";
+
+type AuthMode =
+  | "login"
+  | "signup";
+
 
 interface AuthRoleModalProps {
+
   mode: AuthMode;
+
   onClose: () => void;
+
 }
 
+
 const roles = [
+
   {
     title: "High School Student",
-    role: "high-school-student" as UserRole,
+    role: "high_school_student" as UserRole,
     icon: School,
   },
+
   {
     title: "College Student",
-    role: "college-student" as UserRole,
+    role: "college_student" as UserRole,
     icon: GraduationCap,
   },
+
   {
     title: "Working Professional",
-    role: "working-professional" as UserRole,
+    role: "working_professional" as UserRole,
     icon: Briefcase,
   },
+
 ];
 
+
+
 function AuthRoleModal({
+
   mode,
+
   onClose,
+
 }: AuthRoleModalProps) {
+
+
   const navigate = useNavigate();
+
   const { login } = useAuth();
 
-  const [selectedRole, setSelectedRole] =
+
+
+  const [selectedRole, setSelectedRole]
+    =
     useState<UserRole | null>(null);
 
-  const [currentMode, setCurrentMode] =
+
+  const [currentMode, setCurrentMode]
+    =
     useState<AuthMode>(mode);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] =
-    useState("");
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
 
-  const [loading, setLoading] =
-    useState(false);
+
+  const [name, setName] = useState("");
+
+  const [email, setEmail] = useState("");
+
+  const [password, setPassword] = useState("");
+
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [otp, setOtp] = useState("");
+
+  const [registeredEmail, setRegisteredEmail] = useState("");
+
+
+
+  const [showOtp, setShowOtp] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
 
   const [error, setError] = useState("");
-  const [success, setSuccess] =
-    useState("");
 
-  const selectedRoleTitle = roles.find(
-    (item) => item.role === selectedRole
-  )?.title;
+  const [success, setSuccess] = useState("");
+
+
+
+  const selectedRoleTitle =
+    roles.find(
+      (item) => item.role === selectedRole
+    )?.title;
+
+
 
   const resetMessages = () => {
+
     setError("");
+
     setSuccess("");
+
   };
 
+
+
+
   const switchMode = (newMode: AuthMode) => {
+
     resetMessages();
 
     setCurrentMode(newMode);
+
+    setShowOtp(false);
+
+    setOtp("");
+
     setPassword("");
+
     setConfirmPassword("");
+
   };
+
+
+
+  // LOGIN
 
   const handleLogin = async (
     e: React.FormEvent
   ) => {
+
+
     e.preventDefault();
 
     resetMessages();
 
+
+
     if (!selectedRole) {
-      setError("Please select your career stage.");
-      return;
-    }
 
-    if (!email.trim() || !password.trim()) {
       setError(
-        "Please fill in all required fields."
+        "Please select your career stage."
       );
+
       return;
+
     }
 
-    if (!isValidEmail(email)) {
+
+    try {
+
+
+      setLoading(true);
+
+
+      const result =
+        await loginUser(
+          email.trim().toLowerCase(),
+          password
+        );
+
+
+
+      login(
+        result.access_token,
+        result.user
+      );
+
+
+      onClose();
+
+
+      navigate(
+        `/${result.user.role}/dashboard`,
+        {
+          replace: true
+        }
+      );
+
+
+    }
+
+    catch (err) {
+
       setError(
-        "Please enter a valid email address."
+        err instanceof Error
+          ?
+          err.message
+          :
+          "Login failed."
       );
-      return;
+
+
     }
 
-    setLoading(true);
+    finally {
 
-    const result = await loginUser(
-      email.trim().toLowerCase(),
-      password
-    );
+      setLoading(false);
 
-    login(
-      result.access_token,
-      result.user
-    );
+    }
 
-    setLoading(false);
-    onClose();
-
-    navigate(`/${result.user.role}/dashboard`, {
-      replace: true,
-    });
   };
+
+
+
+  // REGISTER
 
   const handleSignUp = async (
     e: React.FormEvent
   ) => {
+
+
     e.preventDefault();
+
+
+    if (showOtp)
+      return;
+
 
     resetMessages();
 
+
+
     if (!selectedRole) {
-      setError("Please select your career stage.");
+
+      setError(
+        "Please select your career stage."
+      );
+
       return;
+
     }
+
+
 
     if (
-      !name.trim() ||
-      !email.trim() ||
-      !password.trim() ||
+      !name.trim()
+      ||
+      !email.trim()
+      ||
+      !password.trim()
+      ||
       !confirmPassword.trim()
     ) {
+
       setError(
-        "Please fill in all required fields."
+        "Please fill all required fields."
       );
+
       return;
+
     }
+
+
 
     if (!isValidEmail(email)) {
+
+
       setError(
-        "Please enter a valid email address."
+        "Invalid email address."
       );
+
       return;
+
     }
+
+
 
     if (!isValidPassword(password)) {
+
+
       setError(
-        "Password must contain at least 8 characters, one uppercase letter and one number."
+        "Password must contain 8 characters, uppercase and number."
       );
+
       return;
+
     }
+
+
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+
+      setError(
+        "Passwords do not match."
+      );
+
       return;
+
     }
 
-    setLoading(true);
 
-    const result = await registerUser({
-      full_name: name.trim(),
-      email: email.trim().toLowerCase(),
-      password,
-      role: selectedRole,
-    });
+    try {
 
-    setLoading(false);
 
-    setSuccess(
-      result.message
-    );
+      setLoading(true);
 
-    setLoading(false);
 
-    setSuccess(
-      result.message ??
-      "Account created successfully."
-    );
+      const result =
+        await registerUser({
 
-    setPassword("");
-    setConfirmPassword("");
+          full_name: name.trim(),
 
-    setTimeout(() => {
-      setSuccess("");
-      setCurrentMode("login");
-    }, 1200);
+          email: email.trim().toLowerCase(),
+
+          password,
+
+          role: selectedRole,
+
+        });
+
+
+
+      setRegisteredEmail(
+        result.email
+      );
+
+
+      setShowOtp(true);
+
+
+      setSuccess(
+        "OTP sent successfully. Please verify your email."
+      );
+
+
+
+    }
+
+    catch (err) {
+
+
+      setError(
+        err instanceof Error
+          ?
+          err.message
+          :
+          "Registration failed."
+      );
+
+
+    }
+
+    finally {
+
+      setLoading(false);
+
+    }
+
+
+  };
+
+  // =======================
+  // VERIFY OTP
+  // =======================
+
+  const handleVerifyOtp = async () => {
+
+
+    if (!otp.trim()) {
+
+      setError(
+        "Please enter OTP."
+      );
+
+      return;
+
+    }
+
+
+
+    try {
+
+
+      setLoading(true);
+
+      resetMessages();
+
+
+
+      await verifyEmail({
+
+        email: registeredEmail,
+
+        otp: otp.trim(),
+
+      });
+
+
+
+      setSuccess(
+        "Email verified successfully."
+      );
+
+
+
+      // switch to login after verification
+
+      setTimeout(() => {
+
+
+        setShowOtp(false);
+
+        setOtp("");
+
+        setCurrentMode("login");
+
+        setPassword("");
+
+        setConfirmPassword("");
+
+
+      }, 800);
+
+
+
+    }
+
+
+    catch (err) {
+
+
+      setError(
+
+        err instanceof Error
+
+          ?
+
+          err.message
+
+          :
+
+          "OTP verification failed."
+
+      );
+
+
+    }
+
+
+    finally {
+
+
+      setLoading(false);
+
+
+    }
+
+
   };
 
   return (
+
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/20 px-4 py-6 backdrop-blur-sm"
+
+      className="
+fixed
+inset-0
+z-[100]
+flex
+items-center
+justify-center
+bg-slate-900/30
+p-5
+backdrop-blur-sm
+"
+
       onClick={onClose}
+
     >
+
+
       <div
-        className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-8 shadow-2xl"
+
+        className="
+relative
+w-full
+max-w-md
+rounded-3xl
+bg-white
+px-6
+py-5
+shadow-2xl
+"
+
         onClick={(e) => e.stopPropagation()}
+
       >
+
+
         <button
+
           type="button"
+
           onClick={onClose}
-          className="absolute right-5 top-5 rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-          aria-label="Close"
+
+          className="
+absolute
+right-4
+top-4
+rounded-full
+p-2
+text-slate-500
+hover:bg-slate-100
+"
+
         >
-          <X size={22} />
+
+          <X size={20} />
+
         </button>
 
-        {!selectedRole ? (
-          <>
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-slate-900">
-                {currentMode === "login"
-                  ? "Login to TalentSphere"
-                  : "signup for TalentSphere"}
-              </h2>
 
-              <p className="mt-3 text-slate-600">
-                Select your career stage to continue.
-              </p>
-            </div>
 
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
-              {roles.map((item) => {
-                const Icon = item.icon;
 
-                return (
-                  <button
-                    key={item.role}
-                    type="button"
-                    onClick={() =>
-                      setSelectedRole(item.role)
-                    }
-                    className="rounded-2xl border border-slate-200 p-6 text-center transition hover:-translate-y-1 hover:border-cyan-500 hover:bg-cyan-50 hover:shadow-lg"
-                  >
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-100 text-cyan-600">
-                      <Icon size={28} />
-                    </div>
 
-                    <h3 className="mt-5 font-bold text-slate-900">
-                      {item.title}
-                    </h3>
-                  </button>
-                );
-              })}
-            </div>
+        {
 
-            <p className="mt-7 text-center text-sm text-slate-600">
-              {currentMode === "login"
-                ? "Don't have an account?"
-                : "Already have an account?"}{" "}
-              <button
-                type="button"
-                onClick={() =>
-                  switchMode(
+          !selectedRole
+
+            ?
+
+            <>
+
+
+              <div className="text-center">
+
+
+                <h2 className="text-2xl font-bold text-slate-900">
+
+                  {
                     currentMode === "login"
-                      ? "signup"
-                      : "login"
-                  )
-                }
-                className="font-semibold text-cyan-600 hover:underline"
-              >
-                {currentMode === "login"
-                  ? "signup"
-                  : "Login"}
-              </button>
-            </p>
-          </>
-        ) : (
-          <>
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedRole(null);
-                resetMessages();
-              }}
-              className="flex items-center gap-2 text-sm font-semibold text-cyan-600 hover:underline"
-            >
-              <ArrowLeft size={18} />
-              Back
-            </button>
-
-            <div className="mt-6 text-center">
-              <h2 className="text-3xl font-bold text-slate-900">
-                {selectedRoleTitle}{" "}
-                {currentMode === "login"
-                  ? "Login"
-                  : "signup"}
-              </h2>
-
-              <p className="mt-2 text-sm text-slate-600">
-                {currentMode === "login"
-                  ? "Sign in to continue to your TalentSphere account."
-                  : "Create your TalentSphere account."}
-              </p>
-            </div>
-
-            <form
-              onSubmit={
-                currentMode === "login"
-                  ? handleLogin
-                  : handleSignUp
-              }
-              className="mx-auto mt-8 max-w-md space-y-5"
-            >
-              {currentMode === "signup" && (
-                <Input
-                  label="Full Name"
-                  placeholder="Enter your full name"
-                  value={name}
-                  onChange={(e) =>
-                    setName(e.target.value)
+                      ?
+                      "Login to TalentSphere"
+                      :
+                      "Signup for TalentSphere"
                   }
-                />
-              )}
 
-              <Input
-                label="Email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) =>
-                  setEmail(e.target.value)
-                }
-              />
+                </h2>
 
-              <PasswordInput
-                label="Password"
-                placeholder={
-                  currentMode === "login"
-                    ? "Enter your password"
-                    : "Create password"
-                }
-                value={password}
-                onChange={(e) =>
-                  setPassword(e.target.value)
-                }
-              />
 
-              {currentMode === "signup" && (
-                <PasswordInput
-                  label="Confirm Password"
-                  placeholder="Confirm password"
-                  value={confirmPassword}
-                  onChange={(e) =>
-                    setConfirmPassword(
-                      e.target.value
+                <p className="mt-2 text-sm text-slate-600">
+
+                  Select your career stage
+
+                </p>
+
+
+              </div>
+
+
+
+
+
+              <div className="mt-5 space-y-3">
+
+
+                {
+
+                  roles.map((item) => {
+
+
+                    const Icon = item.icon;
+
+
+                    return (
+
+                      <button
+
+                        key={item.role}
+
+                        type="button"
+
+                        onClick={() => setSelectedRole(item.role)}
+
+                        className="
+flex
+w-full
+items-center
+gap-4
+rounded-xl
+border
+border-slate-200
+p-3
+transition
+hover:border-cyan-500
+hover:bg-cyan-50
+"
+
+                      >
+
+
+                        <div
+
+                          className="
+flex
+h-10
+w-10
+items-center
+justify-center
+rounded-xl
+bg-cyan-100
+text-cyan-600
+"
+
+                        >
+
+                          <Icon size={22} />
+
+                        </div>
+
+
+
+                        <span className="font-semibold text-slate-800">
+
+                          {item.title}
+
+                        </span>
+
+
+
+                      </button>
+
                     )
-                  }
-                />
-              )}
 
-              {error && (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
-                  {error}
-                </div>
-              )}
 
-              {success && (
-                <div className="rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-600">
-                  {success}
-                </div>
-              )}
+                  })
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loading}
-              >
-                {loading
-                  ? currentMode === "login"
-                    ? "Signing In..."
-                    : "Creating Account..."
-                  : currentMode === "login"
-                    ? "Login"
-                    : "signup"}
-              </Button>
-            </form>
-
-            <p className="mt-7 text-center text-sm text-slate-600">
-              {currentMode === "login"
-                ? "Don't have an account?"
-                : "Already have an account?"}{" "}
-              <button
-                type="button"
-                onClick={() =>
-                  switchMode(
-                    currentMode === "login"
-                      ? "signup"
-                      : "login"
-                  )
                 }
-                className="font-semibold text-cyan-600 hover:underline"
+
+
+              </div>
+
+
+
+
+
+              <p className="mt-5 text-center text-sm text-slate-600">
+
+
+                {
+                  currentMode === "login"
+                    ?
+                    "Don't have an account?"
+                    :
+                    "Already have an account?"
+                }
+
+
+                {" "}
+
+
+                <button
+
+                  type="button"
+
+                  onClick={() => switchMode(
+                    currentMode === "login"
+                      ?
+                      "signup"
+                      :
+                      "login"
+                  )}
+
+                  className="
+font-semibold
+text-cyan-600
+"
+
+                >
+
+                  {
+                    currentMode === "login"
+                      ?
+                      "Signup"
+                      :
+                      "Login"
+                  }
+
+                </button>
+
+
+              </p>
+
+
+
+            </>
+
+
+
+            :
+
+
+
+
+
+            <>
+
+
+
+              <button
+
+                type="button"
+
+                onClick={() => {
+
+                  setSelectedRole(null);
+
+                  resetMessages();
+
+                }}
+
+                className="
+flex
+items-center
+gap-2
+text-sm
+font-semibold
+text-cyan-600
+"
+
               >
-                {currentMode === "login"
-                  ? "Create Account"
-                  : "Login"}
+
+                <ArrowLeft size={16} />
+
+                Back
+
               </button>
-            </p>
-          </>
-        )}
+
+
+
+
+
+
+              <div className="mt-3 text-center">
+
+
+                <h2 className="text-xl font-bold text-slate-900">
+
+                  {selectedRoleTitle}
+
+                  {" "}
+
+                  {
+                    currentMode === "login"
+                      ?
+                      "Login"
+                      :
+                      "Signup"
+                  }
+
+                </h2>
+
+
+                <p className="mt-1 text-xs text-slate-600">
+
+                  Create your TalentSphere account
+
+                </p>
+
+
+              </div>
+
+
+
+
+
+              <form
+
+                onSubmit={
+                  currentMode === "login"
+                    ?
+                    handleLogin
+                    :
+                    handleSignUp
+                }
+
+                className="
+mt-4
+space-y-3
+"
+
+              >
+
+
+
+                {
+
+                  currentMode === "signup"
+
+                  &&
+
+                  <Input
+
+                    label="Full Name"
+
+                    placeholder="Enter full name"
+
+                    value={name}
+
+                    disabled={showOtp}
+
+                    onChange={(e) =>
+                      setName(e.target.value)
+                    }
+
+                  />
+
+                }
+
+
+
+
+                <Input
+
+                  label="Email"
+
+                  type="email"
+
+                  placeholder="Enter email"
+
+                  value={email}
+
+                  disabled={showOtp}
+
+                  onChange={(e) =>
+                    setEmail(e.target.value)
+                  }
+
+                />
+
+
+
+
+
+
+                <PasswordInput
+
+                  label="Password"
+
+                  placeholder="Password"
+
+                  value={password}
+
+                  disabled={showOtp}
+
+                  onChange={(e) =>
+                    setPassword(e.target.value)
+                  }
+
+                />
+
+
+
+
+
+
+                {
+
+                  currentMode === "signup"
+
+                  &&
+
+                  <PasswordInput
+
+                    label="Confirm Password"
+
+                    placeholder="Confirm password"
+
+                    value={confirmPassword}
+
+                    disabled={showOtp}
+
+                    onChange={(e) =>
+                      setConfirmPassword(e.target.value)
+                    }
+
+                  />
+
+                }
+
+
+
+
+
+                {
+
+                  showOtp &&
+
+                  <Input
+
+                    label="Email OTP"
+
+                    placeholder="Enter OTP"
+
+                    value={otp}
+
+                    onChange={(e) =>
+                      setOtp(e.target.value)
+                    }
+
+                  />
+
+                }
+
+
+
+
+
+                {
+
+                  error &&
+
+                  <div
+
+                    className="
+rounded-lg
+border
+border-red-200
+bg-red-50
+p-2
+text-sm
+text-red-700
+"
+
+                  >
+
+                    {error}
+
+                  </div>
+
+                }
+
+
+
+
+
+                {
+
+                  success &&
+
+                  <div
+
+                    className="
+rounded-lg
+border
+border-green-200
+bg-green-50
+p-2
+text-sm
+text-green-700
+"
+
+                  >
+
+                    {success}
+
+                  </div>
+
+                }
+
+
+
+
+
+                <Button
+
+                  type={
+                    showOtp
+                      ?
+                      "button"
+                      :
+                      "submit"
+                  }
+
+                  onClick={
+                    showOtp
+                      ?
+                      handleVerifyOtp
+                      :
+                      undefined
+                  }
+
+                  className="w-full"
+
+                  disabled={loading}
+
+                >
+
+                  {
+
+                    loading
+
+                      ?
+
+                      "Processing..."
+
+                      :
+
+                      showOtp
+
+                        ?
+
+                        "Verify Email"
+
+                        :
+
+                        currentMode === "login"
+
+                          ?
+
+                          "Login"
+
+                          :
+
+                          "Signup"
+
+                  }
+
+
+                </Button>
+
+
+
+              </form>
+
+
+
+
+
+
+              <p className="mt-4 text-center text-sm text-slate-600">
+
+
+                {
+                  currentMode === "login"
+                    ?
+                    "Don't have an account?"
+                    :
+                    "Already have an account?"
+                }
+
+
+                {" "}
+
+
+                <button
+
+                  type="button"
+
+                  onClick={() => switchMode(
+                    currentMode === "login"
+                      ?
+                      "signup"
+                      :
+                      "login"
+                  )}
+
+                  className="
+font-semibold
+text-cyan-600
+"
+
+                >
+
+                  {
+                    currentMode === "login"
+                      ?
+                      "Create Account"
+                      :
+                      "Login"
+                  }
+
+
+                </button>
+
+
+              </p>
+
+
+
+            </>
+
+
+        }
+
+
       </div>
+
+
     </div>
+
   );
+
+
 }
+
 
 export default AuthRoleModal;

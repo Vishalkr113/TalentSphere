@@ -110,7 +110,7 @@ export default function CollegeDashboard() {
 
                     <button
                         onClick={() =>
-                            nav('/college-student/skill-gap')
+                            nav('/college_student/skill-gap')
                         }
                         className="mt-4 font-semibold text-cyan-700"
                     >
@@ -128,7 +128,7 @@ export default function CollegeDashboard() {
                             <Action
                                 t="Complete your first College assessment"
                                 on={() =>
-                                    nav('/college-student/assessment')
+                                    nav('/college_student/assessment')
                                 }
                             />
                         )}
@@ -137,7 +137,7 @@ export default function CollegeDashboard() {
                             <Action
                                 t="Improve your resume sections"
                                 on={() =>
-                                    nav('/college-student/resume-builder')
+                                    nav('/college_student/resume-builder')
                                 }
                             />
                         )}
@@ -145,7 +145,7 @@ export default function CollegeDashboard() {
                         <Action
                             t="Practice your priority skill gap"
                             on={() =>
-                                nav('/college-student/practice')
+                                nav('/college_student/practice')
                             }
                         />
 
@@ -153,7 +153,7 @@ export default function CollegeDashboard() {
                             t="Continue personalized learning roadmap"
                             on={() =>
                                 nav(
-                                    '/college-student/learning-roadmap'
+                                    '/college_student/learning-roadmap'
                                 )
                             }
                         />
@@ -161,7 +161,7 @@ export default function CollegeDashboard() {
                         <Action
                             t="Practice mock interview"
                             on={() =>
-                                nav('/college-student/mock-interview')
+                                nav('/college_student/mock-interview')
                             }
                         />
                     </div>
