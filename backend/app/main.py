@@ -78,46 +78,42 @@ app = FastAPI(
 )
 
 
-
 # ==========================================================
 # CORS
 # ==========================================================
 
+PRODUCTION_FRONTEND_ORIGIN = (
+    "https://talentsphere-1-yqpn.onrender.com"
+)
+
+configured_origins = {
+    origin.strip().rstrip("/")
+    for origin in settings.CORS_ORIGINS.split(",")
+    if origin.strip()
+}
+
+# Always allow the deployed TalentSphere frontend.
+# This protects production from a stale Render CORS_ORIGINS
+# environment variable.
+configured_origins.add(PRODUCTION_FRONTEND_ORIGIN)
 
 app.add_middleware(
-
     CORSMiddleware,
 
-    allow_origins=[
-        origin.strip()
-        for origin in settings.CORS_ORIGINS.split(",")
-        if origin.strip()
-    ],
+    allow_origins=sorted(configured_origins),
 
     allow_credentials=True,
 
     allow_methods=[
-
         "GET",
-
         "POST",
-
         "PUT",
-
         "PATCH",
-
         "DELETE",
-
+        "OPTIONS",
     ],
 
-    allow_headers=[
-
-        "Authorization",
-
-        "Content-Type",
-
-    ],
-
+    allow_headers=["*"],
 )
 
 
